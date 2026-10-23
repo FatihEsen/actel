@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0c10">
+  <meta name="description" content="Assetto Corsa Gerçek Zamanlı Telemetri ve Sanal Kontrol Paneli (Button Box)">
+  <title>Assetto Corsa Telemetri & Kontrol Paneli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dark-theme">
+
+  <!-- TOP HEADER -->
+  <header class="top-bar">
+    <div class="brand-group">
+      <div class="brand-badge">
+        <span class="brand-icon">🏎️</span>
+        <div class="brand-text">
+          <span class="brand-title">ACTELEMETRY</span>
+          <span class="brand-sub">PRO DASH & CONTROLLER</span>
+        </div>
+      </div>
+      <div id="connectionBadge" class="status-badge connecting">
+        <span class="status-dot"></span>
+        <span class="status-text">BAĞLANILIYOR</span>
+      </div>
+    </div>
+
+    <!-- Live Session / Car Info -->
+    <div class="session-info-strip">
+      <div class="info-pill"><span class="pill-label">ARAÇ:</span> <span id="carName" class="pill-val">Yükleniyor...</span></div>
+      <div class="info-pill"><span class="pill-label">PİST:</span> <span id="trackName" class="pill-val">---</span></div>
+      <div class="info-pill"><span class="pill-label">SEANS:</span> <span id="sessionType" class="pill-val">---</span></div>
+    </div>
+
+    <!-- Header Actions -->
+    <div class="header-actions">
+      <!-- Mode Switcher -->
+      <div class="mode-toggle-wrap" title="Çalışma Modu">
+        <button id="modeToggleBtn" class="action-btn mode-btn">
+          <span class="mode-icon">⚡</span>
+          <span id="modeText">DEMO MODU</span>
+        </button>
+      </div>
+
+      <!-- IP / QR Mobile Connect -->
+      <button id="qrModalBtn" class="action-btn icon-only" title="Telefondan Bağlan (QR / IP)">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+          <path d="M7 17v.01M17 7v.01M7 7v.01"></path>
+        </svg>
+      </button>
+
+      <!-- Audio Click Feedback -->
+      <button id="soundToggleBtn" class="action-btn icon-only active" title="Sesli Tuş Geri Bildirimi">
+        <svg id="soundIconOn" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        </svg>
+      </button>
+
+      <!-- Fullscreen Button -->
+      <button id="fullscreenBtn" class="action-btn icon-only" title="Tam Ekran Modu">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- NAVIGATION TABS -->
+  <nav class="nav-tabs">
+    <button class="nav-tab active" data-tab="dashboard">
+      <span class="tab-icon">🏁</span>
+      <span class="tab-label">GÖSTERGE (DASH)</span>
+    </button>
+    <button class="nav-tab" data-tab="telemetry">
+      <span class="tab-icon">📈</span>
+      <span class="tab-label">TELEMETRİ GRAFİĞİ</span>
+    </button>
+    <button class="nav-tab" data-tab="buttonbox">
+      <span class="tab-icon">🎛️</span>
+      <span class="tab-label">KONTROL (BUTTON BOX)</span>
+    </button>
+    <button class="nav-tab" data-tab="settings">
+      <span class="tab-icon">⚙️</span>
+      <span class="tab-label">AYARLAR</span>
+    </button>
+  </nav>
+
+  <!-- MAIN VIEWPORT CONTAINER -->
+  <main class="main-container">
+
+    <!-- 1. DASHBOARD VIEW -->
+    <section id="view-dashboard" class="tab-view active">
+      <!-- RPM SHIFT LIGHT BAR -->
+      <div class="shift-light-container">
+        <div class="shift-lights" id="shiftLightsBar">
+          <!-- 16 Dynamic LED Elements -->
+          <div class="led led-green"></div>
+          <div class="led led-green"></div>
+          <div class="led led-green"></div>
+          <div class="led led-green"></div>
+          <div class="led led-yellow"></div>
+          <div class="led led-yellow"></div>
+          <div class="led led-yellow"></div>
+          <div class="led led-yellow"></div>
+          <div class="led led-orange"></div>
+          <div class="led led-orange"></div>
+          <div class="led led-orange"></div>
+          <div class="led led-orange"></div>
+          <div class="led led-red"></div>
+          <div class="led led-red"></div>
+          <div class="led led-red"></div>
+          <div class="led led-red"></div>
+        </div>
+      </div>
+
+      <!-- MAIN DASHBOARD GRID -->
+      <div class="dash-grid">
+        <!-- LEFT COLUMN: Car & Track + Timing + Setup -->
+        <div class="dash-col dash-col-left">
+          <!-- Car & Track Badge Box -->
+          <div class="dash-card car-track-card">
+            <div class="car-track-line"><span class="ct-label">ARAÇ:</span> <span id="dashCarName" class="ct-val">---</span></div>
+            <div class="car-track-line"><span class="ct-label">PİST:</span> <span id="dashTrackName" class="ct-val">---</span></div>
+          </div>
+
+          <div class="dash-card dash-timing">
+            <div class="timing-top-pills">
+              <span id="dashLapPill" class="dash-pill">TUR 0</span>
+              <span id="dashSecPill" class="dash-pill pill-green">SEKTÖR S1</span>
+            </div>
+
+            <div class="timing-rows">
+              <div class="timing-item">
+                <span class="timing-label">CANLI SÜRE</span>
+                <span id="dashCurrentLap" class="timing-val mono">0:00.000</span>
+              </div>
+              <div class="timing-item highlight-delta">
+                <span class="timing-label">DELTA (EN İYİ)</span>
+                <span id="dashDelta" class="timing-val mono delta-neutral">0.000</span>
+              </div>
+              <div class="timing-item">
+                <span class="timing-label">EN İYİ TUR</span>
+                <span id="dashBestLap" class="timing-val mono text-purple">--:--.---</span>
+              </div>
+              <div class="timing-item">
+                <span class="timing-label">SON TUR</span>
+                <span id="dashLastLap" class="timing-val mono">--:--.---</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Setup Strip Card (TC, ABS, BB, DRS) -->
+          <div class="dash-card setup-strip-card">
+            <div class="setup-pill"><span class="setup-lbl">TC</span><span id="stripTc" class="setup-val">0</span></div>
+            <div class="setup-pill"><span class="setup-lbl">ABS</span><span id="stripAbs" class="setup-val">0</span></div>
+            <div class="setup-pill"><span class="setup-lbl">BB</span><span id="stripBb" class="setup-val">58.0%</span></div>
+            <div class="setup-pill"><span class="setup-lbl">DRS</span><span id="stripDrs" class="setup-val">OFF</span></div>
+          </div>
+        </div>
+
+        <!-- CENTER COLUMN: Speed & RPM & Big Boxed Gear -->
+        <div class="dash-col dash-col-center">
+          <div class="dash-card dash-center">
+            <!-- 1. SPEED DISPLAY (TOP) -->
+            <div class="speed-box-group">
+              <span id="dashSpeed" class="speed-num">0</span>
+              <span class="speed-unit-pill">KM/H</span>
+            </div>
+
+            <!-- 2. RPM TEXT ONLY (MIDDLE) -->
+            <div class="rpm-boost-footer">
+              <div class="rpm-text">
+                <span id="dashRpm" class="mono">0</span> <span class="rpm-unit">RPM</span>
+              </div>
+            </div>
+
+            <!-- 3. BIG GEAR DISPLAY (BOTTOM) -->
+            <div class="gear-display-box">
+              <span class="gear-box-label">VİTES</span>
+              <div id="dashGear" class="gear-num">N</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Upper Pedals + G-Force, Lower Compact Tyres -->
+        <div class="dash-col dash-col-right">
+          <!-- UPPER CARD: Pedals and G-Force Meter side by side -->
+          <div class="dash-card right-upper-card">
+            <div class="pedals-container">
+              <div class="pedal-bar-group">
+                <div class="pedal-bar-track"><div id="pedalClutch" class="pedal-fill fill-clutch"></div></div>
+                <span id="pedalClutchVal" class="pedal-pct">0%</span>
+                <span class="pedal-lbl">CLU</span>
+              </div>
+              <div class="pedal-bar-group">
+                <div class="pedal-bar-track"><div id="pedalBrake" class="pedal-fill fill-brake"></div></div>
+                <span id="pedalBrakeVal" class="pedal-pct">0%</span>
+                <span class="pedal-lbl">BRA</span>
+              </div>
+              <div class="pedal-bar-group">
+                <div class="pedal-bar-track"><div id="pedalGas" class="pedal-fill fill-gas"></div></div>
+                <span id="pedalGasVal" class="pedal-pct">0%</span>
+                <span class="pedal-lbl">THR</span>
+              </div>
+            </div>
+
+            <div class="gforce-compact-wrap">
+              <canvas id="gforceCanvas" width="80" height="80"></canvas>
+              <div class="gforce-val" id="gforceVal">LAT: 0.00G</div>
+            </div>
+          </div>
+
+          <!-- LOWER CARD: Compact 4-Tyres Card (LASTİKLER - Başlık kaldırıldı) -->
+          <div class="dash-card compact-tyres-card">
+            <div class="compact-tyres-grid">
+              <div class="compact-tyre-cell" id="ctFL">
+                <div class="ct-top"><span class="ct-tag">FL</span><span class="ct-temp" id="ctTempFL">--°C</span></div>
+                <div class="ct-bottom"><span class="ct-psi" id="ctPsiFL">--.-</span><span class="ct-wear" id="ctWearFL">--%</span></div>
+              </div>
+              <div class="compact-tyre-cell" id="ctFR">
+                <div class="ct-top"><span class="ct-tag">FR</span><span class="ct-temp" id="ctTempFR">--°C</span></div>
+                <div class="ct-bottom"><span class="ct-psi" id="ctPsiFR">--.-</span><span class="ct-wear" id="ctWearFR">--%</span></div>
+              </div>
+              <div class="compact-tyre-cell" id="ctRL">
+                <div class="ct-top"><span class="ct-tag">RL</span><span class="ct-temp" id="ctTempRL">--°C</span></div>
+                <div class="ct-bottom"><span class="ct-psi" id="ctPsiRL">--.-</span><span class="ct-wear" id="ctWearRL">--%</span></div>
+              </div>
+              <div class="compact-tyre-cell" id="ctRR">
+                <div class="ct-top"><span class="ct-tag">RR</span><span class="ct-temp" id="ctTempRR">--°C</span></div>
+                <div class="ct-bottom"><span class="ct-psi" id="ctPsiRR">--.-</span><span class="ct-wear" id="ctWearRR">--%</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. LIVE TELEMETRY GRAPHS -->
+    <section id="view-telemetry" class="tab-view">
+      <div class="telemetry-view-container">
+        <div class="telemetry-toolbar">
+          <div class="telemetry-legend">
+            <span class="legend-item"><span class="color-box gas-color"></span> GAZ (THR)</span>
+            <span class="legend-item"><span class="color-box brake-color"></span> FREN (BRK)</span>
+            <span class="legend-item"><span class="color-box speed-color"></span> HIZ (SPD)</span>
+            <span class="legend-item"><span class="color-box steer-color"></span> DİREKSİYON (STEER)</span>
+          </div>
+          <div class="telemetry-ctrls">
+            <button id="clearGraphBtn" class="action-btn mini">TEMİZLE</button>
+          </div>
+        </div>
+        <div class="canvas-wrapper">
+          <canvas id="telemetryCanvas"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. VIRTUAL BUTTON BOX (REMOTE CONTROLLER) -->
+    <section id="view-buttonbox" class="tab-view">
+      <div class="buttonbox-grid">
+        
+        <!-- GROUP 1: ENGINE & ELECTRONICS -->
+        <div class="bb-panel">
+          <div class="panel-tag">SÜRÜŞ & ELEKTRONİK</div>
+          <div class="bb-buttons-wrap">
+            <!-- TC Controls -->
+            <div class="bb-row-pair">
+              <button class="bb-btn bb-cyan" data-action="tc_up">
+                <span class="bb-title">TC +</span>
+                <span class="bb-sub">Çekiş Artır</span>
+              </button>
+              <button class="bb-btn bb-cyan" data-action="tc_down">
+                <span class="bb-title">TC -</span>
+                <span class="bb-sub">Çekiş Azalt</span>
+              </button>
+            </div>
+
+            <!-- ABS Controls -->
+            <div class="bb-row-pair">
+              <button class="bb-btn bb-blue" data-action="abs_up">
+                <span class="bb-title">ABS +</span>
+                <span class="bb-sub">ABS Artır</span>
+              </button>
+              <button class="bb-btn bb-blue" data-action="abs_down">
+                <span class="bb-title">ABS -</span>
+                <span class="bb-sub">ABS Azalt</span>
+              </button>
+            </div>
+
+            <!-- Brake Bias -->
+            <div class="bb-row-pair">
+              <button class="bb-btn bb-orange" data-action="bb_up">
+                <span class="bb-title">BIAS FWD</span>
+                <span class="bb-sub">Öne Aktar</span>
+              </button>
+              <button class="bb-btn bb-orange" data-action="bb_down">
+                <span class="bb-title">BIAS REAR</span>
+                <span class="bb-sub">Arkaya Aktar</span>
+              </button>
+            </div>
+
+            <!-- DRS / KERS -->
+            <div class="bb-row-pair">
+              <button class="bb-btn bb-green highlight-btn" data-action="drs">
+                <span class="bb-icon">⚡</span>
+                <span class="bb-title">DRS AÇ/KAPA</span>
+              </button>
+              <button class="bb-btn bb-yellow" data-action="pit_limiter">
+                <span class="bb-icon">🛑</span>
+                <span class="bb-title">PIT LIMITER</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- GROUP 2: LIGHTS & VISIBILITY -->
+        <div class="bb-panel">
+          <div class="panel-tag">IŞIKLAR & GÖRÜŞ</div>
+          <div class="bb-buttons-wrap">
+            <button class="bb-btn bb-glow" data-action="flasher">
+              <span class="bb-icon">💡</span>
+              <span class="bb-title">FAR FLAŞI</span>
+              <span class="bb-sub">Selektör Yap</span>
+            </button>
+
+            <button class="bb-btn" data-action="headlights">
+              <span class="bb-icon">🔆</span>
+              <span class="bb-title">FARLAR</span>
+              <span class="bb-sub">Aç / Kapat</span>
+            </button>
+
+            <button class="bb-btn" data-action="wipers">
+              <span class="bb-icon">🌧️</span>
+              <span class="bb-title">SİLECEKLER</span>
+              <span class="bb-sub">Kademe Değiştir</span>
+            </button>
+
+            <button class="bb-btn" data-action="horn">
+              <span class="bb-icon">📢</span>
+              <span class="bb-title">KORNA</span>
+            </button>
+
+            <!-- Sinyal & Hazard -->
+            <div class="bb-row-3">
+              <button class="bb-btn bb-amber" data-action="turn_left">
+                <span class="bb-icon">◀</span>
+                <span class="bb-title">SOL SİNYAL</span>
+                <span class="bb-sub">Alt + ←</span>
+              </button>
+              <button class="bb-btn bb-red" data-action="hazard">
+                <span class="bb-icon">⚠️</span>
+                <span class="bb-title">DÖRTLÜ</span>
+                <span class="bb-sub">Hazard</span>
+              </button>
+              <button class="bb-btn bb-amber" data-action="turn_right">
+                <span class="bb-icon">▶</span>
+                <span class="bb-title">SAĞ SİNYAL</span>
+                <span class="bb-sub">Alt + →</span>
+              </button>
+            </div>
+
+            <div class="bb-row-3">
+              <button class="bb-btn mini-btn" data-action="look_left">SOLA BAK</button>
+              <button class="bb-btn mini-btn" data-action="look_back">GERİYE BAK</button>
+              <button class="bb-btn mini-btn" data-action="look_right">SAĞA BAK</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- GROUP 3: SESSION & PITBOX -->
+        <div class="bb-panel">
+          <div class="panel-tag">OTURUM & PİT KONTROL</div>
+          <div class="bb-buttons-wrap">
+            <button class="bb-btn bb-purple" data-action="teleport_pits">
+              <span class="bb-icon">🔧</span>
+              <span class="bb-title">PİTE DÖN</span>
+              <span class="bb-sub">Teleport to Pit</span>
+            </button>
+
+            <button class="bb-btn bb-gray" data-action="camera_change">
+              <span class="bb-icon">🎥</span>
+              <span class="bb-title">KAMERA</span>
+              <span class="bb-sub">Görünüm Değiştir</span>
+            </button>
+
+            <button class="bb-btn bb-green" data-action="starter">
+              <span class="bb-icon">⚡</span>
+              <span class="bb-title">START</span>
+              <span class="bb-sub">Motoru Çalıştır</span>
+            </button>
+
+            <div class="bb-row-pair">
+              <button class="bb-btn bb-amber" data-action="pause">
+                <span class="bb-icon">⏸️</span>
+                <span class="bb-title">DURAKLAT</span>
+              </button>
+              <button class="bb-btn bb-red" data-action="restart_session">
+                <span class="bb-icon">🔄</span>
+                <span class="bb-title">YENİDEN BAŞLAT</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. SETTINGS VIEW -->
+    <section id="view-settings" class="tab-view">
+      <div class="settings-container">
+        <div class="settings-card">
+          <div class="card-header">SİSTEM & BAĞLANTI DURUMU</div>
+          <div class="settings-body">
+            <div class="set-row">
+              <div>
+                <div class="set-title">Oyun Bağlantısı</div>
+                <div class="set-desc">Assetto Corsa Windows Shared Memory durumu</div>
+              </div>
+              <span id="cfgAcStatus" class="badge">KONTROL EDİLİYOR...</span>
+            </div>
+
+            <div class="set-row">
+              <div>
+                <div class="set-title">Veri Akış Modu</div>
+                <div class="set-desc">Oyun kapalıyken otomatik demo simülasyonu</div>
+              </div>
+              <select id="cfgModeSelect" class="styled-select">
+                <option value="AUTO">Otomatik (AC varsa Canlı, yoksa Demo)</option>
+                <option value="LIVE_ONLY">Sadece Canlı AC</option>
+                <option value="DEMO_ONLY">Sadece Demo Simülatör</option>
+              </select>
+            </div>
+
+            <div class="set-row">
+              <div>
+                <div class="set-title">Basınç Birimi</div>
+                <div class="set-desc">Lastik basınç gösterimi</div>
+              </div>
+              <select id="cfgPressureUnit" class="styled-select">
+                <option value="PSI">PSI</option>
+                <option value="BAR">BAR</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <div class="card-header">KONTROL & DIRECTINPUT TUŞ EŞLEŞTİRMELERİ</div>
+          <div class="settings-body">
+            <p class="settings-info-text">
+              Bu butonlara basıldığında bilgisayarda çalışan Assetto Corsa oyununa simüle edilen tuş kombinasyonları gönderilir.
+            </p>
+            <div class="bindings-list" id="bindingsList">
+              <!-- Dynamically populated keybindings list -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: QR CODE & LOCAL IP CONNECT -->
+  <div id="qrModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>📱 TELEFONDAN VEYA TABLETTEN BAĞLAN</h3>
+        <button id="closeQrModal" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">Aynı Wi-Fi ağına bağlı telefon veya tabletinizin kamerasını açarak QR kodu okutun:</p>
+        <div class="qr-code-box" id="qrContainer">
+          <div id="qrSvgHolder"></div>
+        </div>
+        <div class="ip-urls-list" id="ipUrlsList">
+          <!-- Dynamic IP list -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="js/dashboard.js"></script>
+  <script src="js/tyres.js"></script>
+  <script src="js/telemetry.js"></script>
+  <script src="js/buttonbox.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

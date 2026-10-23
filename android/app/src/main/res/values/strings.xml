@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">ACTelemetry</string>
+    <string name="connecting">BAĞLANILIYOR</string>
+    <string name="connected">CANLI (50Hz)</string>
+    <string name="disconnected">BAĞLANTI YOK</string>
+    <string name="demo_mode">DEMO MODU</string>
+    <string name="tab_dashboard">GÖSTERGE</string>
+    <string name="tab_tyres">LASTİK &amp; ARAÇ</string>
+    <string name="tab_buttonbox">BUTTON BOX</string>
+    <string name="tab_settings">AYARLAR</string>
+</resources>
