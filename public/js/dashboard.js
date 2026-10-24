@@ -129,9 +129,25 @@ class DashboardController {
     if (this.elStripAbs) this.elStripAbs.textContent = Math.round(phys.abs || 0);
     if (this.elStripBb) this.elStripBb.textContent = `${((phys.brakeBias || 0.58) * 100).toFixed(1)}%`;
     if (this.elStripDrs) {
+      const drsAvailable = phys.drsAvailable;
       const drsOn = phys.drs || phys.drsEnabled;
-      this.elStripDrs.textContent = drsOn ? 'ON' : 'OFF';
-      this.elStripDrs.style.color = drsOn ? '#00ff88' : 'var(--text-dim)';
+      const batteryVal = (phys.kersCharge !== undefined && phys.kersCharge !== null) ? Math.round(phys.kersCharge) : 100;
+
+      // Tasarımı bozmadan OFF yerine batarya doluluk oranını göster
+      this.elStripDrs.textContent = `${batteryVal}%`;
+
+      // DRS kullanılabilecek yerlerde yeşil, kullanılamayacak yerlerde kırmızı
+      if (drsAvailable || drsOn) {
+        this.elStripDrs.style.color = '#00ff88';
+        if (drsOn) {
+          this.elStripDrs.style.textShadow = '0 0 10px #00ff88, 0 0 20px #00ff88';
+        } else {
+          this.elStripDrs.style.textShadow = '0 0 6px rgba(0, 255, 136, 0.45)';
+        }
+      } else {
+        this.elStripDrs.style.color = '#ff3344';
+        this.elStripDrs.style.textShadow = '0 0 6px rgba(255, 51, 68, 0.45)';
+      }
     }
 
     // 5. Speed & Gear

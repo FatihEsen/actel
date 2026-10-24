@@ -1174,44 +1174,99 @@ body {
   font-weight: 600;
 }
 
-/* ==================== RESPONSIVE BREAKPOINTS ==================== */
-@media (max-width: 900px) {
+/* ==================== COLLISION & IMPACT VISUALS ==================== */
+@keyframes collisionFlash {
+  0% { transform: scale(1); filter: brightness(1); }
+  20% { transform: scale(1.02) translate(-3px, 2px); filter: brightness(1.7) drop-shadow(0 0 25px rgba(255, 0, 68, 0.9)); box-shadow: inset 0 0 60px rgba(255, 0, 68, 0.7); }
+  40% { transform: scale(0.99) translate(3px, -2px); }
+  60% { transform: scale(1.01) translate(-2px, -1px); }
+  80% { transform: scale(1) translate(1px, 1px); filter: brightness(1.2); }
+  100% { transform: scale(1) translate(0, 0); filter: brightness(1); box-shadow: none; }
+}
+
+.collision-shake {
+  animation: collisionFlash 0.45s ease-out;
+}
+
+/* ==================== RESPONSIVE BREAKPOINTS (MATCH MOBILE 3-COL COCKPIT) ==================== */
+@media (max-width: 1024px) {
+  .dash-grid {
+    grid-template-columns: 1fr 1.25fr 1fr;
+    gap: 8px;
+  }
+
+  .dash-card {
+    padding: 10px;
+  }
+
+  .speed-box-group .speed-num {
+    font-size: 4rem;
+  }
+
+  .gear-display-box {
+    width: 95px;
+    height: 80px;
+  }
+
+  .gear-display-box .gear-num {
+    font-size: 3.8rem;
+  }
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .top-bar {
+    padding: 4px 10px;
+  }
+
+  .brand-sub {
+    display: none;
+  }
+
+  .dash-grid {
+    grid-template-columns: 1fr 1.2fr 1fr;
+    gap: 6px;
+  }
+
+  .dash-card {
+    padding: 6px;
+  }
+
+  .speed-box-group .speed-num {
+    font-size: 3.2rem;
+  }
+
+  .gear-display-box {
+    width: 82px;
+    height: 70px;
+  }
+
+  .gear-display-box .gear-num {
+    font-size: 3.2rem;
+  }
+
+  .compact-tyre-cell {
+    padding: 4px;
+  }
+}
+
+@media (max-width: 600px) and (orientation: portrait) {
   .dash-grid {
     grid-template-columns: 1fr;
+    gap: 10px;
   }
 
-  .tyre-car-diagram {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
-  }
-
-  .center-vehicle-matrix {
-    grid-column: 1 / span 2;
-    grid-row: 3;
+  .top-bar {
+    padding: 6px 10px;
   }
 
   .session-info-strip {
     display: none;
   }
-}
-
-@media (max-width: 600px) {
-  .top-bar {
-    padding: 6px 10px;
-  }
-
-  .gear-num {
-    font-size: 5.5rem;
-  }
-
-  .speed-num {
-    font-size: 2.8rem;
-  }
 
   .nav-tab {
-    min-width: 90px;
-    padding: 8px 6px;
-    font-size: 0.75rem;
+    min-width: 75px;
+    padding: 6px 4px;
+    font-size: 0.72rem;
   }
 
   .tab-icon {
@@ -1350,32 +1405,45 @@ body {
 }
 
 .gear-display-box {
-  width: 104px;
-  height: 86px;
+  width: 110px;
+  height: 90px;
   border: 2px solid var(--accent-cyan);
-  border-radius: 12px;
-  background: #070a10;
+  border-radius: 14px;
+  background: #060910;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   margin-top: 8px;
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.2), inset 0 0 15px rgba(0, 240, 255, 0.08);
+  position: relative;
+  overflow: hidden;
 }
 
-.gear-box-label {
-  font-size: 0.7rem;
-  font-weight: 800;
-  color: var(--text-dim);
-  letter-spacing: 1px;
+.gear-display-box::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.3) 0px,
+    rgba(0, 0, 0, 0.3) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  pointer-events: none;
+  opacity: 0.3;
 }
 
 .gear-display-box .gear-num {
-  font-family: var(--font-display);
-  font-size: 3.4rem;
+  font-family: 'Share Tech Mono', 'Orbitron', monospace;
+  font-size: 4.4rem;
   font-weight: 900;
   line-height: 1;
   color: var(--accent-cyan);
+  text-shadow: 0 0 15px currentColor;
+  letter-spacing: -2px;
+  z-index: 1;
+  transform: translateY(-1px);
 }
 
 /* Right Upper Card: Pedals + G-Force */

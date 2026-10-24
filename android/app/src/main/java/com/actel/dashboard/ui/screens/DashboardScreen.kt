@@ -33,6 +33,7 @@ import com.actel.dashboard.ui.theme.BgCard
 import com.actel.dashboard.ui.theme.BorderDark
 import com.actel.dashboard.ui.theme.NeonCyan
 import com.actel.dashboard.ui.theme.NeonGreen
+import com.actel.dashboard.ui.theme.NeonRed
 import com.actel.dashboard.ui.theme.NeonYellow
 import com.actel.dashboard.ui.theme.TextDim
 import com.actel.dashboard.ui.theme.TextPrimary
@@ -169,10 +170,13 @@ fun DashboardScreen(
                         label = "BB",
                         value = "${String.format("%.1f", (physics?.brakeBias ?: 0.58f) * 100)}%"
                     )
+                    val drsAvail = physics?.drsAvailable == true || physics?.drs == true
+                    val drsColor = if (drsAvail) NeonGreen else NeonRed
+                    val kersPct = (physics?.kersCharge ?: 100f).toInt()
                     SetupItem(
                         label = "DRS",
-                        value = if (physics?.drs == true) "ON" else "OFF",
-                        color = if (physics?.drs == true) NeonGreen else TextDim
+                        value = "${kersPct}%",
+                        color = drsColor
                     )
                 }
             }

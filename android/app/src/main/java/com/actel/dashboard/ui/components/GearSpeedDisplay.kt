@@ -125,7 +125,7 @@ fun GearSpeedDisplay(
             )
         }
 
-        // ==================== 3. EN ALT: VİTES (GEAR) KUTUSU ====================
+        // ==================== 3. EN ALT: DİJİTAL VİTES KUTUSU ====================
         Box(
             modifier = Modifier
                 .width(112.dp)
@@ -135,27 +135,14 @@ fun GearSpeedDisplay(
                 .border(2.5.dp, gearColor.copy(alpha = 0.9f), RoundedCornerShape(14.dp)),
             contentAlignment = Alignment.Center
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "VİTES",
-                    color = TextSecondary,
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Monospace,
-                    letterSpacing = 1.sp
-                )
-                Text(
-                    text = displayGear,
-                    color = gearColor,
-                    fontSize = 50.sp,
-                    fontWeight = FontWeight.Black,
-                    fontFamily = FontFamily.Monospace,
-                    lineHeight = 52.sp
-                )
-            }
+            Text(
+                text = displayGear,
+                color = gearColor,
+                fontSize = 58.sp,
+                fontWeight = FontWeight.Black,
+                fontFamily = FontFamily.Monospace,
+                lineHeight = 60.sp
+            )
         }
     }
 }

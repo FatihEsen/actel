@@ -46,6 +46,7 @@ data class PhysicsData(
     val kersCharge: Float = 0f,
     val finalFF: Float = 0f,
     val surfaceRumble: Float = 0f,
+    val collision: Boolean = false,
     val numberOfTyresOut: Int = 0
 )
 

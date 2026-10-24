@@ -283,6 +283,37 @@ class App {
 
     this.updateModeUI(data.source);
 
+    // Çarpışma / Hasar Titreşimi ve Görsel Efekt
+    if (data.physics && data.physics.collision) {
+      if (navigator.vibrate) {
+        try {
+          navigator.vibrate([160, 50, 240, 50, 360]); // Güçlü darbe titreşim ritmi
+        } catch (_) {}
+      }
+
+      // Bağlı gamepad varsa titreşim motorunu çalıştır
+      if (typeof navigator.getGamepads === 'function') {
+        try {
+          const gamepads = navigator.getGamepads();
+          for (const gp of gamepads) {
+            if (gp && gp.vibrationActuator) {
+              gp.vibrationActuator.playEffect('dual-rumble', {
+                startDelay: 0,
+                duration: 400,
+                weakMagnitude: 1.0,
+                strongMagnitude: 1.0
+              }).catch(() => {});
+            }
+          }
+        } catch (_) {}
+      }
+
+      // Görsel sarsıntı / kırmızı parlama efekti
+      document.body.classList.remove('collision-shake');
+      void document.body.offsetWidth;
+      document.body.classList.add('collision-shake');
+    }
+
     // Update child components
     if (window.dashboardController) {
       window.dashboardController.update(data);

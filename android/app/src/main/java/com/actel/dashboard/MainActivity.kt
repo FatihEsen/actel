@@ -38,7 +38,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -212,6 +215,16 @@ fun MainApp(
         }
     }
 
+    val coroutineScope = rememberCoroutineScope()
+
+    // Çarpışmada titreşim uyarısı
+    val isCollision = telemetry?.physics?.collision == true
+    LaunchedEffect(isCollision) {
+        if (isCollision && hapticEnabled) {
+            onHapticFeedback(260L, 1.0f)
+        }
+    }
+
     // Bordür, kasis ve bozuk zemin (çimen/çakıl) titreşimi
     val surfaceRumble = telemetry?.physics?.surfaceRumble ?: 0f
     val speedKmh = telemetry?.physics?.speedKmh ?: 0
@@ -255,6 +268,14 @@ fun MainApp(
                     onAction = { action ->
                         if (hapticEnabled) onHapticFeedback(45L, hapticIntensity)
                         viewModel.triggerAction(action)
+
+                        // Start veya yeniden başlat tuşuna basıldıktan 1sn sonra gösterge sayfası açılsın
+                        if (action == "starter" || action == "engine_start" || action == "restart_session") {
+                            coroutineScope.launch {
+                                kotlinx.coroutines.delay(1000L)
+                                currentTab = NavTab.DASHBOARD
+                            }
+                        }
                     }
                 )
                 NavTab.SETTINGS -> SettingsScreen(
