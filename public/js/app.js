@@ -26,6 +26,9 @@ class App {
     this.cfgModeSelect = document.getElementById('cfgModeSelect');
     this.cfgPressureUnit = document.getElementById('cfgPressureUnit');
     this.bindingsList = document.getElementById('bindingsList');
+    this.htSpeed = document.getElementById('htSpeed');
+    this.htRpm = document.getElementById('htRpm');
+    this.htGear = document.getElementById('htGear');
 
     this.initTabs();
     this.initModals();
@@ -282,6 +285,17 @@ class App {
     }
 
     this.updateModeUI(data.source);
+
+    // Top Header Quick Telemetry
+    if (data.physics) {
+      if (this.htSpeed) this.htSpeed.textContent = `${data.physics.speedKmh || 0} KM/H`;
+      if (this.htRpm) this.htRpm.textContent = `${data.physics.rpms || 0} RPM`;
+      if (this.htGear) {
+        const g = data.physics.gearStr || 'N';
+        this.htGear.textContent = g;
+        this.htGear.style.color = (g === 'R' ? '#ff3b30' : (g === 'N' ? '#ffd600' : '#00e676'));
+      }
+    }
 
     // Çarpışma / Hasar Titreşimi ve Görsel Efekt
     if (data.physics && data.physics.collision) {

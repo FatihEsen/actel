@@ -136,6 +136,28 @@ body {
   box-shadow: 0 0 8px currentColor;
 }
 
+.header-telemetry {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.ht-sep {
+  color: var(--text-dim);
+}
+
+.ht-val {
+  font-weight: 800;
+}
+
+.ht-cyan { color: var(--accent-cyan); }
+.ht-yellow { color: var(--accent-yellow); }
+.ht-green { color: var(--accent-green); }
+
 .session-info-strip {
   display: flex;
   align-items: center;
@@ -991,6 +1013,40 @@ body {
   0%, 100% { border-color: #38bdf8; box-shadow: 0 0 8px rgba(56, 189, 248, 0.2); }
   50% { border-color: #00f0ff; box-shadow: 0 0 16px rgba(0, 240, 255, 0.4); }
 }
+
+.bb-grid-5 {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bb-grid-5 .bb-row-pair {
+  gap: 6px;
+}
+
+.bb-grid-5 .bb-btn {
+  padding: 11px 4px;
+}
+
+.bb-grid-5 .bb-title {
+  font-size: 0.84rem;
+  letter-spacing: 0.2px;
+}
+
+.bb-mint { border-color: rgba(52, 211, 153, 0.4); color: #34d399; }
+.bb-mint:hover { background: rgba(52, 211, 153, 0.12); box-shadow: 0 0 12px rgba(52, 211, 153, 0.25); }
+
+.bb-magenta { border-color: rgba(232, 121, 249, 0.4); color: #e879f9; }
+.bb-magenta:hover { background: rgba(232, 121, 249, 0.12); box-shadow: 0 0 12px rgba(232, 121, 249, 0.25); }
+
+.bb-coral { border-color: rgba(251, 113, 133, 0.4); color: #fb7185; }
+.bb-coral:hover { background: rgba(251, 113, 133, 0.12); box-shadow: 0 0 12px rgba(251, 113, 133, 0.25); }
+
+.bb-crimson { border-color: rgba(244, 63, 94, 0.4); color: #f43f5e; }
+.bb-crimson:hover { background: rgba(244, 63, 94, 0.12); box-shadow: 0 0 12px rgba(244, 63, 94, 0.25); }
+
+.bb-gray { border-color: rgba(148, 163, 184, 0.4); color: #94a3b8; }
+.bb-gray:hover { background: rgba(148, 163, 184, 0.12); }
 
 /* ==================== 5. SETTINGS VIEW ==================== */
 .settings-container {

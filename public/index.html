@@ -27,6 +27,14 @@
         <span class="status-dot"></span>
         <span class="status-text">BAĞLANILIYOR</span>
       </div>
+      <div id="headerQuickTelemetry" class="header-telemetry">
+        <span class="ht-sep">|</span>
+        <span id="htSpeed" class="ht-val ht-cyan">0 KM/H</span>
+        <span class="ht-sep">|</span>
+        <span id="htRpm" class="ht-val ht-yellow">0 RPM</span>
+        <span class="ht-sep">|</span>
+        <span id="htGear" class="ht-val ht-green">N</span>
+      </div>
     </div>
 
     <!-- Live Session / Car Info -->
@@ -267,145 +275,83 @@
     <section id="view-buttonbox" class="tab-view">
       <div class="buttonbox-grid">
         
-        <!-- GROUP 1: ENGINE & ELECTRONICS -->
+        <!-- GROUP 1: ENGINE & ELECTRONICS (Columns 1 & 2) -->
         <div class="bb-panel">
           <div class="panel-tag">SÜRÜŞ & ELEKTRONİK</div>
-          <div class="bb-buttons-wrap">
-            <!-- TC Controls -->
+          <div class="bb-buttons-wrap bb-grid-5">
             <div class="bb-row-pair">
-              <button class="bb-btn bb-cyan" data-action="tc_up">
-                <span class="bb-title">TC +</span>
-                <span class="bb-sub">Çekiş Artır</span>
-              </button>
-              <button class="bb-btn bb-cyan" data-action="tc_down">
-                <span class="bb-title">TC -</span>
-                <span class="bb-sub">Çekiş Azalt</span>
-              </button>
+              <button class="bb-btn bb-cyan" data-action="tc_up"><span class="bb-title">🎛️ TC +</span></button>
+              <button class="bb-btn bb-cyan" data-action="tc_down"><span class="bb-title">🎛️ TC -</span></button>
             </div>
-
-            <!-- ABS Controls -->
             <div class="bb-row-pair">
-              <button class="bb-btn bb-blue" data-action="abs_up">
-                <span class="bb-title">ABS +</span>
-                <span class="bb-sub">ABS Artır</span>
-              </button>
-              <button class="bb-btn bb-blue" data-action="abs_down">
-                <span class="bb-title">ABS -</span>
-                <span class="bb-sub">ABS Azalt</span>
-              </button>
+              <button class="bb-btn bb-yellow" data-action="abs_up"><span class="bb-title">🛡️ ABS +</span></button>
+              <button class="bb-btn bb-yellow" data-action="abs_down"><span class="bb-title">🛡️ ABS -</span></button>
             </div>
-
-            <!-- Brake Bias -->
             <div class="bb-row-pair">
-              <button class="bb-btn bb-orange" data-action="bb_up">
-                <span class="bb-title">BIAS FWD</span>
-                <span class="bb-sub">Öne Aktar</span>
-              </button>
-              <button class="bb-btn bb-orange" data-action="bb_down">
-                <span class="bb-title">BIAS REAR</span>
-                <span class="bb-sub">Arkaya Aktar</span>
-              </button>
+              <button class="bb-btn bb-green" data-action="bb_up"><span class="bb-title">⚖️ BIAS +</span></button>
+              <button class="bb-btn bb-green" data-action="bb_down"><span class="bb-title">⚖️ BIAS -</span></button>
             </div>
-
-            <!-- DRS / KERS -->
             <div class="bb-row-pair">
-              <button class="bb-btn bb-green highlight-btn" data-action="drs">
-                <span class="bb-icon">⚡</span>
-                <span class="bb-title">DRS AÇ/KAPA</span>
-              </button>
-              <button class="bb-btn bb-yellow" data-action="pit_limiter">
-                <span class="bb-icon">🛑</span>
-                <span class="bb-title">PIT LIMITER</span>
-              </button>
+              <button class="bb-btn bb-red" data-action="turbo_up"><span class="bb-title">🚀 TURBO +</span></button>
+              <button class="bb-btn bb-red" data-action="turbo_down"><span class="bb-title">🚀 TURBO -</span></button>
+            </div>
+            <div class="bb-row-pair">
+              <button class="bb-btn bb-teal" data-action="eb_up"><span class="bb-title">⚙️ EB +</span></button>
+              <button class="bb-btn bb-teal" data-action="eb_down"><span class="bb-title">⚙️ EB -</span></button>
             </div>
           </div>
         </div>
 
-        <!-- GROUP 2: LIGHTS & VISIBILITY -->
+        <!-- GROUP 2: LIGHTS, SIGNALS & VIEWS (Columns 3 & 4) -->
         <div class="bb-panel">
-          <div class="panel-tag">IŞIKLAR & GÖRÜŞ</div>
-          <div class="bb-buttons-wrap">
-            <button class="bb-btn bb-glow" data-action="flasher">
-              <span class="bb-icon">💡</span>
-              <span class="bb-title">FAR FLAŞI</span>
-              <span class="bb-sub">Selektör Yap</span>
-            </button>
-
-            <button class="bb-btn" data-action="headlights">
-              <span class="bb-icon">🔆</span>
-              <span class="bb-title">FARLAR</span>
-              <span class="bb-sub">Aç / Kapat</span>
-            </button>
-
-            <button class="bb-btn" data-action="wipers">
-              <span class="bb-icon">🌧️</span>
-              <span class="bb-title">SİLECEKLER</span>
-              <span class="bb-sub">Kademe Değiştir</span>
-            </button>
-
-            <button class="bb-btn" data-action="horn">
-              <span class="bb-icon">📢</span>
-              <span class="bb-title">KORNA</span>
-            </button>
-
-            <!-- Sinyal & Hazard -->
-            <div class="bb-row-3">
-              <button class="bb-btn bb-amber" data-action="turn_left">
-                <span class="bb-icon">◀</span>
-                <span class="bb-title">SOL SİNYAL</span>
-                <span class="bb-sub">Alt + ←</span>
-              </button>
-              <button class="bb-btn bb-red" data-action="hazard">
-                <span class="bb-icon">⚠️</span>
-                <span class="bb-title">DÖRTLÜ</span>
-                <span class="bb-sub">Hazard</span>
-              </button>
-              <button class="bb-btn bb-amber" data-action="turn_right">
-                <span class="bb-icon">▶</span>
-                <span class="bb-title">SAĞ SİNYAL</span>
-                <span class="bb-sub">Alt + →</span>
-              </button>
+          <div class="panel-tag">AYDINLATMA, SİNYAL & BAKIŞ</div>
+          <div class="bb-buttons-wrap bb-grid-5">
+            <div class="bb-row-pair">
+              <button class="bb-btn bb-blue" data-action="headlights"><span class="bb-title">💡 FARLAR</span></button>
+              <button class="bb-btn bb-yellow" data-action="flasher"><span class="bb-title">🔆 SELEKTÖR</span></button>
             </div>
-
-            <div class="bb-row-3">
-              <button class="bb-btn mini-btn" data-action="look_left">SOLA BAK</button>
-              <button class="bb-btn mini-btn" data-action="look_back">GERİYE BAK</button>
-              <button class="bb-btn mini-btn" data-action="look_right">SAĞA BAK</button>
+            <div class="bb-row-pair">
+              <button class="bb-btn bb-purple" data-action="extra_a"><span class="bb-title">🛋️ İÇ IŞIK</span></button>
+              <button class="bb-btn bb-magenta" data-action="extra_b"><span class="bb-title">🌫️ SİS FARI</span></button>
+            </div>
+            <div class="bb-row-pair">
+              <button class="bb-btn bb-amber" data-action="turn_left"><span class="bb-title">◀️ SOL SİNYAL</span></button>
+              <button class="bb-btn bb-amber" data-action="turn_right"><span class="bb-title">SAĞ SİNYAL ▶️</span></button>
+            </div>
+            <div class="bb-row-pair">
+              <button class="bb-btn bb-red" data-action="hazard"><span class="bb-title">⚠️ DÖRTLÜ</span></button>
+              <button class="bb-btn bb-gray" data-action="look_back"><span class="bb-title">🔼 ARKA</span></button>
+            </div>
+            <div class="bb-row-pair">
+              <button class="bb-btn bb-gray" data-action="look_left"><span class="bb-title">◀️ SOLA</span></button>
+              <button class="bb-btn bb-gray" data-action="look_right"><span class="bb-title">SAĞA ▶️</span></button>
             </div>
           </div>
         </div>
 
-        <!-- GROUP 3: SESSION & PITBOX -->
+        <!-- GROUP 3: SESSION, KERS & START (Columns 5 & 6) -->
         <div class="bb-panel">
-          <div class="panel-tag">OTURUM & PİT KONTROL</div>
-          <div class="bb-buttons-wrap">
-            <button class="bb-btn bb-purple" data-action="teleport_pits">
-              <span class="bb-icon">🔧</span>
-              <span class="bb-title">PİTE DÖN</span>
-              <span class="bb-sub">Teleport to Pit</span>
-            </button>
-
-            <button class="bb-btn bb-gray" data-action="camera_change">
-              <span class="bb-icon">🎥</span>
-              <span class="bb-title">KAMERA</span>
-              <span class="bb-sub">Görünüm Değiştir</span>
-            </button>
-
-            <button class="bb-btn bb-green highlight-btn" data-action="starter">
-              <span class="bb-icon">⚡</span>
-              <span class="bb-title">START</span>
-              <span class="bb-sub">Yarışı Başlat / Devam Et</span>
-            </button>
-
+          <div class="panel-tag">SİLECEK, SEANS & YARIŞ</div>
+          <div class="bb-buttons-wrap bb-grid-5">
             <div class="bb-row-pair">
-              <button class="bb-btn bb-amber" data-action="pause">
-                <span class="bb-icon">⏸️</span>
-                <span class="bb-title">DURAKLAT</span>
-              </button>
-              <button class="bb-btn bb-red" data-action="restart_session">
-                <span class="bb-icon">🔄</span>
-                <span class="bb-title">YENİDEN BAŞLAT</span>
-              </button>
+              <button class="bb-btn bb-mint" data-action="wipers"><span class="bb-title">🌧️ SİLECEK</span></button>
+              <button class="bb-btn bb-orange" data-action="pit_limiter"><span class="bb-title">🛑 PIT LIM</span></button>
+            </div>
+            <div class="bb-row-pair">
+              <button class="bb-btn bb-amber" data-action="horn"><span class="bb-title">📢 KORNA</span></button>
+              <button class="bb-btn bb-red" data-action="teleport_pits"><span class="bb-title">🔧 PİTE DÖN</span></button>
+            </div>
+            <div class="bb-row-pair">
+              <button class="bb-btn bb-blue" data-action="camera_change"><span class="bb-title">🎥 KAMERA</span></button>
+              <button class="bb-btn bb-coral" data-action="restart_session"><span class="bb-title">🔄 YENİDEN</span></button>
+            </div>
+            <div class="bb-row-pair">
+              <button class="bb-btn bb-green highlight-btn" data-action="kers" data-hold="true"><span class="bb-title">⚡ KERS</span></button>
+              <button class="bb-btn bb-crimson" data-action="pause"><span class="bb-title">⏸️ DURAKLAT</span></button>
+            </div>
+            <div class="bb-row-pair">
+              <button class="bb-btn bb-cyan highlight-btn" data-action="drs" data-hold="true"><span class="bb-title">💨 DRS</span></button>
+              <button class="bb-btn bb-green highlight-btn" data-action="starter"><span class="bb-title">🏁 START</span></button>
             </div>
           </div>
         </div>

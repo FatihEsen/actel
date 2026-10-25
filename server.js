@@ -62,13 +62,13 @@ app.post('/api/mode', (req, res) => {
 });
 
 app.post('/api/control', async (req, res) => {
-  const { action, key, keys } = req.body;
+  const { action, key, keys, state } = req.body;
   console.log('[HTTP] /api/control received:', req.body);
 
   try {
     let result;
     if (action) {
-      result = await acController.triggerAction(action);
+      result = await acController.triggerAction(action, state);
     } else if (key) {
       result = { success: await acController.tapKey(key), key };
     } else if (keys && Array.isArray(keys)) {
@@ -106,8 +106,8 @@ wss.on('connection', (ws, req) => {
       const text = message.toString();
       const data = JSON.parse(text);
       if (data.type === 'control') {
-        console.log(`[WS] Control action received from ${clientIp}:`, data.action);
-        const result = await acController.triggerAction(data.action);
+        console.log(`[WS] Control action received from ${clientIp}:`, data.action, data.state || 'tap');
+        const result = await acController.triggerAction(data.action, data.state);
         ws.send(JSON.stringify({ type: 'control_ack', ...result }));
       } else if (data.type === 'set_mode') {
         if (['AUTO', 'LIVE_ONLY', 'DEMO_ONLY'].includes(data.mode)) {

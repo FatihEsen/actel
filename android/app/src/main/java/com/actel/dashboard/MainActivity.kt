@@ -265,12 +265,12 @@ fun MainApp(
                 NavTab.DASHBOARD -> DashboardScreen(telemetry = telemetry)
                 NavTab.BUTTON_BOX -> ButtonBoxScreen(
                     telemetry = telemetry,
-                    onAction = { action ->
-                        if (hapticEnabled) onHapticFeedback(45L, hapticIntensity)
-                        viewModel.triggerAction(action)
+                    onAction = { action, state ->
+                        if (hapticEnabled && state != "up") onHapticFeedback(45L, hapticIntensity)
+                        viewModel.triggerAction(action, state)
 
                         // Start veya yeniden başlat tuşuna basıldıktan 1sn sonra gösterge sayfası açılsın
-                        if (action == "starter" || action == "engine_start" || action == "restart_session") {
+                        if ((action == "starter" || action == "engine_start" || action == "restart_session") && state != "up") {
                             coroutineScope.launch {
                                 kotlinx.coroutines.delay(1000L)
                                 currentTab = NavTab.DASHBOARD
@@ -328,7 +328,7 @@ fun TopAppBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Brand & Connection Badge
+        // Brand & Connection Badge & Quick Telemetry
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -342,6 +342,55 @@ fun TopAppBar(
             )
 
             ConnectionBadge(connectionState = connectionState)
+
+            val speed = telemetry?.physics?.speedKmh ?: 0
+            val rpm = telemetry?.physics?.rpms ?: 0
+            val gear = telemetry?.physics?.gearStr ?: "N"
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = "|",
+                    color = TextDim,
+                    fontSize = 10.sp,
+                    fontFamily = FontFamily.Monospace
+                )
+                Text(
+                    text = "$speed KM/H",
+                    color = NeonCyan,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Monospace
+                )
+                Text(
+                    text = "|",
+                    color = TextDim,
+                    fontSize = 10.sp,
+                    fontFamily = FontFamily.Monospace
+                )
+                Text(
+                    text = "$rpm RPM",
+                    color = NeonYellow,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Monospace
+                )
+                Text(
+                    text = "|",
+                    color = TextDim,
+                    fontSize = 10.sp,
+                    fontFamily = FontFamily.Monospace
+                )
+                Text(
+                    text = gear,
+                    color = if (gear == "R") NeonRed else if (gear == "N") NeonYellow else NeonGreen,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Monospace
+                )
+            }
         }
 
         // Navigation Tabs

@@ -5,7 +5,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ControlCommand(
     val type: String = "control",
-    val action: String
+    val action: String,
+    val state: String? = null
 )
 
 @Serializable

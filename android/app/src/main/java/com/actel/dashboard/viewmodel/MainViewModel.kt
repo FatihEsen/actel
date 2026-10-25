@@ -75,8 +75,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         wsClient.disconnect()
     }
 
-    fun triggerAction(action: String) {
-        wsClient.sendControlAction(action)
+    fun triggerAction(action: String, state: String? = null) {
+        wsClient.sendControlAction(action, state)
     }
 
     fun setMode(mode: String) {

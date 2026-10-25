@@ -106,11 +106,11 @@ class TelemetryWebSocketClient(
         }
     }
 
-    fun sendControlAction(action: String) {
-        val cmd = ControlCommand(type = "control", action = action)
+    fun sendControlAction(action: String, state: String? = null) {
+        val cmd = ControlCommand(type = "control", action = action, state = state)
         val text = json.encodeToString(cmd)
         val wsSent = webSocket?.send(text) ?: false
-        Log.d("ACTelWS", "Action '$action' sent via WS: $wsSent")
+        Log.d("ACTelWS", "Action '$action' (state: $state) sent via WS: $wsSent")
 
         // Dual path: Also send via REST API for maximum reliability
         val host = currentHost

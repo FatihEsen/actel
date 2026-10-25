@@ -1,4 +1,5 @@
 // Virtual Button Box Controller & Tactile Audio/Haptics
+// Supports 5x6 grid, momentary hold buttons (KERS, DRS), and instant haptic/sound response
 
 class ButtonBoxController {
   constructor() {
@@ -52,9 +53,11 @@ class ButtonBoxController {
     }
   }
 
-  triggerHaptic() {
+  triggerHaptic(duration = 35) {
     if (navigator.vibrate) {
-      navigator.vibrate(35); // 35ms crisp vibration
+      try {
+        navigator.vibrate(duration);
+      } catch (_) {}
     }
   }
 
@@ -63,48 +66,79 @@ class ButtonBoxController {
       const action = btn.dataset.action;
       if (!action) return;
 
-      const trigger = (e) => {
-        if (e) e.preventDefault();
-        btn.classList.add('pressed');
-        this.playClickSound();
-        this.triggerHaptic();
+      const isHold = btn.dataset.hold === 'true';
 
-        this.sendAction(action);
+      if (isHold) {
+        let isDown = false;
 
-        // Start veya yeniden başlat tuşuna bastıktan 1sn sonra gösterge sayfası açılsın
-        if (action === 'starter' || action === 'engine_start' || action === 'restart_session') {
-          setTimeout(() => {
-            const dashTab = document.querySelector('.nav-tab[data-tab="dashboard"]');
-            if (dashTab) {
-              dashTab.click();
-            }
-          }, 1000);
-        }
+        const onDown = (e) => {
+          if (e) e.preventDefault();
+          if (isDown) return;
+          isDown = true;
+          btn.classList.add('pressed');
+          this.playClickSound();
+          this.triggerHaptic(45);
+          this.sendAction(action, 'down');
+        };
 
-        setTimeout(() => {
+        const onUp = (e) => {
+          if (e) e.preventDefault();
+          if (!isDown) return;
+          isDown = false;
           btn.classList.remove('pressed');
-        }, 160);
-      };
+          this.sendAction(action, 'up');
+        };
 
-      btn.addEventListener('click', trigger);
-      btn.addEventListener('touchstart', trigger, { passive: false });
+        btn.addEventListener('pointerdown', onDown);
+        btn.addEventListener('pointerup', onUp);
+        btn.addEventListener('pointercancel', onUp);
+        btn.addEventListener('mouseleave', onUp);
+      } else {
+        const trigger = (e) => {
+          if (e) e.preventDefault();
+          btn.classList.add('pressed');
+          this.playClickSound();
+          this.triggerHaptic(35);
+
+          this.sendAction(action, null);
+
+          // Start veya yeniden başlat tuşuna bastıktan 1sn sonra gösterge sayfası açılsın
+          if (action === 'starter' || action === 'engine_start' || action === 'restart_session') {
+            setTimeout(() => {
+              const dashTab = document.querySelector('.nav-tab[data-tab="dashboard"]');
+              if (dashTab) {
+                dashTab.click();
+              }
+            }, 1000);
+          }
+
+          setTimeout(() => {
+            btn.classList.remove('pressed');
+          }, 160);
+        };
+
+        btn.addEventListener('click', trigger);
+      }
     });
   }
 
-  sendAction(action) {
+  sendAction(action, state = null) {
+    const payload = {
+      type: 'control',
+      action: action
+    };
+    if (state) payload.state = state;
+
     // Send via WebSocket if open
     if (window.app && window.app.ws && window.app.ws.readyState === WebSocket.OPEN) {
-      window.app.ws.send(JSON.stringify({
-        type: 'control',
-        action: action
-      }));
+      window.app.ws.send(JSON.stringify(payload));
     }
 
     // Also send via REST API for maximum reliability
     fetch('/api/control', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action })
+      body: JSON.stringify(payload)
     }).catch(err => console.error('Control error:', err));
   }
 }
