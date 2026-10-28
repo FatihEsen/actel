@@ -42,6 +42,7 @@ import com.actel.dashboard.ui.theme.TextSecondary
 @Composable
 fun DashboardScreen(
     telemetry: TelemetryData?,
+    onAction: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val physics = telemetry?.physics
@@ -87,7 +88,7 @@ fun DashboardScreen(
                 .weight(1f),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            // ==================== SOL SÜTUN: ARAÇ/PİST + ZAMANLAMA + AYARLAR ====================
+            // ==================== SOL SÜTUN: ARAÇ/PİST + ZAMANLAMA + GAPS ====================
             Column(
                 modifier = Modifier
                     .weight(1.05f),
@@ -154,36 +155,57 @@ fun DashboardScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                // 3. Setup Values (TC, ABS, Bias, DRS)
+                // 3. Gap Ahead / Ghost & Gap Behind Kartı
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(10.dp))
                         .background(BgCard)
                         .border(1.dp, BorderDark, RoundedCornerShape(10.dp))
-                        .padding(8.dp),
-                    horizontalArrangement = Arrangement.SpaceAround
+                        .padding(horizontal = 10.dp, vertical = 7.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    SetupItem(label = "TC", value = "${(physics?.tc ?: 0f).toInt()}")
-                    SetupItem(label = "ABS", value = "${(physics?.abs ?: 0f).toInt()}")
-                    SetupItem(
-                        label = "BB",
-                        value = "${String.format("%.1f", (physics?.brakeBias ?: 0.58f) * 100)}%"
-                    )
-                    val drsAvail = physics?.drsAvailable == true || physics?.drs == true
-                    val drsColor = if (drsAvail) NeonGreen else NeonRed
-                    val kersPct = (physics?.kersCharge ?: 100f).toInt()
-                    SetupItem(
-                        label = "DRS",
-                        value = "${kersPct}%",
-                        color = drsColor
-                    )
+                    Column {
+                        Text(
+                            text = "ÖNDEKİ / GHOST",
+                            color = TextDim,
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily.Monospace
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = "+1.24s",
+                            color = NeonRed,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Black,
+                            fontFamily = FontFamily.Monospace
+                        )
+                    }
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text(
+                            text = "ARKADAKİ ARAÇ",
+                            color = TextDim,
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily.Monospace
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = "-0.85s",
+                            color = NeonGreen,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Black,
+                            fontFamily = FontFamily.Monospace
+                        )
+                    }
                 }
             }
 
-            // ==================== ORTA SÜTUN: HIZ, RPM, VİTES ====================
+            // ==================== ORTA SÜTUN: HIZ, RPM, VİTES VE KANAT GÖSTERGELERİ ====================
             Column(
-                modifier = Modifier.weight(1.25f)
+                modifier = Modifier.weight(1.35f)
             ) {
                 GearSpeedDisplay(
                     gear = gear,
@@ -191,6 +213,14 @@ fun DashboardScreen(
                     speedKmh = speedKmh,
                     currentRpm = currentRpm,
                     maxRpm = maxRpm,
+                    indicators = telemetry?.indicators,
+                    absActive = physics?.absActive == true,
+                    tcActive = physics?.tcActive == true,
+                    drsAvailable = physics?.drsAvailable == true || physics?.drs == true,
+                    drsActive = physics?.drs == true,
+                    pitActive = physics?.pitLimiterOn == true || graphic?.isInPitLane == true || telemetry?.indicators?.pitLimiter == true,
+                    brakeBias = physics?.brakeBias ?: 0.58f,
+                    onAction = onAction,
                     modifier = Modifier.fillMaxSize()
                 )
             }

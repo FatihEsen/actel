@@ -60,29 +60,37 @@ VK_MAP = {
     'F7': 0x76, 'F8': 0x77, 'F9': 0x78, 'F10': 0x79, 'F11': 0x7A, 'F12': 0x7B,
     '0': 0x30, '1': 0x31, '2': 0x32, '3': 0x33, '4': 0x34,
     '5': 0x35, '6': 0x36, '7': 0x37, '8': 0x38, '9': 0x39,
+    'NUMPAD0': 0x60, 'NUMPAD1': 0x61, 'NUMPAD2': 0x62, 'NUMPAD3': 0x63, 'NUMPAD4': 0x64,
+    'NUMPAD5': 0x65, 'NUMPAD6': 0x66, 'NUMPAD7': 0x67, 'NUMPAD8': 0x68, 'NUMPAD9': 0x69,
     'A': 0x41, 'B': 0x42, 'C': 0x43, 'D': 0x44, 'E': 0x45, 'F': 0x46,
     'G': 0x47, 'H': 0x48, 'I': 0x49, 'J': 0x4A, 'K': 0x4B, 'L': 0x4C,
     'M': 0x4D, 'N': 0x4E, 'O': 0x4F, 'P': 0x50, 'Q': 0x51, 'R': 0x52,
     'S': 0x53, 'T': 0x54, 'U': 0x55, 'V': 0x56, 'W': 0x57, 'X': 0x58,
     'Y': 0x59, 'Z': 0x5A,
-    'LEFT': 0x25, 'UP': 0x26, 'RIGHT': 0x27, 'DOWN': 0x28
+    'LEFT': 0x25, 'UP': 0x26, 'RIGHT': 0x27, 'DOWN': 0x28,
+    'PAGEUP': 0x21, 'PAGEDOWN': 0x22
 }
 
 SCAN_MAP = {
     'ESC': 0x01, 'ESCAPE': 0x01,
     '1': 0x02, '2': 0x03, '3': 0x04, '4': 0x05, '5': 0x06, '6': 0x07, '7': 0x08, '8': 0x09, '9': 0x0A, '0': 0x0B,
+    'NUMPAD0': 0x52, 'NUMPAD1': 0x4F, 'NUMPAD2': 0x50, 'NUMPAD3': 0x51, 'NUMPAD4': 0x4B,
+    'NUMPAD5': 0x4C, 'NUMPAD6': 0x4D, 'NUMPAD7': 0x47, 'NUMPAD8': 0x48, 'NUMPAD9': 0x49,
     'Q': 0x10, 'W': 0x11, 'E': 0x12, 'R': 0x13, 'T': 0x14, 'Y': 0x15, 'U': 0x16, 'I': 0x17, 'O': 0x18, 'P': 0x19,
     'A': 0x1E, 'S': 0x1F, 'D': 0x20, 'F': 0x21, 'G': 0x22, 'H': 0x23, 'J': 0x24, 'K': 0x25, 'L': 0x26,
     'Z': 0x2C, 'X': 0x2D, 'C': 0x2E, 'V': 0x2F, 'B': 0x30, 'N': 0x31, 'M': 0x32,
     'SPACE': 0x39, 'ENTER': 0x1C, 'TAB': 0x0F,
     'CTRL': 0x1D, 'SHIFT': 0x2A, 'ALT': 0x38,
     'F1': 0x3B, 'F2': 0x3C, 'F3': 0x3D, 'F4': 0x3E, 'F5': 0x3F, 'F6': 0x40,
-    'LEFT': 0x4B, 'UP': 0x48, 'RIGHT': 0x4D, 'DOWN': 0x50
+    'LEFT': 0x4B, 'UP': 0x48, 'RIGHT': 0x4D, 'DOWN': 0x50,
+    'PAGEUP': 0x49, 'PAGEDOWN': 0x51
 }
 
 ACTION_KEYS = {
     'headlights': ['L'],
-    'flasher': ['F', 'L'],
+    'flasher': ['G'],
+    'extra_a': ['ALT', 'NUMPAD7'],
+    'extra_b': ['ALT', 'NUMPAD8'],
     'wipers': ['ALT', 'W'],
     'horn': ['H'],
     'turn_left': ['ALT', 'LEFT'],
@@ -94,18 +102,23 @@ ACTION_KEYS = {
     'abs_down': ['CTRL', 'SHIFT', 'A'],
     'bb_up': ['CTRL', 'B'],
     'bb_down': ['CTRL', 'SHIFT', 'B'],
+    'turbo_up': ['CTRL', 'PAGEUP'],
+    'turbo_down': ['CTRL', 'PAGEDOWN'],
+    'eb_up': ['CTRL', 'E'],
+    'eb_down': ['CTRL', 'SHIFT', 'E'],
     'drs': ['D'],
-    'pit_limiter': ['CTRL', 'L'],
+    'kers': ['K'],
+    'pit_limiter': ['ALT', 'L'],
     'teleport_pits': ['CTRL', 'P'],
     'vr_recenter': ['CTRL', 'SPACE'],
     'restart_session': ['CTRL', 'O'],
     'pause': ['ESC'],
-    'camera_change': ['C'],
-    'starter': ['I'],
-    'engine_start': ['I'],
+    'camera_change': ['F1'],
+    'starter': ['CTRL', 'S'],
+    'engine_start': ['CTRL', 'S'],
     'look_left': ['Q'],
     'look_right': ['E'],
-    'look_back': ['SPACE']
+    'look_back': ['W']
 }
 
 hMap = None

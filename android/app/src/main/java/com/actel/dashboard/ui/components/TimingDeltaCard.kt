@@ -107,7 +107,18 @@ fun TimingDeltaCard(
                 )
             }
             Column(horizontalAlignment = Alignment.End) {
-                Text(text = "DELTA (EN İYİ)", color = TextDim, fontSize = 10.sp, fontFamily = FontFamily.Monospace)
+                val trendLabel = when {
+                    isDeltaNegative -> "▲ KAZANÇ"
+                    split == "+0.000" || split == "0.000" -> "DELTA"
+                    else -> "▼ KAYIP"
+                }
+                Text(
+                    text = trendLabel,
+                    color = deltaColor,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Monospace
+                )
                 Text(
                     text = if (split.isNotEmpty()) split else "+0.000",
                     color = deltaColor,

@@ -39,14 +39,16 @@ class App {
     this.fetchBindings();
   }
 
-  // Tab switching
+  // Tab switching (Supports nav tabs and header settings button)
   initTabs() {
-    const tabs = document.querySelectorAll('.nav-tab');
+    const tabs = document.querySelectorAll('.nav-tab, [data-tab]');
     const views = document.querySelectorAll('.tab-view');
 
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
         const target = tab.dataset.tab;
+        if (!target) return;
+
         tabs.forEach(t => t.classList.remove('active'));
         views.forEach(v => v.classList.remove('active'));
 
@@ -61,6 +63,12 @@ class App {
         }
       });
     });
+
+    const initialHash = window.location.hash.replace("#", "");
+    if (initialHash) {
+      const match = document.querySelector(`[data-tab="${initialHash}"]`);
+      if (match) match.click();
+    }
   }
 
   // Fullscreen support
@@ -128,12 +136,14 @@ class App {
       this.cfgModeSelect.value = this.mode;
     }
 
-    if (source === 'AC_LIVE' || this.mode === 'LIVE_ONLY') {
-      this.modeText.textContent = 'CANLI AC';
-      this.modeToggleBtn.className = 'action-btn mode-btn live';
-    } else {
-      this.modeText.textContent = 'DEMO MODU';
-      this.modeToggleBtn.className = 'action-btn mode-btn';
+    if (this.modeText && this.modeToggleBtn) {
+      if (source === 'AC_LIVE' || this.mode === 'LIVE_ONLY') {
+        this.modeText.textContent = 'CANLI AC';
+        this.modeToggleBtn.className = 'action-btn mode-btn live';
+      } else {
+        this.modeText.textContent = 'DEMO MODU';
+        this.modeToggleBtn.className = 'action-btn mode-btn';
+      }
     }
   }
 
@@ -268,15 +278,15 @@ class App {
 
     // Top Header info
     if (data.staticInfo) {
-      if (data.staticInfo.carModel && this.carName.textContent !== data.staticInfo.carModel) {
+      if (this.carName && data.staticInfo.carModel && this.carName.textContent !== data.staticInfo.carModel) {
         this.carName.textContent = data.staticInfo.carModel;
       }
-      if (data.staticInfo.track && this.trackName.textContent !== data.staticInfo.track) {
+      if (this.trackName && data.staticInfo.track && this.trackName.textContent !== data.staticInfo.track) {
         this.trackName.textContent = data.staticInfo.track;
       }
     }
 
-    if (data.graphic) {
+    if (data.graphic && this.sessionType) {
       const sessionMap = { 0: 'SERBEST', 1: 'ANTRENMAN', 2: 'SIRALAMA', 3: 'YARIŞ', 4: 'HOTLAP', 5: 'TIME ATTACK', 6: 'DRIFT' };
       const sName = sessionMap[data.graphic.session] || 'YARIŞ';
       if (this.sessionType.textContent !== sName) {

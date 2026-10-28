@@ -21,12 +21,38 @@ class DashboardController {
     this.elStripBb = document.getElementById('stripBb');
     this.elStripDrs = document.getElementById('stripDrs');
 
-    // Center Column
+    // Center Column - Speed & Turn Indicators
     this.elGear = document.getElementById('dashGear');
     this.elSpeed = document.getElementById('dashSpeed');
     this.elRpm = document.getElementById('dashRpm');
     this.rpmProgressBar = document.getElementById('rpmProgressBar');
     this.shiftLightsBar = document.getElementById('shiftLightsBar');
+
+    // Cockpit Interactive Indicators (Turn, Hazard, Pit, Lights, Flasher)
+    this.indTurnLeft = document.getElementById('indTurnLeft');
+    this.indTurnRight = document.getElementById('indTurnRight');
+    this.indHazard = document.getElementById('indHazard');
+    this.indPit = document.getElementById('indPit');
+    this.indLights = document.getElementById('indLights');
+    this.indFlash = document.getElementById('indFlash');
+
+    // Gear Corner Status Badges (ABS, TC, DRS, BB)
+    this.indAbs = document.getElementById('indAbs');
+    this.indTc = document.getElementById('indTc');
+    this.indDrs = document.getElementById('indDrs');
+    this.indBbVal = document.getElementById('indBbVal');
+
+    // Live Delta & Opponent/Ghost Gap Card
+    this.liveDeltaVal = document.getElementById('liveDeltaVal');
+    this.liveDeltaTrend = document.getElementById('liveDeltaTrend');
+    this.dashPosBadge = document.getElementById('dashPosBadge');
+    this.deltaBarGain = document.getElementById('deltaBarGain');
+    this.deltaBarLoss = document.getElementById('deltaBarLoss');
+    this.gapAheadVal = document.getElementById('gapAheadVal');
+    this.gapBehindVal = document.getElementById('gapBehindVal');
+
+    // Wire clicks to turn signals, hazard, pit limiter, lights, and flasher
+    this.setupIndicatorClicks();
 
     // Right Column - Upper (Pedals & G-Force)
     this.pedalGas = document.getElementById('pedalGas');
@@ -49,6 +75,62 @@ class DashboardController {
       RL: { temp: document.getElementById('ctTempRL'), psi: document.getElementById('ctPsiRL'), wear: document.getElementById('ctWearRL') },
       RR: { temp: document.getElementById('ctTempRR'), psi: document.getElementById('ctPsiRR'), wear: document.getElementById('ctWearRR') }
     };
+  }
+
+  setupIndicatorClicks() {
+    const send = (action) => {
+      if (window.buttonBoxController && typeof window.buttonBoxController.sendAction === 'function') {
+        window.buttonBoxController.sendAction(action);
+      }
+    };
+
+    if (this.indTurnLeft) {
+      this.indTurnLeft.addEventListener('click', () => {
+        send('turn_left');
+        const next = !this.indTurnLeft.classList.contains('active');
+        this.indTurnLeft.classList.toggle('active', next);
+        if (next && this.indTurnRight) this.indTurnRight.classList.remove('active');
+      });
+    }
+    if (this.indTurnRight) {
+      this.indTurnRight.addEventListener('click', () => {
+        send('turn_right');
+        const next = !this.indTurnRight.classList.contains('active');
+        this.indTurnRight.classList.toggle('active', next);
+        if (next && this.indTurnLeft) this.indTurnLeft.classList.remove('active');
+      });
+    }
+    if (this.indHazard) {
+      this.indHazard.addEventListener('click', () => {
+        send('hazard');
+        const next = !this.indHazard.classList.contains('active');
+        this.indHazard.classList.toggle('active', next);
+        if (this.indTurnLeft) this.indTurnLeft.classList.toggle('active', next);
+        if (this.indTurnRight) this.indTurnRight.classList.toggle('active', next);
+      });
+    }
+    if (this.indLights) {
+      this.indLights.addEventListener('click', () => {
+        send('headlights');
+        this.indLights.classList.toggle('active');
+      });
+    }
+    if (this.indFlash) {
+      this.indFlash.addEventListener('click', () => {
+        send('flasher');
+        this.indFlash.classList.add('active');
+        setTimeout(() => this.indFlash.classList.remove('active'), 450);
+      });
+    }
+    if (this.indPit) {
+      this.indPit.addEventListener('click', () => {
+        send('pit_limiter');
+        this.indPit.classList.toggle('active');
+      });
+    }
+    if (this.indDrs) {
+      this.indDrs.addEventListener('click', () => send('drs'));
+    }
   }
 
   update(telemetry) {
@@ -124,7 +206,7 @@ class DashboardController {
       this.elDelta.className = 'timing-val mono ' + (numDelta < 0 ? 'delta-good' : (numDelta > 0 ? 'delta-bad' : 'delta-neutral'));
     }
 
-    // 4. Setup Strip (TC, ABS, BB, DRS)
+    // 4. Setup Strip (TC, ABS, BB, DRS) - Legacy / fallback support if present
     if (this.elStripTc) this.elStripTc.textContent = Math.round(phys.tc || 0);
     if (this.elStripAbs) this.elStripAbs.textContent = Math.round(phys.abs || 0);
     if (this.elStripBb) this.elStripBb.textContent = `${((phys.brakeBias || 0.58) * 100).toFixed(1)}%`;
@@ -132,25 +214,132 @@ class DashboardController {
       const drsAvailable = phys.drsAvailable;
       const drsOn = phys.drs || phys.drsEnabled;
       const batteryVal = (phys.kersCharge !== undefined && phys.kersCharge !== null) ? Math.round(phys.kersCharge) : 100;
-
-      // Tasarımı bozmadan OFF yerine batarya doluluk oranını göster
       this.elStripDrs.textContent = `${batteryVal}%`;
-
-      // DRS kullanılabilecek yerlerde yeşil, kullanılamayacak yerlerde kırmızı
       if (drsAvailable || drsOn) {
         this.elStripDrs.style.color = '#00ff88';
-        if (drsOn) {
-          this.elStripDrs.style.textShadow = '0 0 10px #00ff88, 0 0 20px #00ff88';
-        } else {
-          this.elStripDrs.style.textShadow = '0 0 6px rgba(0, 255, 136, 0.45)';
-        }
       } else {
         this.elStripDrs.style.color = '#ff3344';
-        this.elStripDrs.style.textShadow = '0 0 6px rgba(255, 51, 68, 0.45)';
       }
     }
 
-    // 5. Speed & Gear
+    // 5. Cockpit Interactive Indicators (Turn Signals, Hazard, Headlights, Flasher)
+    const ind = telemetry.indicators || {};
+    const isLeftActive = !!(ind.turnLeft || ind.hazard);
+    const isRightActive = !!(ind.turnRight || ind.hazard);
+    if (this.indTurnLeft) {
+      this.indTurnLeft.classList.toggle('active', isLeftActive);
+    }
+    if (this.indTurnRight) {
+      this.indTurnRight.classList.toggle('active', isRightActive);
+    }
+    if (this.indHazard) {
+      this.indHazard.classList.toggle('active', !!ind.hazard);
+    }
+    if (this.indLights) {
+      this.indLights.classList.toggle('active', !!ind.headlights);
+    }
+    if (this.indFlash) {
+      this.indFlash.classList.toggle('active', !!ind.flasher);
+    }
+
+    // 6. Cockpit Status Badges (ABS, TC, DRS, PIT, BB)
+    if (this.indAbs) {
+      // Solid steady active flag during braking wheel slip
+      this.indAbs.classList.toggle('active', !!phys.absActive);
+    }
+    if (this.indPit) {
+      const isPitActive = Boolean(phys.pitLimiterOn || graph.isInPitLane || graph.isInPit || ind.pitLimiter);
+      this.indPit.classList.toggle('active', isPitActive);
+    }
+    if (this.indTc) {
+      // Solid steady active flag during throttle wheelspin
+      this.indTc.classList.toggle('active', !!phys.tcActive);
+    }
+    if (this.indDrs) {
+      const drsAvail = !!phys.drsAvailable;
+      const drsActive = !!(phys.drs || phys.drsEnabled);
+      this.indDrs.classList.toggle('available', drsAvail);
+      this.indDrs.classList.toggle('active', drsActive);
+    }
+    if (this.indBbVal) {
+      const bbVal = phys.brakeBias !== undefined ? (phys.brakeBias * 100).toFixed(1) : '58.0';
+      this.indBbVal.textContent = `${bbVal}%`;
+    }
+
+    // 7. Live Delta & Ghost/Opponent Gap Display
+    let deltaSec = 0;
+    let hasValidDelta = false;
+
+    if (typeof phys.performanceMeter === 'number' && Math.abs(phys.performanceMeter) > 0.0001) {
+      deltaSec = phys.performanceMeter;
+      hasValidDelta = true;
+    } else if (graph.split && typeof graph.split === 'string' && graph.split.trim() !== '' && graph.split !== '0.000') {
+      const parsed = parseFloat(graph.split);
+      if (!isNaN(parsed) && Math.abs(parsed) > 0.0001) {
+        deltaSec = parsed;
+        hasValidDelta = true;
+      }
+    }
+
+    if (this.liveDeltaVal) {
+      if (!hasValidDelta) {
+        this.liveDeltaVal.textContent = '+0.00';
+        this.liveDeltaVal.className = 'live-delta-num mono delta-neutral';
+        if (this.liveDeltaTrend) {
+          this.liveDeltaTrend.textContent = '▲';
+          this.liveDeltaTrend.className = 'delta-arrow-icon delta-neutral';
+        }
+      } else {
+        const sign = deltaSec > 0 ? '+' : (deltaSec < 0 ? '-' : '');
+        const absVal = Math.abs(deltaSec).toFixed(2);
+        this.liveDeltaVal.textContent = `${sign}${absVal}`;
+        const isGood = deltaSec < -0.01;
+        const isBad = deltaSec > 0.01;
+        this.liveDeltaVal.className = 'live-delta-num mono ' + (isGood ? 'text-green' : (isBad ? 'text-red' : 'delta-neutral'));
+        if (this.liveDeltaTrend) {
+          this.liveDeltaTrend.textContent = isBad ? '▼' : '▲';
+          this.liveDeltaTrend.className = 'delta-arrow-icon ' + (isGood ? 'text-green' : (isBad ? 'text-red' : 'delta-neutral'));
+        }
+      }
+    }
+
+    // Center-origin dynamic delta bar (+/- 3.00s max scale)
+    const maxDeltaSpan = 3.0;
+    if (this.deltaBarGain && this.deltaBarLoss) {
+      if (hasValidDelta && deltaSec < 0) {
+        // Gaining time -> green extends left from center
+        const gainPct = Math.min(100, (Math.abs(deltaSec) / maxDeltaSpan) * 100);
+        this.deltaBarGain.style.width = `${gainPct.toFixed(1)}%`;
+        this.deltaBarLoss.style.width = '0%';
+      } else if (hasValidDelta && deltaSec > 0) {
+        // Losing time -> red extends right from center
+        const lossPct = Math.min(100, (deltaSec / maxDeltaSpan) * 100);
+        this.deltaBarGain.style.width = '0%';
+        this.deltaBarLoss.style.width = `${lossPct.toFixed(1)}%`;
+      } else {
+        this.deltaBarGain.style.width = '0%';
+        this.deltaBarLoss.style.width = '0%';
+      }
+    }
+
+    // Race Position Badge
+    if (this.dashPosBadge) {
+      const pos = graph.position || 1;
+      const total = graph.totalCars || 16;
+      this.dashPosBadge.textContent = `P${pos} / ${total}`;
+    }
+
+    // Gaps to Car Ahead (or Ghost) and Car Behind
+    if (this.gapAheadVal) {
+      const gapA = graph.gapAhead !== undefined ? graph.gapAhead : (graph.split || '+1.24s');
+      this.gapAheadVal.textContent = typeof gapA === 'number' ? `${gapA > 0 ? '+' : ''}${gapA.toFixed(2)}s` : gapA;
+    }
+    if (this.gapBehindVal) {
+      const gapB = graph.gapBehind !== undefined ? graph.gapBehind : '-0.85s';
+      this.gapBehindVal.textContent = typeof gapB === 'number' ? `${gapB > 0 ? '+' : ''}${gapB.toFixed(2)}s` : gapB;
+    }
+
+    // 8. Speed & Gear
     if (this.elSpeed) this.elSpeed.textContent = phys.speedKmh || 0;
     if (this.elGear) {
       this.elGear.textContent = phys.gearStr || 'N';

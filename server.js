@@ -150,6 +150,8 @@ setInterval(() => {
   }
 
   if (telemetryData) {
+    telemetryData.indicators = acController.getIndicators();
+
     const payload = JSON.stringify({
       type: 'telemetry',
       data: telemetryData

@@ -9,13 +9,24 @@ data class TelemetryEnvelope(
 )
 
 @Serializable
+data class IndicatorData(
+    val turnLeft: Boolean = false,
+    val turnRight: Boolean = false,
+    val hazard: Boolean = false,
+    val headlights: Boolean = false,
+    val flasher: Boolean = false,
+    val pitLimiter: Boolean = false
+)
+
+@Serializable
 data class TelemetryData(
     val connected: Boolean = false,
     val source: String = "",
     val timestamp: Long = 0L,
     val physics: PhysicsData? = null,
     val graphic: GraphicData? = null,
-    val staticInfo: StaticInfoData? = null
+    val staticInfo: StaticInfoData? = null,
+    val indicators: IndicatorData? = null
 )
 
 @Serializable
@@ -36,8 +47,11 @@ data class PhysicsData(
     val drsAvailable: Boolean = false,
     val drsEnabled: Boolean = false,
     val tc: Float = 0f,
+    val tcActive: Boolean = false,
     val abs: Float = 0f,
+    val absActive: Boolean = false,
     val pitLimiterOn: Boolean = false,
+    val performanceMeter: Float = 0f,
     val turboBoost: Float = 0f,
     val airTemp: Int = 0,
     val roadTemp: Int = 0,

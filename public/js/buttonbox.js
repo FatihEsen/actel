@@ -132,9 +132,10 @@ class ButtonBoxController {
     // Send via WebSocket if open
     if (window.app && window.app.ws && window.app.ws.readyState === WebSocket.OPEN) {
       window.app.ws.send(JSON.stringify(payload));
+      return;
     }
 
-    // Also send via REST API for maximum reliability
+    // Fallback to REST API only when WebSocket is not open
     fetch('/api/control', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

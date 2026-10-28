@@ -37,23 +37,8 @@
       </div>
     </div>
 
-    <!-- Live Session / Car Info -->
-    <div class="session-info-strip">
-      <div class="info-pill"><span class="pill-label">ARAÇ:</span> <span id="carName" class="pill-val">Yükleniyor...</span></div>
-      <div class="info-pill"><span class="pill-label">PİST:</span> <span id="trackName" class="pill-val">---</span></div>
-      <div class="info-pill"><span class="pill-label">SEANS:</span> <span id="sessionType" class="pill-val">---</span></div>
-    </div>
-
-    <!-- Header Actions -->
+    <!-- Header Actions (Karekod, Ses, Ayarlar, Tam Ekran) -->
     <div class="header-actions">
-      <!-- Mode Switcher -->
-      <div class="mode-toggle-wrap" title="Çalışma Modu">
-        <button id="modeToggleBtn" class="action-btn mode-btn">
-          <span class="mode-icon">⚡</span>
-          <span id="modeText">DEMO MODU</span>
-        </button>
-      </div>
-
       <!-- IP / QR Mobile Connect -->
       <button id="qrModalBtn" class="action-btn icon-only" title="Telefondan Bağlan (QR / IP)">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
@@ -73,6 +58,14 @@
         </svg>
       </button>
 
+      <!-- Ayarlar (Tam Ekran Butonunun Solunda) -->
+      <button id="settingsNavBtn" class="action-btn icon-only" data-tab="settings" title="Ayarlar">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+
       <!-- Fullscreen Button -->
       <button id="fullscreenBtn" class="action-btn icon-only" title="Tam Ekran Modu">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
@@ -86,19 +79,15 @@
   <nav class="nav-tabs">
     <button class="nav-tab active" data-tab="dashboard">
       <span class="tab-icon">🏁</span>
-      <span class="tab-label">GÖSTERGE (DASH)</span>
+      <span class="tab-label">GÖSTERGE</span>
     </button>
     <button class="nav-tab" data-tab="telemetry">
       <span class="tab-icon">📈</span>
-      <span class="tab-label">TELEMETRİ GRAFİĞİ</span>
+      <span class="tab-label">TELEMETRİ</span>
     </button>
     <button class="nav-tab" data-tab="buttonbox">
       <span class="tab-icon">🎛️</span>
-      <span class="tab-label">KONTROL (BUTTON BOX)</span>
-    </button>
-    <button class="nav-tab" data-tab="settings">
-      <span class="tab-icon">⚙️</span>
-      <span class="tab-label">AYARLAR</span>
+      <span class="tab-label">KONTROL</span>
     </button>
   </nav>
 
@@ -166,34 +155,121 @@
             </div>
           </div>
 
-          <!-- Setup Strip Card (TC, ABS, BB, DRS) -->
-          <div class="dash-card setup-strip-card">
-            <div class="setup-pill"><span class="setup-lbl">TC</span><span id="stripTc" class="setup-val">0</span></div>
-            <div class="setup-pill"><span class="setup-lbl">ABS</span><span id="stripAbs" class="setup-val">0</span></div>
-            <div class="setup-pill"><span class="setup-lbl">BB</span><span id="stripBb" class="setup-val">58.0%</span></div>
-            <div class="setup-pill"><span class="setup-lbl">DRS</span><span id="stripDrs" class="setup-val">100%</span></div>
-          </div>
-        </div>
-
-        <!-- CENTER COLUMN: Speed & RPM & Big Boxed Gear -->
-        <div class="dash-col dash-col-center">
-          <div class="dash-card dash-center">
-            <!-- 1. SPEED DISPLAY (TOP) -->
-            <div class="speed-box-group">
-              <span id="dashSpeed" class="speed-num">0</span>
-              <span class="speed-unit-pill">KM/H</span>
+          <!-- DELTA, DINAMIK DELTA BARI & GHOST / RAKIP FARKI PANELI -->
+          <div class="dash-card live-delta-card">
+            <div class="delta-card-header">
+              <div class="delta-pos-badge" id="dashPosBadge">P1 / 16</div>
             </div>
 
-            <!-- 2. RPM TEXT ONLY (MIDDLE) -->
-            <div class="rpm-boost-footer">
-              <div class="rpm-text">
-                <span id="dashRpm" class="mono">0</span> <span class="rpm-unit">RPM</span>
+            <!-- Big Delta Time Display with Trend Arrow -->
+            <div class="delta-main-row">
+              <span id="liveDeltaTrend" class="delta-arrow-icon text-green">▲</span>
+              <span id="liveDeltaVal" class="live-delta-num mono delta-bad">+0.00</span>
+              <span class="live-delta-unit">SEC</span>
+            </div>
+
+            <!-- Dynamic Two-Way Delta Bar (Ortadan sola/sağa uzayan kazanç/kayıp barı) -->
+            <div class="delta-bar-wrapper">
+              <div class="delta-bar-track">
+                <div class="delta-bar-center-line"></div>
+                <div id="deltaBarGain" class="delta-bar-fill fill-gain"></div>
+                <div id="deltaBarLoss" class="delta-bar-fill fill-loss"></div>
+              </div>
+              <div class="delta-bar-labels">
+                <span class="lbl-gain">▲ KAZANÇ</span>
+                <span class="lbl-center">0.0</span>
+                <span class="lbl-loss">▼ KAYIP</span>
               </div>
             </div>
 
-            <!-- 3. BIG DIGITAL GEAR DISPLAY (BOTTOM) -->
-            <div class="gear-display-box">
-              <div id="dashGear" class="gear-num">N</div>
+            <!-- Gap Ahead / Ghost & Gap Behind -->
+            <div class="delta-gaps-grid">
+              <div class="gap-box gap-ahead">
+                <span class="gap-sub">ÖNDEKİ / GHOST</span>
+                <span id="gapAheadVal" class="gap-time mono text-red">+1.24s</span>
+              </div>
+              <div class="gap-box gap-behind">
+                <span class="gap-sub">ARKADAKİ ARAÇ</span>
+                <span id="gapBehindVal" class="gap-time mono text-green">-0.85s</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CENTER COLUMN: Unified Background Cockpit Layout with 5-Widget Symmetrical Wings -->
+        <div class="dash-col dash-col-center">
+          <div class="dash-card dash-center">
+            <div class="cockpit-layout-grid">
+              
+              <!-- LEFT WING (5 Uniform Indicator Boxes) -->
+              <div class="cockpit-wing cockpit-wing-left">
+                <!-- 1. Left Turn Arrow -->
+                <div id="indTurnLeft" class="cockpit-icon-box turn-arrow arrow-left" title="Sol Sinyal">
+                  <svg viewBox="0 0 24 24" class="turn-svg"><path d="M14 6l-6 6 6 6V6z"/></svg>
+                </div>
+                <!-- 2. Headlights (Farlar) -->
+                <div id="indLights" class="cockpit-icon-box tag-lights" title="Farlar (Kısa Far)">
+                  <svg viewBox="0 0 24 24" class="headlight-svg"><path d="M7 5a7 7 0 0 0 0 14h2V5H7zm5 1h8v2h-8V6zm1 5h8v2h-8v-2zm-1 5h8v2h-8v-2z"/></svg>
+                </div>
+                <!-- 3. Flasher / High Beam (Selektör) -->
+                <div id="indFlash" class="cockpit-icon-box tag-flash" title="Selektör (Uzun Far / Flaşör)">
+                  <svg viewBox="0 0 24 24" class="flash-svg"><path d="M7 5a7 7 0 0 0 0 14h2V5H7zm5 0h8v2h-8V5zm0 4h8v2h-8V9zm0 4h8v2h-8v-2zm0 4h8v2h-8v-2z"/></svg>
+                </div>
+                <!-- 4. Hazard Triangle -->
+                <div id="indHazard" class="cockpit-icon-box hazard-triangle" title="Dörtlü İkaz">
+                  <svg viewBox="0 0 24 24" class="hazard-svg"><path d="M12 2L1 21h22L12 2zm0 3.5L20.2 19H3.8L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>
+                </div>
+                <!-- 5. ABS Status Badge -->
+                <div id="indAbs" class="cockpit-icon-box tag-abs" title="Anti-lock Braking System">
+                  <span class="tag-title">ABS</span>
+                </div>
+              </div>
+
+              <!-- CENTER SPINE (Seamless, Single-Piece Cockpit Spine: Speed, RPM, Gear) -->
+              <div class="cockpit-spine">
+                <!-- 1. Speed Display (Clean Frameless Design) -->
+                <div class="speed-display-box">
+                  <span id="dashSpeed" class="speed-num">0</span>
+                  <span class="speed-unit-pill">KM/H</span>
+                </div>
+
+                <!-- 2. RPM Row -->
+                <div class="rpm-display-row">
+                  <span id="dashRpm" class="rpm-num mono">0</span>
+                  <span class="rpm-unit">RPM</span>
+                </div>
+
+                <!-- 3. Big Digital Gear Box -->
+                <div class="gear-display-box">
+                  <div id="dashGear" class="gear-num">N</div>
+                </div>
+              </div>
+
+              <!-- RIGHT WING (5 Uniform Indicator Boxes - Symmetrical to Left Wing) -->
+              <div class="cockpit-wing cockpit-wing-right">
+                <!-- 1. Right Turn Arrow -->
+                <div id="indTurnRight" class="cockpit-icon-box turn-arrow arrow-right" title="Sağ Sinyal">
+                  <svg viewBox="0 0 24 24" class="turn-svg"><path d="M10 18l6-6-6-6v12z"/></svg>
+                </div>
+                <!-- 2. DRS Status Badge -->
+                <div id="indDrs" class="cockpit-icon-box tag-drs" title="Drag Reduction System">
+                  <span class="tag-title">DRS</span>
+                </div>
+                <!-- 3. Pit Limiter Indicator Badge -->
+                <div id="indPit" class="cockpit-icon-box tag-pit" title="Pit Limiter">
+                  <span class="tag-title">PIT</span>
+                </div>
+                <!-- 4. TC Status Badge -->
+                <div id="indTc" class="cockpit-icon-box tag-tc" title="Traction Control">
+                  <span class="tag-title">TC</span>
+                </div>
+                <!-- 5. BB Status Badge (Value underneath Title) -->
+                <div id="indBb" class="cockpit-icon-box tag-bb" title="Fren Dağılımı (Brake Bias)">
+                  <span class="tag-title">BB</span>
+                  <span id="indBbVal" class="tag-sub">58.0%</span>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
@@ -319,7 +395,7 @@
               <button class="bb-btn bb-amber" data-action="turn_right"><span class="bb-title">SAĞ SİNYAL ▶️</span></button>
             </div>
             <div class="bb-row-pair">
-              <button class="bb-btn bb-red" data-action="hazard"><span class="bb-title">⚠️ DÖRTLÜ</span></button>
+              <button class="bb-btn bb-blue" data-action="camera_change"><span class="bb-title">🎥 KAMERA</span></button>
               <button class="bb-btn bb-gray" data-action="look_back"><span class="bb-title">🔼 ARKA</span></button>
             </div>
             <div class="bb-row-pair">
@@ -342,7 +418,7 @@
               <button class="bb-btn bb-red" data-action="teleport_pits"><span class="bb-title">🔧 PİTE DÖN</span></button>
             </div>
             <div class="bb-row-pair">
-              <button class="bb-btn bb-blue" data-action="camera_change"><span class="bb-title">🎥 KAMERA</span></button>
+              <button class="bb-btn bb-red" data-action="hazard"><span class="bb-title">⚠️ DÖRTLÜ</span></button>
               <button class="bb-btn bb-coral" data-action="restart_session"><span class="bb-title">🔄 YENİDEN</span></button>
             </div>
             <div class="bb-row-pair">

@@ -73,25 +73,30 @@ Derleme yapmadan doğrudan kullanmak için:
 
 ## 🎮 Buton Kutusu Eşleşmeleri (Keybindings)
 
-| Buton | İşlev | Gönderilen Tuş / Eylem |
+Tüm tuş eşleşmeleri **orijinal Assetto Corsa ve Custom Shaders Patch (CSP)** fabrika varsayılanlarına göre optimize edilmiştir. Kullanıcının manuel ayar yapmasına gerek kalmadan doğrudan çalışır:
+
+| Buton | İşlev | Gönderilen Standart Tuş / Eylem |
 | :--- | :--- | :--- |
-| **START** | Content Manager Yarışı Başlat / Menüden Çık / Marş | `Ctrl + S` (CSP Start) + `ESC` + `Space` + `I` (Marş) *(1sn sonra Dashboard'a döner)* |
-| **DURAKLAT** | Oyunu Duraklat / Menüyü Aç | `ESC` |
-| **TC + / -** | Çekiş Kontrolü Seviyesi | `Ctrl + T` / `Ctrl + Shift + T` |
-| **ABS + / -** | Kilitlenme Karşıtı Fren Seviyesi | `Ctrl + A` / `Ctrl + Shift + A` |
-| **BIAS + / -** | Fren Ön/Arka Denge Dağılımı | `Ctrl + B` / `Ctrl + Shift + B` |
-| **PIT LIMITER**| Pit Hız Sınırlayıcı Aç/Kapat | `Ctrl + L` |
-| **DRS** | Arka Kanat DRS Aç/Kapat | `D` |
-| **FARLAR** | Far Aç / Kapat | `L` |
-| **SELEKTÖR** | Flaşör / Selektör Yak | `F` |
-| **SİLECEK** | Cam Sileceği Aç / Hız Değiştir | `Alt + W` |
-| **KORNA** | Korna Çal | `H` |
-| **PİTE DÖN** | Aracı Pite Işınla / Teleport | `Ctrl + P` |
-| **KAMERA** | Sürüş Kamerası Değiştir | `C` |
-| **SİNYALLER** | Sol / Sağ Dönüş Sinyalleri | `Alt + Sol Ok` / `Alt + Sağ Ok` |
-| **DÖRTLÜ** | Dörtlü Flaşörler (Hazard) | `Alt + Aşağı Ok` |
-| **BAKIŞLAR** | Sola / Arkaya / Sağa Bak | `Q` / `Space` / `E` |
-| **YENİDEN BAŞLAT** | Oturumu Baştan Başlat | `Ctrl + O` *(1sn sonra Dashboard'a döner)* |
+| **START** | Content Manager Başlat / Menüden Çık / Marş | `Ctrl + S` (CSP Start) + `ESC` + `Space` + `I` (Marş) *(1sn sonra Dash'e döner)* |
+| **DURAKLAT** | Oyunu Duraklat / Menüyü Aç | `ESC` (Orijinal AC Varsayılanı) |
+| **TC + / -** | Çekiş Kontrolü Seviyesi | `Ctrl + T` / `Ctrl + Shift + T` (Orijinal AC Varsayılanı) |
+| **ABS + / -** | Kilitlenme Karşıtı Fren Seviyesi | `Ctrl + A` / `Ctrl + Shift + A` (Orijinal AC Varsayılanı) |
+| **BIAS + / -** | Fren Ön/Arka Denge Dağılımı | `Ctrl + B` / `Ctrl + Shift + B` (Orijinal AC Varsayılanı) |
+| **PIT LIMITER**| Pit Hız Sınırlayıcı Aç/Kapat | `Alt + L` (CSP Pit Limiter Standardı) |
+| **DRS** | Arka Kanat DRS Aç/Kapat | `D` (Orijinal AC Varsayılanı) |
+| **KERS** | Hibrit / MGU-K Güç Boşaltma | `K` (Orijinal AC Varsayılanı) |
+| **FARLAR** | Far Aç / Kapat | `L` (Orijinal AC Varsayılanı) |
+| **SELEKTÖR** | Flaşör / Selektör Yak | `G` (Orijinal AC Varsayılanı) |
+| **İÇ IŞIK** | Kabin Aydınlatması (Extra A) | `Alt + Numpad 7` (CSP Standardı) |
+| **SİS FARI** | Sis Farı / Uzunlar (Extra B) | `Alt + Numpad 8` (CSP Standardı) |
+| **SİLECEK** | Cam Sileceği Aç / Hız Değiştir | `Alt + W` (CSP Standardı) |
+| **KORNA** | Korna Çal | `H` (Orijinal AC Varsayılanı) |
+| **PİTE DÖN** | Aracı Pite Işınla / Teleport | `Ctrl + P` (Orijinal AC / CM Varsayılanı) |
+| **KAMERA** | Sürüş Kamerası Değiştir | `F1` / `C` (Orijinal AC Varsayılanı) |
+| **SİNYALLER** | Sol / Sağ Dönüş Sinyalleri | `Alt + Sol Ok` / `Alt + Sağ Ok` (CSP Standardı) |
+| **DÖRTLÜ** | Dörtlü Flaşörler (Hazard) | `Alt + Aşağı Ok` (CSP Standardı) |
+| **BAKIŞLAR** | Sola / Arkaya / Sağa Bak | `Q` / `W` / `E` (Orijinal AC Varsayılanı) |
+| **YENİDEN BAŞLAT** | Oturumu Baştan Başlat | `Ctrl + O` (Orijinal AC / CM Varsayılanı) |
 
 ---
 

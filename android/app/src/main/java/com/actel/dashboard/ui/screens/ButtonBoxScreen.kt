@@ -102,9 +102,9 @@ fun ButtonBoxScreen(
                 BoxButton("◀️ SOL SİNYAL", "turn_left", Color(0xFFFFB300), onAction, Modifier.weight(1f))
                 BoxButton("SAĞ SİNYAL ▶️", "turn_right", Color(0xFFFFB300), onAction, Modifier.weight(1f))
             }
-            // Satır 4: DÖRTLÜ / ARKA BAKIŞ
+            // Satır 4: KAMERA / ARKA BAKIŞ
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                BoxButton("⚠️ DÖRTLÜ", "hazard", NeonRed, onAction, Modifier.weight(1f))
+                BoxButton("🎥 KAMERA", "camera_change", Color(0xFF42A5F5), onAction, Modifier.weight(1f))
                 BoxButton("🔼 ARKA", "look_back", Color(0xFF90A4AE), onAction, Modifier.weight(1f))
             }
             // Satır 5: SOLA BAK / SAĞA BAK
@@ -136,9 +136,9 @@ fun ButtonBoxScreen(
                 BoxButton("📢 KORNA", "horn", Color(0xFFFFB74D), onAction, Modifier.weight(1f))
                 BoxButton("🔧 PİTE DÖN", "teleport_pits", NeonRed, onAction, Modifier.weight(1f))
             }
-            // Satır 3: KAMERA / YENİDEN BAŞLAT
+            // Satır 3: DÖRTLÜ / YENİDEN BAŞLAT
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                BoxButton("🎥 KAMERA", "camera_change", Color(0xFF42A5F5), onAction, Modifier.weight(1f))
+                BoxButton("⚠️ DÖRTLÜ", "hazard", NeonRed, onAction, Modifier.weight(1f))
                 BoxButton("🔄 YENİDEN", "restart_session", Color(0xFFFF5722), onAction, Modifier.weight(1f))
             }
             // Satır 4: KERS (BOOST SİLİNDİ - HOLD) / DURAKLAT

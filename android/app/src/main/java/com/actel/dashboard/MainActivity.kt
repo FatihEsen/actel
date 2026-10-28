@@ -262,7 +262,13 @@ fun MainApp(
                 .padding(innerPadding)
         ) {
             when (currentTab) {
-                NavTab.DASHBOARD -> DashboardScreen(telemetry = telemetry)
+                NavTab.DASHBOARD -> DashboardScreen(
+                    telemetry = telemetry,
+                    onAction = { action ->
+                        if (hapticEnabled) onHapticFeedback(40L, hapticIntensity)
+                        viewModel.triggerAction(action, null)
+                    }
+                )
                 NavTab.BUTTON_BOX -> ButtonBoxScreen(
                     telemetry = telemetry,
                     onAction = { action, state ->
@@ -399,7 +405,7 @@ fun TopAppBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             NavTabButton("🏁 GÖSTERGE", currentTab == NavTab.DASHBOARD) { onTabSelect(NavTab.DASHBOARD) }
-            NavTabButton("🎛️ BUTTON BOX", currentTab == NavTab.BUTTON_BOX) { onTabSelect(NavTab.BUTTON_BOX) }
+            NavTabButton("🎛️ KONTROL", currentTab == NavTab.BUTTON_BOX) { onTabSelect(NavTab.BUTTON_BOX) }
             NavTabButton("⚙️", currentTab == NavTab.SETTINGS) { onTabSelect(NavTab.SETTINGS) }
         }
     }
