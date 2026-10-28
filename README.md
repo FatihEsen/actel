@@ -18,17 +18,17 @@ Telefon ve tabletleri **Kotlin & Jetpack Compose** gücüyle yarış kokpitinizi
 ### 1. Canlı Yarış Göstergesi (Dashboard)
 16 LED kademeli Shift Light devir barı, simetrik kokpit kanatları (Sol: Sinyal, Far, Flaşör, Dörtlü, ABS / Sağ: Sinyal, DRS, PIT, TC, Fren Dağılımı), kesintisiz dikey gövde (Hız, RPM ve Dijital Vites), canlı tur zamanı & dinamik iki yönlü delta barı (+/-), debriyaj / fren / gaz pedalları, 2D G-Kuvveti dairesi ve 4 tekerlek lastik telemetrisi (PSI, °C ve aşınma).
 
-![ACTel Android Dashboard](docs/screenshots/mobile_dashboard.png)
+![ACTel Android Dashboard](docs/screenshots/dashboard.png)
 
 ### 2. Sanal Buton Kutusu (Button Box)
 5x6 tam ekran dokunsal buton matrisi (30 fonksiyonel buton), üst anlık telemetri şeridi ve Content Manager & CSP fabrika standart tuşları: TC, ABS, Fren Dağılımı, Farlar, Selektör, Silecek, Korna, Start (`Ctrl+S`), Duraklat (`ESC`), Pit Limiter, DRS, KERS, Sinyaller, Dörtlü Flaşör ve F1 Kamera / Bakış açıları.
 
-![ACTel Android Buton Kutusu](docs/screenshots/mobile_button_box.png)
+![ACTel Android Buton Kutusu](docs/screenshots/button_box.png)
 
 ### 3. Ayarlar & Haptik Titreşim Kontrolü (Settings)
 Sıfır yapılandırmalı yerel ağ PC radar keşfi (Zero-Config UDP radar), ayarlanabilir devir kesici titreşimi slider'ı (%20 - %100), bordür / kasis / zemin darbe titreşim anahtarı ve akıllı çalışma modları (AUTO / LIVE / DEMO).
 
-![ACTel Android Ayarlar Ekranı](docs/screenshots/mobile_settings.png)
+![ACTel Android Ayarlar Ekranı](docs/screenshots/settings.png)
 
 ---
 
