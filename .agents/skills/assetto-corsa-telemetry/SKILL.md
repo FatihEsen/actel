@@ -174,3 +174,4 @@ Mobile companion apps should not require manual IP entry.
 - Use hardware-accelerated `Canvas` drawing for RPM dots and needle gauges to sustain smooth 60fps rendering.
 - Use 7-segment digital monospace fonts for speed, gear, and delta numbers to prevent jitter.
 - Implement `HorizontalPager` with touch swipe gestures for seamless navigation between Live Cockpit, Button Box, and Settings.
+
