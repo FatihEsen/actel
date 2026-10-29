@@ -145,9 +145,10 @@ fun TimingDeltaCard(
                 Text(
                     text = displayGhost,
                     color = ghostColor,
-                    fontSize = 20.sp,
+                    fontSize = 23.sp,
                     fontWeight = FontWeight.Black,
-                    fontFamily = FontFamily.Monospace
+                    fontFamily = FontFamily.Monospace,
+                    letterSpacing = 0.5.sp
                 )
 
                 // Kırmızı Aşağı Ok (⇩) - Zaman kaybettikçe / kötüleştikçe parlar
@@ -199,36 +200,50 @@ fun BlockArrowUp(
     modifier: Modifier = Modifier
 ) {
     val activeColor = Color(0xFF76FF03) // Lime Green
-    val inactiveColor = Color(0xFF76FF03).copy(alpha = 0.22f)
-    val color = if (isActive) activeColor else inactiveColor
+    val inactiveColor = Color(0xFF76FF03).copy(alpha = 0.20f)
 
     Canvas(modifier = modifier) {
         val w = size.width
         val h = size.height
 
-        val path = Path().apply {
+        val outerPath = Path().apply {
             moveTo(w * 0.5f, 0f)
-            lineTo(w, h * 0.48f)
-            lineTo(w * 0.68f, h * 0.48f)
-            lineTo(w * 0.68f, h)
-            lineTo(w * 0.32f, h)
-            lineTo(w * 0.32f, h * 0.48f)
-            lineTo(0f, h * 0.48f)
+            lineTo(w, h * 0.46f)
+            lineTo(w * 0.70f, h * 0.46f)
+            lineTo(w * 0.70f, h)
+            lineTo(w * 0.30f, h)
+            lineTo(w * 0.30f, h * 0.46f)
+            lineTo(0f, h * 0.46f)
             close()
         }
 
         if (isActive) {
-            drawPath(path, color = color)
+            // Hafif parlama arka planı
+            drawPath(outerPath, color = activeColor.copy(alpha = 0.18f))
+            // Kalın parlak dış çerçeve
             drawPath(
-                path,
-                color = Color.Black.copy(alpha = 0.45f),
+                outerPath,
+                color = activeColor,
+                style = Stroke(width = 2.4.dp.toPx())
+            )
+            // Görseldeki iç ok çizgisi (şaft ve çatı)
+            val innerArrow = Path().apply {
+                moveTo(w * 0.5f, h * 0.20f)
+                lineTo(w * 0.5f, h * 0.82f)
+                moveTo(w * 0.32f, h * 0.40f)
+                lineTo(w * 0.5f, h * 0.20f)
+                lineTo(w * 0.68f, h * 0.40f)
+            }
+            drawPath(
+                innerArrow,
+                color = activeColor,
                 style = Stroke(width = 2.dp.toPx())
             )
         } else {
             drawPath(
-                path,
-                color = color,
-                style = Stroke(width = 1.8.dp.toPx())
+                outerPath,
+                color = inactiveColor,
+                style = Stroke(width = 1.4.dp.toPx())
             )
         }
     }
@@ -243,36 +258,50 @@ fun BlockArrowDown(
     modifier: Modifier = Modifier
 ) {
     val activeColor = Color(0xFFFF1744) // Bright Red
-    val inactiveColor = Color(0xFFFF1744).copy(alpha = 0.22f)
-    val color = if (isActive) activeColor else inactiveColor
+    val inactiveColor = Color(0xFFFF1744).copy(alpha = 0.20f)
 
     Canvas(modifier = modifier) {
         val w = size.width
         val h = size.height
 
-        val path = Path().apply {
+        val outerPath = Path().apply {
             moveTo(w * 0.5f, h)
-            lineTo(w, h * 0.52f)
-            lineTo(w * 0.68f, h * 0.52f)
-            lineTo(w * 0.68f, 0f)
-            lineTo(w * 0.32f, 0f)
-            lineTo(w * 0.32f, h * 0.52f)
-            lineTo(0f, h * 0.52f)
+            lineTo(w, h * 0.54f)
+            lineTo(w * 0.70f, h * 0.54f)
+            lineTo(w * 0.70f, 0f)
+            lineTo(w * 0.30f, 0f)
+            lineTo(w * 0.30f, h * 0.54f)
+            lineTo(0f, h * 0.54f)
             close()
         }
 
         if (isActive) {
-            drawPath(path, color = color)
+            // Hafif parlama arka planı
+            drawPath(outerPath, color = activeColor.copy(alpha = 0.18f))
+            // Kalın parlak dış çerçeve
             drawPath(
-                path,
-                color = Color.Black.copy(alpha = 0.45f),
+                outerPath,
+                color = activeColor,
+                style = Stroke(width = 2.4.dp.toPx())
+            )
+            // Görseldeki iç ok çizgisi (şaft ve çatı)
+            val innerArrow = Path().apply {
+                moveTo(w * 0.5f, h * 0.80f)
+                lineTo(w * 0.5f, h * 0.18f)
+                moveTo(w * 0.32f, h * 0.60f)
+                lineTo(w * 0.5f, h * 0.80f)
+                lineTo(w * 0.68f, h * 0.60f)
+            }
+            drawPath(
+                innerArrow,
+                color = activeColor,
                 style = Stroke(width = 2.dp.toPx())
             )
         } else {
             drawPath(
-                path,
-                color = color,
-                style = Stroke(width = 1.8.dp.toPx())
+                outerPath,
+                color = inactiveColor,
+                style = Stroke(width = 1.4.dp.toPx())
             )
         }
     }

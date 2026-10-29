@@ -341,17 +341,19 @@ fun GearSpeedDisplay(
                 )
             }
 
-            // 3. Pit Limiter Rozeti
+            // 3. Pit Limiter Rozeti (Açıkken canlı sarı/turuncu, devreye girince yanıp söner)
+            val isPitFlashingOn = pitActive && (flasherAlpha > 0.5f)
+            val pitVividColor = Color(0xFFFFD600) // Canlı Neon Sarı / Amber
             IndicatorBox(
-                isActive = pitActive,
-                activeColor = NeonYellow,
-                idleColor = Color(0xFFFFB700).copy(alpha = 0.25f),
+                isActive = isPitFlashingOn,
+                activeColor = pitVividColor,
+                idleColor = if (pitActive) pitVividColor.copy(alpha = 0.35f) else Color(0xFFFFB300).copy(alpha = 0.30f),
                 onClick = { onAction("pit_limiter") }
             ) {
                 Text(
                     text = "PIT",
-                    color = if (pitActive) Color(0xFF070B12) else Color(0xFFFFB700).copy(alpha = 0.45f),
-                    fontSize = 11.sp,
+                    color = if (isPitFlashingOn) Color(0xFF050810) else if (pitActive) pitVividColor else Color(0xFFFFB300).copy(alpha = 0.65f),
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.Black,
                     fontFamily = FontFamily.Monospace
                 )
