@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=5">
+  <link rel="stylesheet" href="css/style.css?v=6">
 </head>
 <body class="dark-theme">
 
@@ -122,7 +122,7 @@
 
       <!-- MAIN DASHBOARD GRID -->
       <div class="dash-grid">
-        <!-- LEFT COLUMN: Car & Track + Timing + Setup -->
+        <!-- LEFT COLUMN: Car & Track + TimingDeltaCard (Identical to Mobile App) -->
         <div class="dash-col dash-col-left">
           <!-- Car & Track Badge Box -->
           <div class="dash-card car-track-card">
@@ -130,63 +130,47 @@
             <div class="car-track-line"><span class="ct-label">PİST:</span> <span id="dashTrackName" class="ct-val">---</span></div>
           </div>
 
-          <div class="dash-card dash-timing">
+          <!-- Timing & Ghost Delta Card (1:1 with Android TimingDeltaCard) -->
+          <div class="dash-card dash-timing" id="dashTimingCard">
+            <!-- 1. Tur & Sektör Satırı -->
             <div class="timing-top-pills">
               <span id="dashLapPill" class="dash-pill">TUR 0</span>
               <span id="dashSecPill" class="dash-pill pill-green">SEKTÖR S1</span>
             </div>
 
-            <div class="timing-rows">
-              <div class="timing-item live-lap-container">
-                <span id="dashCurrentLap" class="timing-val mono live-lap-val">0:00.000</span>
-              </div>
-              <div class="timing-item ghost-delta-item">
-                <span class="timing-label">GHOST FARKI</span>
-                <div class="ghost-arrows-wrap">
-                  <span id="ghostArrowUp" class="block-arrow arrow-up">▲</span>
-                  <span id="dashGhostDelta" class="ghost-time mono text-red">+0.00s</span>
-                  <span id="ghostArrowDown" class="block-arrow arrow-down">▼</span>
-                </div>
-              </div>
-              <div class="timing-item">
-                <span class="timing-label">EN İYİ TUR</span>
-                <span id="dashBestLap" class="timing-val mono text-purple">--:--.---</span>
-              </div>
-              <div class="timing-item">
-                <span class="timing-label">SON TUR</span>
-                <span id="dashLastLap" class="timing-val mono">--:--.---</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- DELTA, DINAMIK DELTA BARI & GHOST / RAKIP FARKI PANELI -->
-          <div class="dash-card live-delta-card">
-            <div class="delta-card-header">
-              <div class="delta-pos-badge" id="dashPosBadge">P1 / 16</div>
+            <!-- 2. Canlı Tur Süresi (Büyük font, cut durumunda kırmızı) -->
+            <div class="live-lap-container">
+              <span id="dashCurrentLap" class="timing-val mono live-lap-val">0:00.000</span>
             </div>
 
-            <!-- Big Delta Time Display with Trend Arrow -->
-            <div class="delta-main-row">
-              <span id="liveDeltaTrend" class="delta-arrow-icon text-green">▲</span>
-              <span id="liveDeltaVal" class="live-delta-num mono delta-bad">+0.00</span>
-              <span class="live-delta-unit">SEC</span>
+            <!-- 3. Ghost Delta Satırı (Gereksiz GHOST FARKI etiketi yok, ortalı oklar ve süre) -->
+            <div class="ghost-row-centered">
+              <span id="ghostArrowUp" class="block-arrow arrow-up" title="Zaman kazanılıyor">
+                <svg viewBox="0 0 24 32" class="arrow-svg">
+                  <path class="arrow-outer" d="M 12,0 L 24,14.7 L 16.8,14.7 L 16.8,32 L 7.2,32 L 7.2,14.7 L 0,14.7 Z" />
+                  <path class="arrow-inner" d="M 12,6.4 L 12,26.2 M 7.7,12.8 L 12,6.4 L 16.3,12.8" />
+                </svg>
+              </span>
+              <span id="dashGhostDelta" class="ghost-time mono text-neutral">-.--</span>
+              <span id="ghostArrowDown" class="block-arrow arrow-down" title="Zaman kaybediliyor">
+                <svg viewBox="0 0 24 32" class="arrow-svg">
+                  <path class="arrow-outer" d="M 12,32 L 24,17.3 L 16.8,17.3 L 16.8,0 L 7.2,0 L 7.2,17.3 L 0,17.3 Z" />
+                  <path class="arrow-inner" d="M 12,25.6 L 12,5.8 M 7.7,19.2 L 12,25.6 L 16.3,19.2" />
+                </svg>
+              </span>
             </div>
 
-            <!-- Dynamic Two-Way Delta Bar (Ortadan sola/sağa uzayan kazanç/kayıp barı) -->
-            <div class="delta-bar-wrapper">
-              <div class="delta-bar-track">
-                <div class="delta-bar-center-line"></div>
-                <div id="deltaBarGain" class="delta-bar-fill fill-gain"></div>
-                <div id="deltaBarLoss" class="delta-bar-fill fill-loss"></div>
+            <!-- 4. En İyi Tur & Son Tur (Yan Yana iki sütun) -->
+            <div class="timing-bottom-grid">
+              <div class="timing-stat-col">
+                <span class="timing-sublabel">EN İYİ TUR</span>
+                <span id="dashBestLap" class="timing-subval mono text-gold">--:--.---</span>
               </div>
-              <div class="delta-bar-labels">
-                <span class="lbl-gain">▲ KAZANÇ</span>
-                <span class="lbl-center">0.0</span>
-                <span class="lbl-loss">▼ KAYIP</span>
+              <div class="timing-stat-col stat-right">
+                <span class="timing-sublabel">SON TUR</span>
+                <span id="dashLastLap" class="timing-subval mono text-secondary">--:--.---</span>
               </div>
             </div>
-
-            
           </div>
         </div>
 
@@ -508,6 +492,6 @@
   <script src="js/tyres.js"></script>
   <script src="js/telemetry.js"></script>
   <script src="js/buttonbox.js"></script>
-  <script src="js/app.js?v=5"></script>
+  <script src="js/app.js?v=6"></script>
 </body>
 </html>

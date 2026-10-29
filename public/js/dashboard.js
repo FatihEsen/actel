@@ -8,6 +8,7 @@ class DashboardController {
     // DOM Elements - Left Column
     this.elCarName = document.getElementById('dashCarName');
     this.elTrackName = document.getElementById('dashTrackName');
+    this.dashTimingCard = document.getElementById('dashTimingCard');
     this.elLapPill = document.getElementById('dashLapPill');
     this.elSecPill = document.getElementById('dashSecPill');
 
@@ -199,13 +200,12 @@ class DashboardController {
     if (this.elLapPill) this.elLapPill.textContent = `TUR ${graph.completedLaps || 0}`;
     if (this.elSecPill) this.elSecPill.textContent = `SEKTÖR S${graph.currentSectorIndex !== undefined ? graph.currentSectorIndex : 1}`;
 
-    if (this.elCurrentLap && graph.currentTime) {
-      this.elCurrentLap.textContent = graph.currentTime;
-      if (telemetry.isLapCut) {
-        this.elCurrentLap.style.color = '#ff3344';
-      } else {
-        this.elCurrentLap.style.color = '#e0e6ed';
-      }
+    if (this.dashTimingCard) {
+      this.dashTimingCard.classList.toggle('lap-cut', !!telemetry.isLapCut);
+    }
+    if (this.elCurrentLap) {
+      this.elCurrentLap.textContent = graph.currentTime || '0:00.000';
+      this.elCurrentLap.classList.toggle('cut-lap', !!telemetry.isLapCut);
     }
     if (this.elLastLap && graph.lastTime) this.elLastLap.textContent = graph.lastTime;
     if (this.elBestLap && graph.bestTime) this.elBestLap.textContent = graph.bestTime;

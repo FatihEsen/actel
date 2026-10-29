@@ -51,11 +51,13 @@ fun TimingDeltaCard(
     val displayGhost = when {
         ghostDelta.isNotEmpty() -> ghostDelta
         delta != 0f -> if (delta >= 0f) "+${String.format(Locale.US, "%.2f", delta)}s" else "-${String.format(Locale.US, "%.2f", kotlin.math.abs(delta))}s"
-        else -> "+0.00s"
+        else -> "-.--"
     }
-    val isAhead = displayGhost.startsWith("-") || delta < 0f
-    val isZero = displayGhost == "+0.00s" || displayGhost == "0.00s" || (delta == 0f && ghostDelta.isEmpty())
+    val isNone = displayGhost == "-.--" || displayGhost.isEmpty()
+    val isAhead = displayGhost.startsWith("-")
+    val isZero = displayGhost == "+0.00s" || displayGhost == "0.00s"
     val ghostColor = when {
+        isNone -> TextDim
         isAhead -> NeonGreen
         isZero -> TextSecondary
         else -> NeonRed
@@ -137,7 +139,7 @@ fun TimingDeltaCard(
             ) {
                 // Yeşil Yukarı Ok (⇧) - Zaman kazandıkça / iyileştikçe parlar
                 BlockArrowUp(
-                    isActive = deltaTrend == "improving",
+                    isActive = deltaTrend == "improving" && !isNone,
                     modifier = Modifier.size(16.dp, 22.dp)
                 )
 
@@ -153,7 +155,7 @@ fun TimingDeltaCard(
 
                 // Kırmızı Aşağı Ok (⇩) - Zaman kaybettikçe / kötüleştikçe parlar
                 BlockArrowDown(
-                    isActive = deltaTrend == "worsening",
+                    isActive = deltaTrend == "worsening" && !isNone,
                     modifier = Modifier.size(16.dp, 22.dp)
                 )
             }
