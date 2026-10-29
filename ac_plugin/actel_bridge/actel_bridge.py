@@ -91,7 +91,7 @@ ACTION_KEYS = {
     'flasher': ['G'],
     'extra_a': ['ALT', 'NUMPAD7'],
     'extra_b': ['ALT', 'NUMPAD8'],
-    'wipers': ['ALT', 'W'],
+    'wipers': ['ALT', 'NUMPAD2'],
     'horn': ['H'],
     'turn_left': ['ALT', 'LEFT'],
     'turn_right': ['ALT', 'RIGHT'],
@@ -233,22 +233,45 @@ def acUpdate(deltaT):
                 ac.setText(status_lbl, "ACTel: " + cmd + " (#" + str(command_count) + ")")
 
             keys = None
-            if cmd in ACTION_KEYS:
-                keys = ACTION_KEYS[cmd]
-            elif cmd.startswith('combo:'):
-                keys = cmd[6:].split('+')
-            elif cmd.startswith('key:'):
-                keys = [cmd[4:]]
+            action_name = cmd
+            hold_state = None
+
+            if cmd.endswith('_down'):
+                action_name = cmd[:-5]
+                hold_state = 'down'
+            elif cmd.endswith('_up'):
+                action_name = cmd[:-3]
+                hold_state = 'up'
+
+            if action_name in ACTION_KEYS:
+                keys = ACTION_KEYS[action_name]
+            elif action_name.startswith('combo:'):
+                keys = action_name[6:].split('+')
+            elif action_name.startswith('key:'):
+                keys = [action_name[4:]]
 
             if keys:
-                duration = 100
-                if cmd in ['look_left', 'look_right', 'look_back']:
-                    duration = 1200
-                elif cmd == 'horn':
-                    duration = 350
-                elif cmd in ['starter', 'engine_start']:
-                    duration = 900
-                trigger_keys_frame(keys, duration)
+                if hold_state == 'down':
+                    for k in keys:
+                        send_key_down(k)
+                elif hold_state == 'up':
+                    for k in reversed(keys):
+                        send_key_up(k)
+                else:
+                    duration = 100
+                    if action_name in ['look_left', 'look_right', 'look_back']:
+                        duration = 1200
+                    elif action_name == 'horn':
+                        duration = 350
+                    elif action_name in ['starter', 'engine_start']:
+                        duration = 900
+                    elif action_name == 'wipers':
+                        trigger_keys_frame(['ALT', 'NUMPAD2'], 100)
+                        trigger_keys_frame(['ALT', 'W'], 100)
+                        keys = None
+
+                    if keys:
+                        trigger_keys_frame(keys, duration)
     except Exception as e:
         log_debug("acUpdate command reading error: " + str(e))
 

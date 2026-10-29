@@ -43,6 +43,10 @@ fun ButtonBoxScreen(
 ) {
     val isPitLimiterOn = telemetry?.physics?.pitLimiterOn == true
     val isDrsOn = telemetry?.physics?.drs == true
+    val isHazardOn = telemetry?.indicators?.hazard == true
+    val isHeadlightsOn = telemetry?.indicators?.headlights == true
+    val isTurnLeftOn = telemetry?.indicators?.turnLeft == true || isHazardOn
+    val isTurnRightOn = telemetry?.indicators?.turnRight == true || isHazardOn
 
     Row(
         modifier = modifier
@@ -89,7 +93,14 @@ fun ButtonBoxScreen(
         ) {
             // Satır 1: FARLAR / SELEKTÖR
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                BoxButton("💡 FARLAR", "headlights", Color(0xFF64B5F6), onAction, Modifier.weight(1f))
+                BoxButton(
+                    title = if (isHeadlightsOn) "💡 FARLAR (ON)" else "💡 FARLAR",
+                    action = "headlights",
+                    color = if (isHeadlightsOn) Color(0xFF90CAF9) else Color(0xFF64B5F6),
+                    onAction = onAction,
+                    modifier = Modifier.weight(1f),
+                    isActive = isHeadlightsOn
+                )
                 BoxButton("🔆 SELEKTÖR", "flasher", Color(0xFFFFF176), onAction, Modifier.weight(1f))
             }
             // Satır 2: İÇ AYDINLATMA / SİS FARI (Alt + Numpad 7 / 8)
@@ -99,8 +110,22 @@ fun ButtonBoxScreen(
             }
             // Satır 3: SOL SİNYAL / SAĞ SİNYAL
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                BoxButton("◀️ SOL SİNYAL", "turn_left", Color(0xFFFFB300), onAction, Modifier.weight(1f))
-                BoxButton("SAĞ SİNYAL ▶️", "turn_right", Color(0xFFFFB300), onAction, Modifier.weight(1f))
+                BoxButton(
+                    title = if (isTurnLeftOn) "◀️ SOL SİNYAL" else "◀️ SOL SİNYAL",
+                    action = "turn_left",
+                    color = Color(0xFFFFB300),
+                    onAction = onAction,
+                    modifier = Modifier.weight(1f),
+                    isActive = isTurnLeftOn
+                )
+                BoxButton(
+                    title = if (isTurnRightOn) "SAĞ SİNYAL ▶️" else "SAĞ SİNYAL ▶️",
+                    action = "turn_right",
+                    color = Color(0xFFFFB300),
+                    onAction = onAction,
+                    modifier = Modifier.weight(1f),
+                    isActive = isTurnRightOn
+                )
             }
             // Satır 4: KAMERA / ARKA BAKIŞ
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
@@ -138,7 +163,14 @@ fun ButtonBoxScreen(
             }
             // Satır 3: DÖRTLÜ / YENİDEN BAŞLAT
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                BoxButton("⚠️ DÖRTLÜ", "hazard", NeonRed, onAction, Modifier.weight(1f))
+                BoxButton(
+                    title = if (isHazardOn) "⚠️ DÖRTLÜ (ON)" else "⚠️ DÖRTLÜ",
+                    action = "hazard",
+                    color = NeonRed,
+                    onAction = onAction,
+                    modifier = Modifier.weight(1f),
+                    isActive = isHazardOn
+                )
                 BoxButton("🔄 YENİDEN", "restart_session", Color(0xFFFF5722), onAction, Modifier.weight(1f))
             }
             // Satır 4: KERS (BOOST SİLİNDİ - HOLD) / DURAKLAT
