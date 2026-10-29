@@ -46,6 +46,7 @@ user32.MapVirtualKeyA.argtypes = [ctypes.c_uint32, ctypes.c_uint32]
 user32.keybd_event.restype = None
 user32.keybd_event.argtypes = [ctypes.c_ubyte, ctypes.c_ubyte, ctypes.c_uint32, ctypes.c_void_p]
 
+FILE_MAP_ALL_ACCESS = 0xF001F
 FILE_MAP_READ = 0x0004
 KEYEVENTF_KEYUP = 0x0002
 KEYEVENTF_EXTENDEDKEY = 0x0001
@@ -147,11 +148,11 @@ def init_shared_memory():
     if pBuf:
         return True
     try:
-        hMap = kernel32.OpenFileMappingW(FILE_MAP_READ, False, "Local\\actel_cmd")
+        hMap = kernel32.OpenFileMappingW(FILE_MAP_ALL_ACCESS, False, "Local\\actel_cmd")
         if not hMap:
-            hMap = kernel32.OpenFileMappingW(FILE_MAP_READ, False, "actel_cmd")
+            hMap = kernel32.OpenFileMappingW(FILE_MAP_ALL_ACCESS, False, "actel_cmd")
         if hMap:
-            pBuf = kernel32.MapViewOfFile(hMap, FILE_MAP_READ, 0, 0, 1024)
+            pBuf = kernel32.MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, 0, 0, 1024)
             if pBuf:
                 log_debug("Shared Memory Command Buffer Connected!")
                 return True
@@ -219,9 +220,20 @@ def acUpdate(deltaT):
                     ac.setText(status_lbl, "ACTel: READY (Connected)")
         return
 
+    # Write heartbeat
+    try:
+        ctypes.c_uint32.from_address(pBuf + 68).value += 1
+    except Exception:
+        pass
+
     # Check incoming command
     try:
         packet_id = ctypes.c_uint32.from_address(pBuf).value
+        if packet_id > 0 and packet_id != last_packet_id:
+            try:
+                ctypes.c_uint32.from_address(pBuf + 64).value = packet_id
+            except Exception:
+                pass
         if packet_id > 0 and packet_id != last_packet_id:
             last_packet_id = packet_id
             command_count += 1

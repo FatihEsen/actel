@@ -43,11 +43,26 @@ class App {
   initTabs() {
     const tabs = document.querySelectorAll('.nav-tab, [data-tab]');
     const views = document.querySelectorAll('.tab-view');
+    const mainContainer = document.querySelector('.main-container');
+
+    const updateCombinedCockpit = () => {
+      const isLargeScreen = window.innerWidth >= 1025;
+      const isCockpit = (this.currentTab === 'dashboard' || this.currentTab === 'buttonbox');
+      if (mainContainer) {
+        if (isLargeScreen && isCockpit) {
+          mainContainer.classList.add('show-combined-cockpit');
+        } else {
+          mainContainer.classList.remove('show-combined-cockpit');
+        }
+      }
+    };
 
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
         const target = tab.dataset.tab;
         if (!target) return;
+
+        this.currentTab = target;
 
         tabs.forEach(t => t.classList.remove('active'));
         views.forEach(v => v.classList.remove('active'));
@@ -56,7 +71,7 @@ class App {
         const activeView = document.getElementById(`view-${target}`);
         if (activeView) activeView.classList.add('active');
 
-        this.currentTab = target;
+        updateCombinedCockpit();
 
         if (target === 'telemetry' && window.telemetryGraphController) {
           window.telemetryGraphController.handleResize();
@@ -64,10 +79,14 @@ class App {
       });
     });
 
+    window.addEventListener('resize', updateCombinedCockpit);
+
     const initialHash = window.location.hash.replace("#", "");
     if (initialHash) {
       const match = document.querySelector(`[data-tab="${initialHash}"]`);
       if (match) match.click();
+    } else {
+      updateCombinedCockpit();
     }
   }
 

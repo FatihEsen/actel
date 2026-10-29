@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=5">
 </head>
 <body class="dark-theme">
 
@@ -79,13 +79,14 @@
   <nav class="nav-tabs">
     <button class="nav-tab active" data-tab="dashboard">
       <span class="tab-icon">🏁</span>
-      <span class="tab-label">GÖSTERGE</span>
+      <span class="tab-label desktop-cockpit-label">KOKPİT (GÖSTERGE & KONTROL)</span>
+      <span class="tab-label mobile-cockpit-label">GÖSTERGE</span>
     </button>
     <button class="nav-tab" data-tab="telemetry">
       <span class="tab-icon">📈</span>
       <span class="tab-label">TELEMETRİ</span>
     </button>
-    <button class="nav-tab" data-tab="buttonbox">
+    <button class="nav-tab mobile-only-tab" data-tab="buttonbox">
       <span class="tab-icon">🎛️</span>
       <span class="tab-label">KONTROL</span>
     </button>
@@ -507,6 +508,6 @@
   <script src="js/tyres.js"></script>
   <script src="js/telemetry.js"></script>
   <script src="js/buttonbox.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/app.js?v=5"></script>
 </body>
 </html>

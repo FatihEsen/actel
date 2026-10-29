@@ -1663,11 +1663,6 @@ body {
 }
 
 /* ==========================================================================
-   NEW COCKPIT INDICATORS: 3-Column Layout with Virtual Borders & Uniform Icon Boxes
-   ========================================================================== */
-
-.dash-center {
-/* ==========================================================================
    NEW COCKPIT INDICATORS: Unified Single-Piece Cockpit with Frameless Speed & Symmetrical 5-Wings
    ========================================================================== */
 
@@ -2420,4 +2415,84 @@ body {
   opacity: 1 !important;
   filter: drop-shadow(0 0 8px rgba(255, 23, 68, 0.85));
   transform: scale(1.15);
+}
+
+/* ==================== LARGE SCREEN UNIFIED COCKPIT (DASHBOARD + BUTTON BOX) ==================== */
+.desktop-cockpit-label {
+  display: none;
+}
+.mobile-cockpit-label {
+  display: inline;
+}
+.mobile-only-tab {
+  display: flex;
+}
+
+@media (min-width: 1025px) {
+  .desktop-cockpit-label {
+    display: inline;
+  }
+  .mobile-cockpit-label {
+    display: none;
+  }
+  .mobile-only-tab {
+    display: none;
+  }
+
+  /* When on large screen and cockpit is active: display Dashboard and Button Box together on one single page */
+  .main-container.show-combined-cockpit {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px;
+    padding: 12px 18px 24px 18px;
+    max-width: 1720px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .main-container.show-combined-cockpit #view-dashboard,
+  .main-container.show-combined-cockpit #view-buttonbox {
+    display: flex !important;
+    width: 100%;
+    flex: none;
+  }
+
+  .main-container.show-combined-cockpit #view-buttonbox {
+    background: #0b0f17;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 14px 16px;
+    margin-top: 4px;
+  }
+
+  .main-container.show-combined-cockpit #view-buttonbox .buttonbox-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .main-container.show-combined-cockpit #view-buttonbox .bb-panel {
+    background: #111724;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 10px 12px;
+  }
+
+  .main-container.show-combined-cockpit #view-buttonbox .bb-buttons-wrap {
+    gap: 8px;
+  }
+
+  .main-container.show-combined-cockpit #view-buttonbox .bb-btn {
+    min-height: 42px;
+    padding: 6px 10px;
+  }
+
+  .main-container.show-combined-cockpit #view-buttonbox .bb-title {
+    font-size: 0.80rem;
+    font-weight: 800;
+  }
+
+  .main-container.show-combined-cockpit #view-buttonbox .panel-tag {
+    font-size: 0.74rem;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+  }
 }

@@ -109,6 +109,8 @@ wss.on('connection', (ws, req) => {
         console.log(`[WS] Control action received from ${clientIp}:`, data.action, data.state || 'tap');
         const result = await acController.triggerAction(data.action, data.state);
         ws.send(JSON.stringify({ type: 'control_ack', ...result }));
+      } else if (data.type === 'csp_indicators') {
+        acController.updateFromCsp(data);
       } else if (data.type === 'set_mode') {
         if (['AUTO', 'LIVE_ONLY', 'DEMO_ONLY'].includes(data.mode)) {
           telemetryMode = data.mode;
