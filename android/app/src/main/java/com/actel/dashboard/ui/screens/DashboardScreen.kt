@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.actel.dashboard.data.CarCapabilityCache
 import com.actel.dashboard.data.model.TelemetryData
 import com.actel.dashboard.ui.components.CompactTyresCard
 import com.actel.dashboard.ui.components.GForceMeter
@@ -55,18 +56,6 @@ fun DashboardScreen(
     val gear = physics?.gear ?: 1
     val gearStr = physics?.gearStr ?: "N"
 
-    // Sidekick Turbo / ERS / DRS State
-    val hasTurbo = staticInfo?.hasTurbo == true || (physics?.turboBoost ?: 0f) > 0.05f
-    val turboBoost = physics?.turboBoost ?: 0f
-    val maxTurboBoost = if (staticInfo != null && staticInfo.maxTurboBoost > 0.1f) staticInfo.maxTurboBoost else 2.5f
-
-    val hasKers = staticInfo?.hasERS == true || staticInfo?.hasKERS == true || (physics?.kersCharge ?: 0f) > 0.5f
-    val kersCharge = physics?.kersCharge ?: 0f
-
-    val hasDrs = staticInfo?.hasDRS == true || physics?.drsAvailable == true || physics?.drs == true
-    val drsAvailable = physics?.drsAvailable == true || physics?.drs == true
-    val drsActive = physics?.drs == true
-
     val displayCarName = when {
         !staticInfo?.carName.isNullOrEmpty() -> staticInfo!!.carName
         !staticInfo?.carModel.isNullOrEmpty() -> staticInfo!!.carModel
@@ -78,6 +67,30 @@ fun DashboardScreen(
         !staticInfo?.track.isNullOrEmpty() -> staticInfo!!.track
         else -> "---"
     }
+
+    val turboBoost = physics?.turboBoost ?: 0f
+    val kersCharge = physics?.kersCharge ?: 0f
+    val drsAvailable = physics?.drsAvailable == true || physics?.drs == true
+    val drsActive = physics?.drs == true
+
+    // Araç yeteneklerini kalıcı hafızaya kaydet (Porsche 919 veya herhangi bir turbo araç durduğunda veya sekme değiştiğinde kaybolmaz!)
+    CarCapabilityCache.record(
+        car = displayCarName,
+        staticHasTurbo = staticInfo?.hasTurbo == true,
+        staticHasErs = staticInfo?.hasERS == true,
+        staticHasKers = staticInfo?.hasKERS == true,
+        staticHasDrs = staticInfo?.hasDRS == true,
+        turboBoost = turboBoost,
+        kersCharge = kersCharge,
+        drsAvailable = drsAvailable,
+        drsActive = drsActive,
+        staticMaxTurbo = staticInfo?.maxTurboBoost ?: 0f
+    )
+
+    val hasTurbo = CarCapabilityCache.hasTurbo(displayCarName)
+    val hasKers = CarCapabilityCache.hasKers(displayCarName)
+    val hasDrs = CarCapabilityCache.hasDrs(displayCarName)
+    val maxTurboBoost = CarCapabilityCache.getMaxTurbo(displayCarName)
 
     Column(
         modifier = modifier

@@ -46,7 +46,7 @@ fun ShiftLights(
     drsActive: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    val showTurbo = hasTurbo || turboBoost > 0.05f
+    val showTurbo = hasTurbo || turboBoost > 0.02f
     val showKersOrDrs = hasKers || kersCharge > 0.5f || hasDrs
 
     Column(
@@ -229,21 +229,20 @@ private fun TurboBoostBar(
                     .background(Color(0xFFE2E8F0))
             )
 
-            // Turuncu / Amber uç imleci (Sidekick görselindeki turuncu çizgi)
-            if (ratio > 0.01f) {
+            // Turuncu / Amber uç imleci (Sidekick görselindeki turuncu çizgi, dururken de başta kalır)
+            val markerPos = ratio.coerceIn(0f, 1f)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(markerPos.coerceAtLeast(0.015f))
+                    .fillMaxHeight(),
+                contentAlignment = Alignment.CenterEnd
+            ) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(ratio)
-                        .fillMaxHeight(),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .width(2.5.dp)
-                            .fillMaxHeight()
-                            .background(Color(0xFFFF9100))
-                    )
-                }
+                        .width(2.5.dp)
+                        .fillMaxHeight()
+                        .background(Color(0xFFFF9100))
+                )
             }
         }
 

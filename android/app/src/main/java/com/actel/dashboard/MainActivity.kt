@@ -1,3 +1,4 @@
+@file:OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 package com.actel.dashboard
 
 import android.content.Context
@@ -28,6 +29,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
@@ -40,8 +43,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,7 +55,6 @@ import com.actel.dashboard.data.model.ConnectionState
 import com.actel.dashboard.ui.screens.ButtonBoxScreen
 import com.actel.dashboard.ui.screens.DashboardScreen
 import com.actel.dashboard.ui.screens.SettingsScreen
-import com.actel.dashboard.ui.screens.TyresScreen
 import com.actel.dashboard.ui.theme.ActelTheme
 import com.actel.dashboard.ui.theme.BgCard
 import com.actel.dashboard.ui.theme.BgDark
@@ -67,6 +67,8 @@ import com.actel.dashboard.ui.theme.TextDim
 import com.actel.dashboard.ui.theme.TextPrimary
 import com.actel.dashboard.ui.theme.TextSecondary
 import com.actel.dashboard.viewmodel.MainViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -175,7 +177,14 @@ fun MainApp(
     onHapticFeedback: (Long, Float) -> Unit,
     onStopHaptic: () -> Unit
 ) {
-    var currentTab by remember { mutableStateOf(NavTab.DASHBOARD) }
+    // Sürükleyerek pencereler arası akıcı geçiş için PagerState (0: Gösterge, 1: Kontrol, 2: Ayarlar)
+    val pagerState = rememberPagerState(initialPage = 0, pageCount = { 3 })
+    val currentTab = when (pagerState.currentPage) {
+        0 -> NavTab.DASHBOARD
+        1 -> NavTab.BUTTON_BOX
+        2 -> NavTab.SETTINGS
+        else -> NavTab.DASHBOARD
+    }
 
     val telemetry by viewModel.telemetryState.collectAsState()
     val connectionState by viewModel.connectionState.collectAsState()
@@ -197,17 +206,16 @@ fun MainApp(
         staticInfo?.maxRpm ?: 8500
     }
 
-    // Son %5'lik devir dilimi: örneğin 8500 devirli araç için 8075 devir ve üzeri
+    // Son %5'lik devir dilimi
     val redlineThreshold = (limiterRpm * 0.95f).toInt()
     val isRedline = currentGear >= 2 && currentRpm >= redlineThreshold
 
-    // Kesintisiz Devir Kesici Titreşimi: Devir son %5'te kaldığı sürece motor kesici hissiyle titrer
     LaunchedEffect(isRedline, hapticEnabled, hapticIntensity) {
         if (isRedline && hapticEnabled) {
             try {
                 while (true) {
                     onHapticFeedback(45L, hapticIntensity)
-                    kotlinx.coroutines.delay(40L)
+                    delay(40L)
                 }
             } finally {
                 onStopHaptic()
@@ -250,35 +258,38 @@ fun MainApp(
                 connectionState = connectionState,
                 onTabSelect = { tab ->
                     if (hapticEnabled) onHapticFeedback(25L, hapticIntensity)
-                    currentTab = tab
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(tab.ordinal)
+                    }
                 },
                 currentTab = currentTab
             )
         }
     ) { innerPadding ->
-        Box(
+        // Sürükleyerek pencereler arası geçiş (Swipeable Horizontal Pager)
+        HorizontalPager(
+            state = pagerState,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            when (currentTab) {
-                NavTab.DASHBOARD -> DashboardScreen(
+                .padding(innerPadding),
+            key = { it }
+        ) { page ->
+            when (page) {
+                0 -> DashboardScreen(
                     telemetry = telemetry,
                     onAction = { action ->
                         if (hapticEnabled) onHapticFeedback(40L, hapticIntensity)
                         viewModel.triggerAction(action, null)
                     }
                 )
-                NavTab.BUTTON_BOX -> ButtonBoxScreen(
+                1 -> ButtonBoxScreen(
                     telemetry = telemetry,
                     onAction = { action, state ->
                         if (hapticEnabled && state != "up") onHapticFeedback(45L, hapticIntensity)
                         viewModel.triggerAction(action, state)
-
-// Auto-switch to dashboard removed
                     }
                 )
-                NavTab.SETTINGS -> SettingsScreen(
+                2 -> SettingsScreen(
                     connectionState = connectionState,
                     currentHost = currentHost,
                     discoveredHost = discoveredHost,
@@ -316,8 +327,6 @@ fun TopAppBar(
     currentTab: NavTab,
     onTabSelect: (NavTab) -> Unit
 ) {
-    val staticInfo = telemetry?.staticInfo
-
     Row(
         modifier = Modifier
             .fillMaxWidth()

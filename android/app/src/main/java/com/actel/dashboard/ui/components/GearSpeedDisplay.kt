@@ -32,11 +32,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.actel.dashboard.data.model.IndicatorData
 import com.actel.dashboard.ui.theme.BgCard
 import com.actel.dashboard.ui.theme.BorderDark
+import com.actel.dashboard.ui.theme.DigitalNumbersFontFamily
 import com.actel.dashboard.ui.theme.NeonCyan
 import com.actel.dashboard.ui.theme.NeonGreen
 import com.actel.dashboard.ui.theme.NeonRed
@@ -167,23 +169,7 @@ fun GearSpeedDisplay(
                 )
             }
 
-            // 4. DRS Rozeti (Kullanıcı isteğiyle Sol Kanat 4. Sıraya Taşındı)
-            IndicatorBox(
-                isActive = drsAvailable || drsActive,
-                activeColor = NeonGreen,
-                idleColor = Color(0xFF00FF88).copy(alpha = 0.25f),
-                onClick = { onAction("drs") }
-            ) {
-                Text(
-                    text = "DRS",
-                    color = if (drsAvailable || drsActive) NeonGreen else TextDim,
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Black,
-                    fontFamily = FontFamily.Monospace
-                )
-            }
-
-            // 5. ABS Rozeti
+            // 4. ABS Rozeti (Kullanıcı isteğiyle 4. Sıraya Taşındı)
             IndicatorBox(
                 isActive = absActive,
                 activeColor = NeonRed,
@@ -193,6 +179,22 @@ fun GearSpeedDisplay(
                 Text(
                     text = "ABS",
                     color = if (absActive) Color.White else Color(0xFFFF5064).copy(alpha = 0.45f),
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Black,
+                    fontFamily = FontFamily.Monospace
+                )
+            }
+
+            // 5. DRS Rozeti (Kullanıcı isteğiyle 5. Sıraya Taşındı)
+            IndicatorBox(
+                isActive = drsAvailable || drsActive,
+                activeColor = NeonGreen,
+                idleColor = Color(0xFF00FF88).copy(alpha = 0.25f),
+                onClick = { onAction("drs") }
+            ) {
+                Text(
+                    text = "DRS",
+                    color = if (drsAvailable || drsActive) NeonGreen else TextDim,
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Black,
                     fontFamily = FontFamily.Monospace
@@ -261,7 +263,7 @@ fun GearSpeedDisplay(
                 )
             }
 
-            // 3. Otantik 7-Segment Dijital Vites Kutusu
+            // 3. Dijital Vites Kutusu (Kullanıcının Seçtiği DigitalNumbers Fontu)
             Box(
                 modifier = Modifier
                     .width(115.dp)
@@ -269,13 +271,25 @@ fun GearSpeedDisplay(
                     .clip(RoundedCornerShape(14.dp))
                     .background(Color(0xFF060910))
                     .border(2.5.dp, gearColor.copy(alpha = 0.9f), RoundedCornerShape(14.dp))
-                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                    .padding(horizontal = 8.dp, vertical = 2.dp),
                 contentAlignment = Alignment.Center
             ) {
-                SevenSegmentGear(
-                    gear = displayGear,
+                // Sönük dijital '8' arka planı (otantik LCD/LED derinliği hissi verir)
+                Text(
+                    text = "8",
+                    color = gearColor.copy(alpha = 0.08f),
+                    fontSize = 66.sp,
+                    fontFamily = DigitalNumbersFontFamily,
+                    textAlign = TextAlign.Center
+                )
+
+                // Aktif Vites Karakteri (0-9, N, R)
+                Text(
+                    text = displayGear,
                     color = gearColor,
-                    modifier = Modifier.size(52.dp, 72.dp)
+                    fontSize = 66.sp,
+                    fontFamily = DigitalNumbersFontFamily,
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -308,7 +322,7 @@ fun GearSpeedDisplay(
                 )
             }
 
-            // 2. Dörtlü İkaz (Kullanıcı isteğiyle Sağ Kanat 2. Sıraya Taşındı)
+            // 2. Dörtlü İkaz (Sağ Kanat 2. Sıra)
             val hazardAlpha = if (isHazardActive) flasherAlpha else 0.85f
             IndicatorBox(
                 isActive = isHazardActive,
@@ -386,152 +400,6 @@ fun GearSpeedDisplay(
                     )
                 }
             }
-        }
-    }
-}
-
-/**
- * Otantik 7-Segment Motorsport Dijital Vites Çizici
- * R, N ve 1-9 viteslerini dijital LCD segmentleri şeklinde çizer.
- */
-@Composable
-fun SevenSegmentGear(
-    gear: String,
-    color: Color,
-    modifier: Modifier = Modifier
-) {
-    val inactiveColor = color.copy(alpha = 0.08f)
-
-    Canvas(modifier = modifier) {
-        val w = size.width
-        val h = size.height
-
-        // Segment kalınlığı ve boşlukları
-        val t = w * 0.18f
-        val g = t * 0.22f
-        val halfH = h * 0.5f
-
-        // 7-Segment Aktiflik Mantığı
-        val segA: Boolean
-        val segB: Boolean
-        val segC: Boolean
-        val segD: Boolean
-        val segE: Boolean
-        val segF: Boolean
-        val segG: Boolean
-        var drawDiagR = false
-        var drawDiagN = false
-
-        when (gear) {
-            "0" -> { segA = true; segB = true; segC = true; segD = true; segE = true; segF = true; segG = false }
-            "1" -> { segA = false; segB = true; segC = true; segD = false; segE = false; segF = false; segG = false }
-            "2" -> { segA = true; segB = true; segC = false; segD = true; segE = true; segF = false; segG = true }
-            "3" -> { segA = true; segB = true; segC = true; segD = true; segE = false; segF = false; segG = true }
-            "4" -> { segA = false; segB = true; segC = true; segD = false; segE = false; segF = true; segG = true }
-            "5" -> { segA = true; segB = false; segC = true; segD = true; segE = false; segF = true; segG = true }
-            "6" -> { segA = true; segB = false; segC = true; segD = true; segE = true; segF = true; segG = true }
-            "7" -> { segA = true; segB = true; segC = true; segD = false; segE = false; segF = false; segG = false }
-            "8" -> { segA = true; segB = true; segC = true; segD = true; segE = true; segF = true; segG = true }
-            "9" -> { segA = true; segB = true; segC = true; segD = true; segE = false; segF = true; segG = true }
-            "N" -> { segA = false; segB = true; segC = true; segD = false; segE = true; segF = true; segG = false; drawDiagN = true }
-            "R" -> { segA = true; segB = true; segC = false; segD = false; segE = true; segF = true; segG = true; drawDiagR = true }
-            else -> { segA = false; segB = false; segC = false; segD = false; segE = false; segF = false; segG = true }
-        }
-
-        // Segment A: Üst Yatay
-        val pathA = Path().apply {
-            moveTo(t + g, 0f)
-            lineTo(w - t - g, 0f)
-            lineTo(w - t - g - t * 0.5f, t)
-            lineTo(t + g + t * 0.5f, t)
-            close()
-        }
-        drawPath(pathA, if (segA) color else inactiveColor)
-
-        // Segment B: Sağ Üst Dikey
-        val pathB = Path().apply {
-            moveTo(w, t + g)
-            lineTo(w, halfH - g * 0.5f)
-            lineTo(w - t, halfH - g * 0.5f - t * 0.5f)
-            lineTo(w - t, t + g + t * 0.5f)
-            close()
-        }
-        drawPath(pathB, if (segB) color else inactiveColor)
-
-        // Segment C: Sağ Alt Dikey
-        val pathC = Path().apply {
-            moveTo(w, halfH + g * 0.5f)
-            lineTo(w, h - t - g)
-            lineTo(w - t, h - t - g - t * 0.5f)
-            lineTo(w - t, halfH + g * 0.5f + t * 0.5f)
-            close()
-        }
-        drawPath(pathC, if (segC) color else inactiveColor)
-
-        // Segment D: Alt Yatay
-        val pathD = Path().apply {
-            moveTo(t + g + t * 0.5f, h - t)
-            lineTo(w - t - g - t * 0.5f, h - t)
-            lineTo(w - t - g, h)
-            lineTo(t + g, h)
-            close()
-        }
-        drawPath(pathD, if (segD) color else inactiveColor)
-
-        // Segment E: Sol Alt Dikey
-        val pathE = Path().apply {
-            moveTo(0f, halfH + g * 0.5f)
-            lineTo(t, halfH + g * 0.5f + t * 0.5f)
-            lineTo(t, h - t - g - t * 0.5f)
-            lineTo(0f, h - t - g)
-            close()
-        }
-        drawPath(pathE, if (segE) color else inactiveColor)
-
-        // Segment F: Sol Üst Dikey
-        val pathF = Path().apply {
-            moveTo(0f, t + g)
-            lineTo(t, t + g + t * 0.5f)
-            lineTo(t, halfH - g * 0.5f - t * 0.5f)
-            lineTo(0f, halfH - g * 0.5f)
-            close()
-        }
-        drawPath(pathF, if (segF) color else inactiveColor)
-
-        // Segment G: Orta Yatay (Hexagonal)
-        val pathG = Path().apply {
-            moveTo(t + g, halfH)
-            lineTo(t + g + t * 0.5f, halfH - t * 0.5f)
-            lineTo(w - t - g - t * 0.5f, halfH - t * 0.5f)
-            lineTo(w - t - g, halfH)
-            lineTo(w - t - g - t * 0.5f, halfH + t * 0.5f)
-            lineTo(t + g + t * 0.5f, halfH + t * 0.5f)
-            close()
-        }
-        drawPath(pathG, if (segG) color else inactiveColor)
-
-        // Özel 'R' Harfi Sağ Alt Çapraz Bacak
-        if (drawDiagR) {
-            val pathR = Path().apply {
-                moveTo(t + g, halfH + g)
-                lineTo(t + g + t, halfH + g)
-                lineTo(w - g, h - g)
-                lineTo(w - t - g, h - g)
-                close()
-            }
-            drawPath(pathR, color)
-        }
-
-        // Özel 'N' Harfi İç Çapraz Çizgi
-        if (drawDiagN) {
-            val pathN = Path().apply {
-                moveTo(t, t + g)
-                lineTo(t + t * 0.8f, t + g)
-                lineTo(w - t, h - t - g)
-                lineTo(w - t - t * 0.8f, h - t - g)
-                close()
-            }
-            drawPath(pathN, color)
         }
     }
 }
