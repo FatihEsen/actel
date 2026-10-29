@@ -1,14 +1,24 @@
 {
   "name": "actel",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Assetto Corsa Telemetry & Controller Companion",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "build:apk": "cd android && gradlew.bat assembleDebug",
+    "install:apk": "powershell -Command \"& $env:LOCALAPPDATA\\Android\\Sdk\\platform-tools\\adb.exe install -r android/app/build/outputs/apk/debug/app-debug.apk\"",
+    "deploy:mobile": "npm run build:apk && npm run install:apk",
+    "screencap:mobile": "powershell -Command \"& $env:LOCALAPPDATA\\Android\\Sdk\\platform-tools\\adb.exe shell screencap -p /sdcard/s.png; & $env:LOCALAPPDATA\\Android\\Sdk\\platform-tools\\adb.exe pull /sdcard/s.png phone_screen.png\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "assetto-corsa",
+    "telemetry",
+    "dashboard",
+    "button-box",
+    "android",
+    "compose"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",

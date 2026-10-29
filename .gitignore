@@ -67,3 +67,6 @@ desktop.ini
 *.swp
 *~
 snap_*.png
+phone_*.png
+screen*.png
+web_cockpit_*.png

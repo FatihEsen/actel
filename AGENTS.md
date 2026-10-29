@@ -17,3 +17,4 @@ These rules must be strictly adhered to whenever modifying or debugging code in 
 
 ## 3. Tooling & Environment Guardrails
 - **Binary Captures on Windows:** Never redirect binary streams (e.g. `adb exec-out screencap -p > file.png`) directly in PowerShell, as it corrupts the binary with UTF-16LE encoding. Always use `adb pull` or `cmd /c "... > file.png"`.
+
