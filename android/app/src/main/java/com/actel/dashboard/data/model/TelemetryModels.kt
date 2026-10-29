@@ -130,5 +130,8 @@ data class StaticInfoData(
     val maxFuel: Int = 100,
     val hasDRS: Boolean = false,
     val hasERS: Boolean = false,
+    val hasKERS: Boolean = false,
+    val hasTurbo: Boolean = false,
+    val maxTurboBoost: Float = 2.5f,
     val isOnline: Boolean = false
 )

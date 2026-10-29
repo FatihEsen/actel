@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -28,9 +29,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.actel.dashboard.data.model.IndicatorData
@@ -166,22 +167,19 @@ fun GearSpeedDisplay(
                 )
             }
 
-            // 4. Dörtlü İkaz (Aktifken yanıp söner, boştayken canlı kırmızı)
-            val hazardAlpha = if (isHazardActive) flasherAlpha else 0.85f
+            // 4. DRS Rozeti (Kullanıcı isteğiyle Sol Kanat 4. Sıraya Taşındı)
             IndicatorBox(
-                isActive = isHazardActive,
-                activeColor = NeonRed,
-                idleColor = NeonRed.copy(alpha = 0.85f),
-                onClick = { onAction("hazard") }
+                isActive = drsAvailable || drsActive,
+                activeColor = NeonGreen,
+                idleColor = Color(0xFF00FF88).copy(alpha = 0.25f),
+                onClick = { onAction("drs") }
             ) {
                 Text(
-                    text = "⚠️",
-                    color = if (isHazardActive) {
-                        NeonRed.copy(alpha = if (hazardAlpha > 0.5f) 1f else 0.15f)
-                    } else {
-                        NeonRed.copy(alpha = 0.85f)
-                    },
-                    fontSize = 15.sp
+                    text = "DRS",
+                    color = if (drsAvailable || drsActive) NeonGreen else TextDim,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Black,
+                    fontFamily = FontFamily.Monospace
                 )
             }
 
@@ -202,7 +200,7 @@ fun GearSpeedDisplay(
             }
         }
 
-        // ==================== ORTA OMURGA: HIZ (ÇERÇEVESİZ), RPM, VİTES ====================
+        // ==================== ORTA OMURGA: HIZ (BÜYÜTÜLDÜ), RPM (BÜYÜTÜLDÜ), DİJİTAL VİTES ====================
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -210,7 +208,7 @@ fun GearSpeedDisplay(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 1. Hız Display (Temiz, Çerçevesiz KM/H)
+            // 1. Hız Display (Büyütüldü: 78.sp)
             Row(
                 verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.Center,
@@ -221,10 +219,10 @@ fun GearSpeedDisplay(
                 Text(
                     text = "$speedKmh",
                     color = TextPrimary,
-                    fontSize = 68.sp,
+                    fontSize = 78.sp,
                     fontWeight = FontWeight.Black,
                     fontFamily = FontFamily.Monospace,
-                    lineHeight = 66.sp
+                    lineHeight = 74.sp
                 )
 
                 Spacer(modifier = Modifier.width(6.dp))
@@ -232,14 +230,14 @@ fun GearSpeedDisplay(
                 Text(
                     text = "KM/H",
                     color = NeonCyan,
-                    fontSize = 12.sp,
+                    fontSize = 13.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Monospace,
-                    modifier = Modifier.padding(bottom = 10.dp)
+                    modifier = Modifier.padding(bottom = 12.dp)
                 )
             }
 
-            // 2. RPM Satırı
+            // 2. RPM Satırı (Büyütüldü: 26.sp)
             Row(
                 verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.Center,
@@ -248,38 +246,36 @@ fun GearSpeedDisplay(
                 Text(
                     text = String.format("%,d", currentRpm),
                     color = TextPrimary,
-                    fontSize = 22.sp,
+                    fontSize = 26.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Monospace
                 )
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(5.dp))
                 Text(
                     text = "RPM",
                     color = TextSecondary,
-                    fontSize = 11.sp,
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = FontFamily.Monospace,
-                    modifier = Modifier.padding(bottom = 2.dp)
+                    modifier = Modifier.padding(bottom = 3.dp)
                 )
             }
 
-            // 3. Dijital Vites Kutusu
+            // 3. Otantik 7-Segment Dijital Vites Kutusu
             Box(
                 modifier = Modifier
-                    .width(105.dp)
-                    .height(86.dp)
+                    .width(115.dp)
+                    .height(94.dp)
                     .clip(RoundedCornerShape(14.dp))
-                    .background(Color(0xFF070B12))
-                    .border(2.5.dp, gearColor.copy(alpha = 0.9f), RoundedCornerShape(14.dp)),
+                    .background(Color(0xFF060910))
+                    .border(2.5.dp, gearColor.copy(alpha = 0.9f), RoundedCornerShape(14.dp))
+                    .padding(horizontal = 14.dp, vertical = 10.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = displayGear,
+                SevenSegmentGear(
+                    gear = displayGear,
                     color = gearColor,
-                    fontSize = 54.sp,
-                    fontWeight = FontWeight.Black,
-                    fontFamily = FontFamily.Monospace,
-                    lineHeight = 56.sp
+                    modifier = Modifier.size(52.dp, 72.dp)
                 )
             }
         }
@@ -312,19 +308,22 @@ fun GearSpeedDisplay(
                 )
             }
 
-            // 2. DRS Rozeti
+            // 2. Dörtlü İkaz (Kullanıcı isteğiyle Sağ Kanat 2. Sıraya Taşındı)
+            val hazardAlpha = if (isHazardActive) flasherAlpha else 0.85f
             IndicatorBox(
-                isActive = drsAvailable || drsActive,
-                activeColor = NeonGreen,
-                idleColor = Color(0xFF00FF88).copy(alpha = 0.25f),
-                onClick = { onAction("drs") }
+                isActive = isHazardActive,
+                activeColor = NeonRed,
+                idleColor = NeonRed.copy(alpha = 0.85f),
+                onClick = { onAction("hazard") }
             ) {
                 Text(
-                    text = "DRS",
-                    color = if (drsAvailable || drsActive) NeonGreen else TextDim,
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Black,
-                    fontFamily = FontFamily.Monospace
+                    text = "⚠️",
+                    color = if (isHazardActive) {
+                        NeonRed.copy(alpha = if (hazardAlpha > 0.5f) 1f else 0.15f)
+                    } else {
+                        NeonRed.copy(alpha = 0.85f)
+                    },
+                    fontSize = 15.sp
                 )
             }
 
@@ -360,12 +359,11 @@ fun GearSpeedDisplay(
                 )
             }
 
-            // 5. BB Rozeti (Değer altında yazan)
-            val bbPercent = String.format("%.1f%%", brakeBias * 100f)
+            // 5. Brake Bias Rozeti (BB Başlığı ve Altında Yüzdelik Değer)
             IndicatorBox(
                 isActive = false,
-                activeColor = NeonCyan,
-                idleColor = Color(0xFF00F0FF).copy(alpha = 0.25f),
+                activeColor = Color(0xFFB0BEC5),
+                idleColor = Color(0xFF78909C).copy(alpha = 0.35f),
                 onClick = {}
             ) {
                 Column(
@@ -374,23 +372,166 @@ fun GearSpeedDisplay(
                 ) {
                     Text(
                         text = "BB",
-                        color = NeonCyan,
+                        color = Color.White,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Black,
-                        fontFamily = FontFamily.Monospace,
-                        lineHeight = 10.sp
+                        fontFamily = FontFamily.Monospace
                     )
                     Text(
-                        text = bbPercent,
-                        color = Color.White,
-                        fontSize = 8.sp,
+                        text = String.format("%.1f%%", brakeBias * 100f),
+                        color = TextSecondary,
+                        fontSize = 9.sp,
                         fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.Monospace,
-                        lineHeight = 9.sp,
-                        textAlign = TextAlign.Center
+                        fontFamily = FontFamily.Monospace
                     )
                 }
             }
+        }
+    }
+}
+
+/**
+ * Otantik 7-Segment Motorsport Dijital Vites Çizici
+ * R, N ve 1-9 viteslerini dijital LCD segmentleri şeklinde çizer.
+ */
+@Composable
+fun SevenSegmentGear(
+    gear: String,
+    color: Color,
+    modifier: Modifier = Modifier
+) {
+    val inactiveColor = color.copy(alpha = 0.08f)
+
+    Canvas(modifier = modifier) {
+        val w = size.width
+        val h = size.height
+
+        // Segment kalınlığı ve boşlukları
+        val t = w * 0.18f
+        val g = t * 0.22f
+        val halfH = h * 0.5f
+
+        // 7-Segment Aktiflik Mantığı
+        val segA: Boolean
+        val segB: Boolean
+        val segC: Boolean
+        val segD: Boolean
+        val segE: Boolean
+        val segF: Boolean
+        val segG: Boolean
+        var drawDiagR = false
+        var drawDiagN = false
+
+        when (gear) {
+            "0" -> { segA = true; segB = true; segC = true; segD = true; segE = true; segF = true; segG = false }
+            "1" -> { segA = false; segB = true; segC = true; segD = false; segE = false; segF = false; segG = false }
+            "2" -> { segA = true; segB = true; segC = false; segD = true; segE = true; segF = false; segG = true }
+            "3" -> { segA = true; segB = true; segC = true; segD = true; segE = false; segF = false; segG = true }
+            "4" -> { segA = false; segB = true; segC = true; segD = false; segE = false; segF = true; segG = true }
+            "5" -> { segA = true; segB = false; segC = true; segD = true; segE = false; segF = true; segG = true }
+            "6" -> { segA = true; segB = false; segC = true; segD = true; segE = true; segF = true; segG = true }
+            "7" -> { segA = true; segB = true; segC = true; segD = false; segE = false; segF = false; segG = false }
+            "8" -> { segA = true; segB = true; segC = true; segD = true; segE = true; segF = true; segG = true }
+            "9" -> { segA = true; segB = true; segC = true; segD = true; segE = false; segF = true; segG = true }
+            "N" -> { segA = false; segB = true; segC = true; segD = false; segE = true; segF = true; segG = false; drawDiagN = true }
+            "R" -> { segA = true; segB = true; segC = false; segD = false; segE = true; segF = true; segG = true; drawDiagR = true }
+            else -> { segA = false; segB = false; segC = false; segD = false; segE = false; segF = false; segG = true }
+        }
+
+        // Segment A: Üst Yatay
+        val pathA = Path().apply {
+            moveTo(t + g, 0f)
+            lineTo(w - t - g, 0f)
+            lineTo(w - t - g - t * 0.5f, t)
+            lineTo(t + g + t * 0.5f, t)
+            close()
+        }
+        drawPath(pathA, if (segA) color else inactiveColor)
+
+        // Segment B: Sağ Üst Dikey
+        val pathB = Path().apply {
+            moveTo(w, t + g)
+            lineTo(w, halfH - g * 0.5f)
+            lineTo(w - t, halfH - g * 0.5f - t * 0.5f)
+            lineTo(w - t, t + g + t * 0.5f)
+            close()
+        }
+        drawPath(pathB, if (segB) color else inactiveColor)
+
+        // Segment C: Sağ Alt Dikey
+        val pathC = Path().apply {
+            moveTo(w, halfH + g * 0.5f)
+            lineTo(w, h - t - g)
+            lineTo(w - t, h - t - g - t * 0.5f)
+            lineTo(w - t, halfH + g * 0.5f + t * 0.5f)
+            close()
+        }
+        drawPath(pathC, if (segC) color else inactiveColor)
+
+        // Segment D: Alt Yatay
+        val pathD = Path().apply {
+            moveTo(t + g + t * 0.5f, h - t)
+            lineTo(w - t - g - t * 0.5f, h - t)
+            lineTo(w - t - g, h)
+            lineTo(t + g, h)
+            close()
+        }
+        drawPath(pathD, if (segD) color else inactiveColor)
+
+        // Segment E: Sol Alt Dikey
+        val pathE = Path().apply {
+            moveTo(0f, halfH + g * 0.5f)
+            lineTo(t, halfH + g * 0.5f + t * 0.5f)
+            lineTo(t, h - t - g - t * 0.5f)
+            lineTo(0f, h - t - g)
+            close()
+        }
+        drawPath(pathE, if (segE) color else inactiveColor)
+
+        // Segment F: Sol Üst Dikey
+        val pathF = Path().apply {
+            moveTo(0f, t + g)
+            lineTo(t, t + g + t * 0.5f)
+            lineTo(t, halfH - g * 0.5f - t * 0.5f)
+            lineTo(0f, halfH - g * 0.5f)
+            close()
+        }
+        drawPath(pathF, if (segF) color else inactiveColor)
+
+        // Segment G: Orta Yatay (Hexagonal)
+        val pathG = Path().apply {
+            moveTo(t + g, halfH)
+            lineTo(t + g + t * 0.5f, halfH - t * 0.5f)
+            lineTo(w - t - g - t * 0.5f, halfH - t * 0.5f)
+            lineTo(w - t - g, halfH)
+            lineTo(w - t - g - t * 0.5f, halfH + t * 0.5f)
+            lineTo(t + g + t * 0.5f, halfH + t * 0.5f)
+            close()
+        }
+        drawPath(pathG, if (segG) color else inactiveColor)
+
+        // Özel 'R' Harfi Sağ Alt Çapraz Bacak
+        if (drawDiagR) {
+            val pathR = Path().apply {
+                moveTo(t + g, halfH + g)
+                lineTo(t + g + t, halfH + g)
+                lineTo(w - g, h - g)
+                lineTo(w - t - g, h - g)
+                close()
+            }
+            drawPath(pathR, color)
+        }
+
+        // Özel 'N' Harfi İç Çapraz Çizgi
+        if (drawDiagN) {
+            val pathN = Path().apply {
+                moveTo(t, t + g)
+                lineTo(t + t * 0.8f, t + g)
+                lineTo(w - t, h - t - g)
+                lineTo(w - t - t * 0.8f, h - t - g)
+                close()
+            }
+            drawPath(pathN, color)
         }
     }
 }
@@ -401,19 +542,18 @@ private fun IndicatorBox(
     activeColor: Color,
     idleColor: Color,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    val bg = if (isActive) activeColor.copy(alpha = 0.32f) else Color(0xFF141822)
-    val borderCol = if (isActive) activeColor else BorderDark
+    val boxBg = if (isActive) activeColor.copy(alpha = 0.28f) else Color(0xFF0F1522)
+    val boxBorder = if (isActive) activeColor else idleColor
 
     Box(
-        modifier = modifier
-            .size(44.dp, 36.dp)
-            .clip(RoundedCornerShape(7.dp))
-            .background(bg)
-            .border(1.2.dp, borderCol, RoundedCornerShape(7.dp))
-            .clickable(onClick = onClick),
+        modifier = Modifier
+            .size(46.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(boxBg)
+            .border(1.2.dp, boxBorder, RoundedCornerShape(8.dp))
+            .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         content()

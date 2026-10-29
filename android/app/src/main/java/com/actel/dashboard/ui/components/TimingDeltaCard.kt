@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,14 +47,14 @@ fun TimingDeltaCard(
     sector: Int,
     modifier: Modifier = Modifier
 ) {
-    // Determine ghost time display & color
+    // Determine ghost time display & color (Daha iyiyse Yeşil, kötüyse Kırmızı)
     val displayGhost = when {
         ghostDelta.isNotEmpty() -> ghostDelta
         delta != 0f -> if (delta >= 0f) "+${String.format(Locale.US, "%.2f", delta)}s" else "-${String.format(Locale.US, "%.2f", kotlin.math.abs(delta))}s"
         else -> "+0.00s"
     }
     val isAhead = displayGhost.startsWith("-") || delta < 0f
-    val isZero = displayGhost == "+0.00s" || displayGhost == "0.00s" || delta == 0f
+    val isZero = displayGhost == "+0.00s" || displayGhost == "0.00s" || (delta == 0f && ghostDelta.isEmpty())
     val ghostColor = when {
         isAhead -> NeonGreen
         isZero -> TextSecondary
@@ -73,7 +72,7 @@ fun TimingDeltaCard(
             .padding(horizontal = 10.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        // 1. Üst Satır: Tur & Sektör (veya Cut Uyarısı)
+        // 1. Üst Satır: Tur & Sektör (Geçersiz tur etiketi kullanıcı isteğiyle kaldırıldı)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -94,42 +93,23 @@ fun TimingDeltaCard(
                 )
             }
 
-            if (isLapCut) {
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(NeonRed.copy(alpha = 0.2f))
-                        .border(1.dp, NeonRed, RoundedCornerShape(4.dp))
-                        .padding(horizontal = 6.dp, vertical = 2.dp)
-                ) {
-                    Text(
-                        text = "⚠️ GEÇERSİZ (CUT)",
-                        color = NeonRed,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.Monospace,
-                        maxLines = 1
-                    )
-                }
-            } else {
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(BorderDark)
-                        .padding(horizontal = 6.dp, vertical = 2.dp)
-                ) {
-                    Text(
-                        text = "SEKTÖR S$sector",
-                        color = NeonGreen,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.Monospace
-                    )
-                }
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(BorderDark)
+                    .padding(horizontal = 6.dp, vertical = 2.dp)
+            ) {
+                Text(
+                    text = "SEKTÖR S$sector",
+                    color = NeonGreen,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Monospace
+                )
             }
         }
 
-        // 2. Canlı Tur Süresi (Etiket kaldırıldı, cut durumunda kırmızı)
+        // 2. Canlı Tur Süresi (Büyütülen font boyutu: 35.sp, cut durumunda kırmızı)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
@@ -138,47 +118,34 @@ fun TimingDeltaCard(
             Text(
                 text = if (currentTime.isNotEmpty()) currentTime else "0:00.000",
                 color = liveLapColor,
-                fontSize = 28.sp,
+                fontSize = 35.sp,
                 fontWeight = FontWeight.Black,
                 fontFamily = FontFamily.Monospace,
                 letterSpacing = 1.sp
             )
         }
 
-        // 3. Ghost Farkı & Dinamik Trend Okları (Tekil Ghost / Delta Alanı)
+        // 3. Ghost Farkı & Dinamik Trend Okları (Etiketsiz & Arka plansız sade/temiz tasarım)
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(6.dp))
-                .background(BorderDark.copy(alpha = 0.45f))
-                .border(1.dp, BorderDark, RoundedCornerShape(6.dp))
-                .padding(horizontal = 8.dp, vertical = 5.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "GHOST FARKI",
-                color = TextDim,
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Monospace
-            )
-
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 // Yeşil Yukarı Ok (⇧) - Zaman kazandıkça / iyileştikçe parlar
                 BlockArrowUp(
                     isActive = deltaTrend == "improving",
-                    modifier = Modifier.size(15.dp, 20.dp)
+                    modifier = Modifier.size(16.dp, 22.dp)
                 )
 
-                // Ghost Zaman Farkı
+                // Ghost Zaman Farkı (Ghosttan iyiyse Yeşil, kötüyse Kırmızı)
                 Text(
                     text = displayGhost,
                     color = ghostColor,
-                    fontSize = 17.sp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Black,
                     fontFamily = FontFamily.Monospace
                 )
@@ -186,10 +153,12 @@ fun TimingDeltaCard(
                 // Kırmızı Aşağı Ok (⇩) - Zaman kaybettikçe / kötüleştikçe parlar
                 BlockArrowDown(
                     isActive = deltaTrend == "worsening",
-                    modifier = Modifier.size(15.dp, 20.dp)
+                    modifier = Modifier.size(16.dp, 22.dp)
                 )
             }
         }
+
+        Spacer(modifier = Modifier.height(2.dp))
 
         // 4. En İyi Tur & Son Tur
         Row(

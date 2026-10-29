@@ -16,7 +16,7 @@ Telefon ve tabletleri **Kotlin & Jetpack Compose** gücüyle yarış kokpitinizi
 ## 📸 Ekran Görüntüleri (Screenshots)
 
 ### 1. Canlı Yarış Göstergesi (Dashboard)
-16 LED kademeli Shift Light devir barı, simetrik kokpit kanatları (Sol: Sinyal, Far, Flaşör, Dörtlü, ABS / Sağ: Sinyal, DRS, PIT, TC, Fren Dağılımı), kesintisiz dikey gövde (Hız, RPM ve Dijital Vites), canlı tur zamanı & dinamik iki yönlü delta barı (+/-), debriyaj / fren / gaz pedalları, 2D G-Kuvveti dairesi ve 4 tekerlek lastik telemetrisi (PSI, °C ve aşınma).
+16 LED kademeli Shift Light devir barı, Sidekick tarzı akıllı Turbo Basınç ve ERS/KERS/DRS telemetri barları, simetrik kokpit kanatları (Sol: Sinyal, Far, Flaşör, DRS, ABS / Sağ: Sinyal, Dörtlü ⚠️, PIT, TC, Fren Dağılımı), otantik 7-segment dijital vites göstergesi, büyütülmüş Hız (KM/H) ve RPM, canlı tur zamanı (pist dışına çıkışta kırmızı uyarı), dinamik ghost farkı ve trend okları (kazançta yeşil, kayıpta kırmızı), debriyaj / fren / gaz pedalları, 2D G-Kuvveti dairesi ve 4 tekerlek lastik telemetrisi (PSI, °C ve aşınma).
 
 ![ACTel Android Dashboard](docs/screenshots/dashboard.png)
 

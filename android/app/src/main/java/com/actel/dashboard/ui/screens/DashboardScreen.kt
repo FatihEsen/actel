@@ -55,6 +55,18 @@ fun DashboardScreen(
     val gear = physics?.gear ?: 1
     val gearStr = physics?.gearStr ?: "N"
 
+    // Sidekick Turbo / ERS / DRS State
+    val hasTurbo = staticInfo?.hasTurbo == true || (physics?.turboBoost ?: 0f) > 0.05f
+    val turboBoost = physics?.turboBoost ?: 0f
+    val maxTurboBoost = if (staticInfo != null && staticInfo.maxTurboBoost > 0.1f) staticInfo.maxTurboBoost else 2.5f
+
+    val hasKers = staticInfo?.hasERS == true || staticInfo?.hasKERS == true || (physics?.kersCharge ?: 0f) > 0.5f
+    val kersCharge = physics?.kersCharge ?: 0f
+
+    val hasDrs = staticInfo?.hasDRS == true || physics?.drsAvailable == true || physics?.drs == true
+    val drsAvailable = physics?.drsAvailable == true || physics?.drs == true
+    val drsActive = physics?.drs == true
+
     val displayCarName = when {
         !staticInfo?.carName.isNullOrEmpty() -> staticInfo!!.carName
         !staticInfo?.carModel.isNullOrEmpty() -> staticInfo!!.carModel
@@ -72,14 +84,22 @@ fun DashboardScreen(
             .fillMaxSize()
             .padding(10.dp)
     ) {
-        // Top Shift Light Bar
+        // Top Shift Light Bar with Sidekick-style Turbo & ERS/DRS bars
         ShiftLights(
             currentRpm = currentRpm,
             maxRpm = maxRpm,
+            hasTurbo = hasTurbo,
+            turboBoost = turboBoost,
+            maxTurboBoost = maxTurboBoost,
+            hasKers = hasKers,
+            kersCharge = kersCharge,
+            hasDrs = hasDrs,
+            drsAvailable = drsAvailable,
+            drsActive = drsActive,
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(6.dp))
 
         // Main Dashboard Grid
         Row(
@@ -172,8 +192,8 @@ fun DashboardScreen(
                     indicators = telemetry?.indicators,
                     absActive = physics?.absActive == true,
                     tcActive = physics?.tcActive == true,
-                    drsAvailable = physics?.drsAvailable == true || physics?.drs == true,
-                    drsActive = physics?.drs == true,
+                    drsAvailable = drsAvailable,
+                    drsActive = drsActive,
                     pitActive = physics?.pitLimiterOn == true || graphic?.isInPitLane == true || telemetry?.indicators?.pitLimiter == true,
                     brakeBias = physics?.brakeBias ?: 0.58f,
                     onAction = onAction,
@@ -217,30 +237,5 @@ fun DashboardScreen(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun SetupItem(
-    label: String,
-    value: String,
-    color: Color = NeonCyan
-) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = label,
-            color = TextDim,
-            fontSize = 10.sp,
-            fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Monospace
-        )
-        Spacer(modifier = Modifier.height(2.dp))
-        Text(
-            text = value,
-            color = color,
-            fontSize = 13.sp,
-            fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Monospace
-        )
     }
 }
