@@ -40,7 +40,7 @@ fun CompactTyresCard(
     modifier: Modifier = Modifier
 ) {
     val pressures = tyres?.pressure ?: listOf(0f, 0f, 0f, 0f)
-    val temps = tyres?.tempCore ?: listOf(0f, 0f, 0f, 0f)
+    val temps = if (!tyres?.tempPractical.isNullOrEmpty() && tyres!!.tempPractical.any { it > 0 }) tyres.tempPractical else (tyres?.tempCore ?: listOf(0f, 0f, 0f, 0f))
     val wears = tyres?.wear ?: listOf(100f, 100f, 100f, 100f)
 
     Column(

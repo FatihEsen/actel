@@ -341,12 +341,12 @@ class DashboardController {
 
     // Gaps to Car Ahead (or Ghost) and Car Behind
     // Ghost Delta & Arrows
-    const ghostVal = telemetry.ghostDelta || (graph.split ? graph.split + 's' : '+0.00s');
+    const ghostVal = (telemetry.ghostDelta !== undefined && telemetry.ghostDelta !== null && telemetry.ghostDelta !== '') ? telemetry.ghostDelta : '-.--';
     if (this.dashGhostDelta) {
       this.dashGhostDelta.textContent = ghostVal;
-      const isAhead = ghostVal.startsWith('-');
-      const isZero = ghostVal === '+0.00s' || ghostVal === '0.00s';
-      this.dashGhostDelta.className = 'ghost-time mono ' + (isAhead ? 'text-green' : (isZero ? 'text-neutral' : 'text-red'));
+      const isAhead = ghostVal !== '-.--' && ghostVal.startsWith('-');
+      const isNeutral = ghostVal === '-.--' || ghostVal === '+0.00s' || ghostVal === '0.00s';
+      this.dashGhostDelta.className = 'ghost-time mono ' + (isAhead ? 'text-green' : (isNeutral ? 'text-neutral' : 'text-red'));
     }
     if (this.ghostArrowUp) {
       this.ghostArrowUp.classList.toggle('active', telemetry.deltaTrend === 'improving');
@@ -395,7 +395,7 @@ class DashboardController {
     // 8. Compact Tyres (FL: 0, FR: 1, RL: 2, RR: 3)
     const tyres = phys.tyres || {};
     const pressures = tyres.pressure || [0, 0, 0, 0];
-    const temps = tyres.tempCore || [0, 0, 0, 0];
+    const temps = tyres.tempPractical || tyres.tempCore || [0, 0, 0, 0];
     const wears = tyres.wear || [100, 100, 100, 100];
 
     const keys = ['FL', 'FR', 'RL', 'RR'];
@@ -404,7 +404,8 @@ class DashboardController {
       if (cell) {
         const p = pressures[idx] || 0;
         const t = temps[idx] || 0;
-        const w = wears[idx] !== undefined ? wears[idx] : 100;
+        const rawW = wears[idx] !== undefined ? wears[idx] : 100;
+        const w = rawW > 100 ? rawW / 100 : rawW;
 
         if (cell.psi) cell.psi.textContent = p.toFixed(1);
         if (cell.temp) {

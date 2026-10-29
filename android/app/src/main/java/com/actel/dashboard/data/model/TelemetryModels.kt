@@ -81,6 +81,7 @@ data class AccGData(
 @Serializable
 data class TyresData(
     val pressure: List<Float> = listOf(0f, 0f, 0f, 0f),
+    val tempPractical: List<Float> = listOf(0f, 0f, 0f, 0f),
     val tempCore: List<Float> = listOf(0f, 0f, 0f, 0f),
     val tempI: List<Float> = listOf(0f, 0f, 0f, 0f),
     val tempM: List<Float> = listOf(0f, 0f, 0f, 0f),
