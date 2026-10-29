@@ -136,13 +136,16 @@
             </div>
 
             <div class="timing-rows">
-              <div class="timing-item">
-                <span class="timing-label">CANLI SÜRE</span>
-                <span id="dashCurrentLap" class="timing-val mono">0:00.000</span>
+              <div class="timing-item live-lap-container">
+                <span id="dashCurrentLap" class="timing-val mono live-lap-val">0:00.000</span>
               </div>
-              <div class="timing-item highlight-delta">
-                <span class="timing-label">DELTA (EN İYİ)</span>
-                <span id="dashDelta" class="timing-val mono delta-neutral">0.000</span>
+              <div class="timing-item ghost-delta-item">
+                <span class="timing-label">GHOST FARKI</span>
+                <div class="ghost-arrows-wrap">
+                  <span id="ghostArrowUp" class="block-arrow arrow-up">▲</span>
+                  <span id="dashGhostDelta" class="ghost-time mono text-red">+0.00s</span>
+                  <span id="ghostArrowDown" class="block-arrow arrow-down">▼</span>
+                </div>
               </div>
               <div class="timing-item">
                 <span class="timing-label">EN İYİ TUR</span>
@@ -182,17 +185,7 @@
               </div>
             </div>
 
-            <!-- Gap Ahead / Ghost & Gap Behind -->
-            <div class="delta-gaps-grid">
-              <div class="gap-box gap-ahead">
-                <span class="gap-sub">ÖNDEKİ / GHOST</span>
-                <span id="gapAheadVal" class="gap-time mono text-red">+1.24s</span>
-              </div>
-              <div class="gap-box gap-behind">
-                <span class="gap-sub">ARKADAKİ ARAÇ</span>
-                <span id="gapBehindVal" class="gap-time mono text-green">-0.85s</span>
-              </div>
-            </div>
+            
           </div>
         </div>
 

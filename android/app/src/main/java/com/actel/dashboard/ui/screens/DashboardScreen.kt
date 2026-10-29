@@ -144,63 +144,19 @@ fun DashboardScreen(
                     }
                 }
 
-                // 2. Timing & Delta Kartı
+                // 2. Timing, Canlı Süre, Ghost Delta & Lap Telemetri Kartı (Tek Kart)
                 TimingDeltaCard(
                     currentTime = graphic?.currentTime ?: "0:00.000",
                     lastTime = graphic?.lastTime ?: "--:--.---",
                     bestTime = graphic?.bestTime ?: "--:--.---",
-                    split = graphic?.split ?: "+0.000",
+                    ghostDelta = telemetry?.ghostDelta ?: "",
+                    delta = telemetry?.delta ?: (physics?.performanceMeter ?: 0f),
+                    deltaTrend = telemetry?.deltaTrend ?: "neutral",
+                    isLapCut = telemetry?.isLapCut ?: false,
                     lap = graphic?.completedLaps ?: 0,
                     sector = graphic?.currentSectorIndex ?: 1,
                     modifier = Modifier.fillMaxWidth()
                 )
-
-                // 3. Gap Ahead / Ghost & Gap Behind Kartı
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(BgCard)
-                        .border(1.dp, BorderDark, RoundedCornerShape(10.dp))
-                        .padding(horizontal = 10.dp, vertical = 7.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            text = "ÖNDEKİ / GHOST",
-                            color = TextDim,
-                            fontSize = 9.sp,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = "+1.24s",
-                            color = NeonRed,
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Black,
-                            fontFamily = FontFamily.Monospace
-                        )
-                    }
-                    Column(horizontalAlignment = Alignment.End) {
-                        Text(
-                            text = "ARKADAKİ ARAÇ",
-                            color = TextDim,
-                            fontSize = 9.sp,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = "-0.85s",
-                            color = NeonGreen,
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Black,
-                            fontFamily = FontFamily.Monospace
-                        )
-                    }
-                }
             }
 
             // ==================== ORTA SÜTUN: HIZ, RPM, VİTES VE KANAT GÖSTERGELERİ ====================

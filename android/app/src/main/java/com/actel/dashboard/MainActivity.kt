@@ -275,13 +275,7 @@ fun MainApp(
                         if (hapticEnabled && state != "up") onHapticFeedback(45L, hapticIntensity)
                         viewModel.triggerAction(action, state)
 
-                        // Start veya yeniden başlat tuşuna basıldıktan 1sn sonra gösterge sayfası açılsın
-                        if ((action == "starter" || action == "engine_start" || action == "restart_session") && state != "up") {
-                            coroutineScope.launch {
-                                kotlinx.coroutines.delay(1000L)
-                                currentTab = NavTab.DASHBOARD
-                            }
-                        }
+// Auto-switch to dashboard removed
                     }
                 )
                 NavTab.SETTINGS -> SettingsScreen(

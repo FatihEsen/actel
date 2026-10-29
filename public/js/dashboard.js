@@ -50,6 +50,9 @@ class DashboardController {
     this.deltaBarLoss = document.getElementById('deltaBarLoss');
     this.gapAheadVal = document.getElementById('gapAheadVal');
     this.gapBehindVal = document.getElementById('gapBehindVal');
+    this.dashGhostDelta = document.getElementById('dashGhostDelta');
+    this.ghostArrowUp = document.getElementById('ghostArrowUp');
+    this.ghostArrowDown = document.getElementById('ghostArrowDown');
 
     // Wire clicks to turn signals, hazard, pit limiter, lights, and flasher
     this.setupIndicatorClicks();
@@ -196,7 +199,14 @@ class DashboardController {
     if (this.elLapPill) this.elLapPill.textContent = `TUR ${graph.completedLaps || 0}`;
     if (this.elSecPill) this.elSecPill.textContent = `SEKTÖR S${graph.currentSectorIndex !== undefined ? graph.currentSectorIndex : 1}`;
 
-    if (this.elCurrentLap && graph.currentTime) this.elCurrentLap.textContent = graph.currentTime;
+    if (this.elCurrentLap && graph.currentTime) {
+      this.elCurrentLap.textContent = graph.currentTime;
+      if (telemetry.isLapCut) {
+        this.elCurrentLap.style.color = '#ff3344';
+      } else {
+        this.elCurrentLap.style.color = '#e0e6ed';
+      }
+    }
     if (this.elLastLap && graph.lastTime) this.elLastLap.textContent = graph.lastTime;
     if (this.elBestLap && graph.bestTime) this.elBestLap.textContent = graph.bestTime;
 
@@ -330,13 +340,22 @@ class DashboardController {
     }
 
     // Gaps to Car Ahead (or Ghost) and Car Behind
-    if (this.gapAheadVal) {
-      const gapA = graph.gapAhead !== undefined ? graph.gapAhead : (graph.split || '+1.24s');
-      this.gapAheadVal.textContent = typeof gapA === 'number' ? `${gapA > 0 ? '+' : ''}${gapA.toFixed(2)}s` : gapA;
+    // Ghost Delta & Arrows
+    const ghostVal = telemetry.ghostDelta || (graph.split ? graph.split + 's' : '+0.00s');
+    if (this.dashGhostDelta) {
+      this.dashGhostDelta.textContent = ghostVal;
+      const isAhead = ghostVal.startsWith('-');
+      const isZero = ghostVal === '+0.00s' || ghostVal === '0.00s';
+      this.dashGhostDelta.className = 'ghost-time mono ' + (isAhead ? 'text-green' : (isZero ? 'text-neutral' : 'text-red'));
     }
-    if (this.gapBehindVal) {
-      const gapB = graph.gapBehind !== undefined ? graph.gapBehind : '-0.85s';
-      this.gapBehindVal.textContent = typeof gapB === 'number' ? `${gapB > 0 ? '+' : ''}${gapB.toFixed(2)}s` : gapB;
+    if (this.ghostArrowUp) {
+      this.ghostArrowUp.classList.toggle('active', telemetry.deltaTrend === 'improving');
+    }
+    if (this.ghostArrowDown) {
+      this.ghostArrowDown.classList.toggle('active', telemetry.deltaTrend === 'worsening');
+    }
+    if (this.gapAheadVal) {
+      this.gapAheadVal.textContent = ghostVal;
     }
 
     // 8. Speed & Gear

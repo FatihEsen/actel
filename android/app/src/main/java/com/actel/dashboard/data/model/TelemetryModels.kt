@@ -26,7 +26,14 @@ data class TelemetryData(
     val physics: PhysicsData? = null,
     val graphic: GraphicData? = null,
     val staticInfo: StaticInfoData? = null,
-    val indicators: IndicatorData? = null
+    val indicators: IndicatorData? = null,
+    val ghostDelta: String = "",
+    val delta: Float = 0f,
+    val deltaTrend: String = "neutral",
+    val isLapCut: Boolean = false,
+    val gapAhead: String = "",
+    val gapBehind: String = "",
+    val totalCars: Int = 0
 )
 
 @Serializable

@@ -102,15 +102,7 @@ class ButtonBoxController {
 
           this.sendAction(action, null);
 
-          // Start veya yeniden başlat tuşuna bastıktan 1sn sonra gösterge sayfası açılsın
-          if (action === 'starter' || action === 'engine_start' || action === 'restart_session') {
-            setTimeout(() => {
-              const dashTab = document.querySelector('.nav-tab[data-tab="dashboard"]');
-              if (dashTab) {
-                dashTab.click();
-              }
-            }, 1000);
-          }
+// Auto-switch to dashboard removed per user preference
 
           setTimeout(() => {
             btn.classList.remove('pressed');
