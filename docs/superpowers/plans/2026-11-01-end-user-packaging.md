@@ -335,3 +335,4 @@ Expected: `dist/ACTel-v1.0.0-windows-x64.zip` generated.
 git add scripts/package-portable.js package.json
 git commit -m "feat(distribution): add portable ZIP packaging script and npm package command"
 ```
+
