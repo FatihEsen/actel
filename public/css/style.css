@@ -3227,3 +3227,144 @@ body {
   border-color: #00e5ff;
   box-shadow: 0 0 14px rgba(0, 229, 255, 0.85);
 }
+
+/* ==================== Sidekick Parity Updates: Turbo Bar & ERS Mechanics ==================== */
+.turbo-rpm-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #0a0e17;
+  border: 1px solid #1a2333;
+  border-radius: 4px;
+  padding: 3px 8px;
+  margin-bottom: 6px;
+  height: 22px;
+  box-sizing: border-box;
+}
+
+.turbo-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #88a0b8;
+  line-height: 1;
+}
+
+.turbo-track {
+  position: relative;
+  flex: 1;
+  height: 6px;
+  background: #141a26;
+  border: 1px solid #242e42;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.turbo-rpm-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0%;
+  background: #e2e8f0;
+  transition: width 0.08s linear;
+}
+
+.turbo-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: #ff8200;
+  left: 0%;
+  box-shadow: 0 0 8px rgba(255, 130, 0, 0.9);
+  transition: left 0.08s linear;
+}
+
+.turbo-val {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #dce6f2;
+  min-width: 55px;
+  text-align: right;
+  line-height: 1;
+}
+
+.ers-fill {
+  background: #00e5ff;
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+}
+
+.ers-fill.charging {
+  background: #00e676 !important;
+  box-shadow: 0 0 8px rgba(0, 230, 118, 0.7) !important;
+}
+
+.ers-label.charging, .ers-val.charging {
+  color: #00e676 !important;
+}
+
+.ers-label, .ers-val {
+  color: #00e5ff;
+}
+
+.ers-white-pin {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #ffffff;
+  left: 0%;
+  box-shadow: 0 0 6px #ffffff;
+  transition: left 0.06s ease;
+}
+
+.ers-red-pin {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #ff1744;
+  left: 100%;
+  box-shadow: 0 0 6px rgba(255, 23, 68, 0.8);
+  transition: left 0.1s linear;
+}
+
+/* ABS & TC Rapid Flashing on Active Intervention */
+@keyframes strobeAbsBlink {
+  0%, 49% {
+    background: rgba(255, 23, 68, 0.28) !important;
+    border-color: #ff1744 !important;
+  }
+  50%, 100% {
+    background: #0b1019 !important;
+    border-color: #1e293b !important;
+  }
+}
+@keyframes strobeTcBlink {
+  0%, 49% {
+    background: rgba(0, 229, 255, 0.28) !important;
+    border-color: #00e5ff !important;
+  }
+  50%, 100% {
+    background: #0b1019 !important;
+    border-color: #1e293b !important;
+  }
+}
+.cockpit-badge.tag-abs.active {
+  animation: strobeAbsBlink 0.2s infinite;
+}
+.cockpit-badge.tag-tc.active {
+  animation: strobeTcBlink 0.2s infinite;
+}
+
+/* Gear Centering for Digit 1 */
+.gear-display-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gear-num.gear-1 {
+  transform: translateX(-4px);
+}

@@ -99,6 +99,14 @@
     <section id="view-dashboard" class="tab-view active">
       <!-- RPM SHIFT LIGHT BAR -->
       <div class="shift-light-container">
+        <div class="turbo-rpm-bar" id="turboRpmBar" style="display: none;">
+          <span class="turbo-label">TURBO</span>
+          <div class="turbo-track">
+            <div class="turbo-rpm-fill" id="turboRpmFill"></div>
+            <div class="turbo-marker" id="turboMarker"></div>
+          </div>
+          <span class="turbo-val" id="turboVal">0.00 BAR</span>
+        </div>
         <div class="shift-lights" id="shiftLightsBar">
           <!-- 16 Dynamic LED Elements -->
           <div class="led led-green"></div>
@@ -120,10 +128,12 @@
         </div>
         <!-- KERS / ERS BAR with DRS Info at far right -->
         <div class="ers-kers-drs-bar" id="ersKersDrsContainer">
-          <span class="ers-label">ERS</span>
+          <span class="ers-label" id="ersLabel">ERS</span>
           <div class="ers-track">
             <div class="ers-fill" id="ersFill"></div>
-            <div class="ers-marker" id="ersMarker"></div>
+            <div class="ers-white-pin" id="ersWhitePin"></div>
+            <div class="ers-red-pin" id="ersRedPin"></div>
+            <div class="ers-marker" id="ersMarker" style="display:none;"></div>
           </div>
           <span class="ers-val" id="ersVal">100%</span>
           <div class="drs-pill" id="drsPill">DRS</div>
@@ -585,3 +595,4 @@
   <script src="js/app.js?v=6"></script>
 </body>
 </html>
+

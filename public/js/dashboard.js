@@ -43,6 +43,13 @@ class DashboardController {
     this.indHandbrake = document.getElementById('indHandbrake');
     this.indAbsVal = document.getElementById('indAbsVal');
     this.indTcVal = document.getElementById('indTcVal');
+    this.turboRpmBar = document.getElementById('turboRpmBar');
+    this.turboRpmFill = document.getElementById('turboRpmFill');
+    this.turboMarker = document.getElementById('turboMarker');
+    this.turboVal = document.getElementById('turboVal');
+    this.ersLabel = document.getElementById('ersLabel');
+    this.ersWhitePin = document.getElementById('ersWhitePin');
+    this.ersRedPin = document.getElementById('ersRedPin');
     this.ersFill = document.getElementById('ersFill');
     this.ersMarker = document.getElementById('ersMarker');
     this.ersVal = document.getElementById('ersVal');
@@ -262,13 +269,47 @@ class DashboardController {
     }
 
     
-    // ERS / KERS & DRS Pill Updates
+    // Top Turbo & RPM Bar (Sidekick Parity)
+    const hasTurbo = !!(staticInfo.hasTurbo || (phys.turboBoost && phys.turboBoost > 0.02));
+    if (this.turboRpmBar) {
+      this.turboRpmBar.style.display = hasTurbo ? 'flex' : 'none';
+      if (hasTurbo) {
+        const maxRpm = (staticInfo.maxRpm && staticInfo.maxRpm > 1000) ? staticInfo.maxRpm : 8500;
+        const rpmPct = Math.max(0, Math.min(100, ((phys.rpms || 0) / maxRpm) * 100));
+        if (this.turboRpmFill) this.turboRpmFill.style.width = `${rpmPct}%`;
+
+        const maxTurbo = (staticInfo.maxTurboBoost && staticInfo.maxTurboBoost > 0.1) ? staticInfo.maxTurboBoost : 2.5;
+        const turboPct = Math.max(0, Math.min(100, ((phys.turboBoost || 0) / maxTurbo) * 100));
+        if (this.turboMarker) this.turboMarker.style.left = `${Math.max(1, turboPct)}%`;
+        if (this.turboVal) this.turboVal.textContent = `${(phys.turboBoost || 0).toFixed(2)} BAR`;
+      }
+    }
+
+    // ERS / KERS & DRS Updates
     const kersVal = (phys.kersCharge !== undefined && phys.kersCharge !== null) ? Math.round(phys.kersCharge) : 100;
-    if (this.ersFill) this.ersFill.style.width = `${Math.max(0, Math.min(100, kersVal))}%`;
-    if (this.ersVal) this.ersVal.textContent = `${kersVal}%`;
-    if (this.ersMarker) {
-      const deliveryPos = Math.max(8, Math.min(95, kersVal * 0.72));
-      this.ersMarker.style.left = `${deliveryPos}%`;
+    const isCharging = !!(phys.ersIsCharging || (phys.speedKmh > 10 && (phys.brake > 0.05 || (phys.gas < 0.02 && phys.engineBrake > 0))));
+
+    if (this.ersFill) {
+      this.ersFill.style.width = `${Math.max(0, Math.min(100, kersVal))}%`;
+      this.ersFill.classList.toggle('charging', isCharging);
+    }
+    if (this.ersLabel) this.ersLabel.classList.toggle('charging', isCharging);
+    if (this.ersVal) {
+      this.ersVal.textContent = `${kersVal}%`;
+      this.ersVal.classList.toggle('charging', isCharging);
+    }
+
+    // Pin 2: White KERS Button Pin (0% when idle, 98% when pressed)
+    if (this.ersWhitePin) {
+      const pinPos = (phys.kersInput && phys.kersInput > 0.05) ? 98 : 0;
+      this.ersWhitePin.style.left = `${pinPos}%`;
+    }
+
+    // Pin 3: Red Lap Energy Allowance Pin (1 - (ersCurrentKJ / maxKJ))
+    if (this.ersRedPin) {
+      const maxKJ = (staticInfo.ersMaxJ && staticInfo.ersMaxJ > 1000) ? (staticInfo.ersMaxJ / 1000) : 4000;
+      const lapRemaining = Math.max(0, Math.min(100, (1 - ((phys.ersCurrentKJ || 0) / maxKJ)) * 100));
+      this.ersRedPin.style.left = `${Math.max(1.5, lapRemaining)}%`;
     }
 
     if (this.drsPill) {
@@ -285,13 +326,22 @@ class DashboardController {
       }
     }
 
+    // Gear 1 Centering
+    if (this.dashGear) {
+      this.dashGear.classList.toggle('gear-1', gearStr === '1');
+    }
+
     // 6. Cockpit Status Badges (ABS, TC, DRS, PIT, BB)
     if (this.indAbs) {
       this.indAbs.classList.toggle('active', !!phys.absActive);
     }
     if (this.indAbsVal) {
-      const absLevel = Math.round(phys.abs || 0);
-      this.indAbsVal.textContent = absLevel > 0 ? absLevel : 'OFF';
+      if (staticInfo.hasABS === false) {
+        this.indAbsVal.textContent = 'N/A';
+      } else {
+        const absLevel = Math.round(phys.abs || 0);
+        this.indAbsVal.textContent = absLevel > 0 ? absLevel : 'OFF';
+      }
     }
     if (this.indPit) {
       const isPitActive = Boolean(phys.pitLimiterOn || graph.isInPitLane || graph.isInPit || ind.pitLimiter);
@@ -301,8 +351,12 @@ class DashboardController {
       this.indTc.classList.toggle('active', !!phys.tcActive);
     }
     if (this.indTcVal) {
-      const tcLevel = Math.round(phys.tc || 0);
-      this.indTcVal.textContent = tcLevel > 0 ? tcLevel : 'OFF';
+      if (staticInfo.hasTC === false) {
+        this.indTcVal.textContent = 'N/A';
+      } else {
+        const tcLevel = Math.round(phys.tc || 0);
+        this.indTcVal.textContent = tcLevel > 0 ? tcLevel : 'OFF';
+      }
     }
     if (this.indHandbrake) {
       const isHbActive = !!(ind.handbrake || phys.handbrake);

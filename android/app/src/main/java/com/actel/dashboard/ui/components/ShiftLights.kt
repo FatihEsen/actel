@@ -43,6 +43,10 @@ fun ShiftLights(
     maxTurboBoost: Float = 2.5f,
     hasKers: Boolean = false,
     kersCharge: Float = 0f,
+    kersInput: Float = 0f,
+    ersIsCharging: Boolean = false,
+    ersCurrentKJ: Float = 0f,
+    ersMaxJ: Float = 4000000f,
     hasDrs: Boolean = false,
     drsAvailable: Boolean = false,
     drsActive: Boolean = false,
@@ -56,9 +60,11 @@ fun ShiftLights(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        // 1. ÜST BAR: Sidekick tarzı Turbo Basınç Göstergesi (Sadece turbo araçlarda)
+        // 1. ÜST BAR: Sidekick tarzı RPM Barı ve Bağımsız Turbo İbre İmleci (1)
         if (showTurbo) {
             TurboBoostBar(
+                currentRpm = currentRpm,
+                maxRpm = maxRpm,
                 boost = turboBoost,
                 maxBoost = if (maxTurboBoost > 0.1f) maxTurboBoost else 2.5f,
                 modifier = Modifier.fillMaxWidth()
@@ -72,11 +78,15 @@ fun ShiftLights(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // 3. ALT BAR: Sidekick tarzı ERS / KERS Batarya & DRS Göstergesi (Sadece hibrit/KERS/DRS araçlarda)
+        // 3. ALT BAR: Sidekick tarzı ERS / KERS Batarya & DRS Göstergesi (Mavi/Yeşil Bar, Beyaz KERS Butonu (2), Kırmızı Lap Allowance (3))
         if (showKersOrDrs) {
             ErsKersBar(
                 hasKers = hasKers || kersCharge > 0.5f,
                 kersCharge = kersCharge,
+                kersInput = kersInput,
+                ersIsCharging = ersIsCharging,
+                ersCurrentKJ = ersCurrentKJ,
+                ersMaxJ = ersMaxJ,
                 hasDrs = hasDrs,
                 drsAvailable = drsAvailable,
                 drsActive = drsActive,
@@ -189,12 +199,17 @@ private fun ShiftLightsLedBar(
  */
 @Composable
 private fun TurboBoostBar(
+    currentRpm: Int,
+    maxRpm: Int,
     boost: Float,
     maxBoost: Float,
     modifier: Modifier = Modifier
 ) {
-    val safeMax = if (maxBoost > 0.2f) maxBoost else 2.5f
-    val ratio = (boost / safeMax).coerceIn(0f, 1f)
+    val safeMaxRpm = if (maxRpm > 1000) maxRpm else 8500
+    val rpmRatio = (currentRpm.toFloat() / safeMaxRpm.toFloat()).coerceIn(0f, 1f)
+
+    val safeMaxBoost = if (maxBoost > 0.2f) maxBoost else 2.5f
+    val turboRatio = (boost / safeMaxBoost).coerceIn(0f, 1f)
 
     Row(
         modifier = modifier
@@ -225,16 +240,16 @@ private fun TurboBoostBar(
                 .background(Color(0xFF141A26))
                 .border(0.5.dp, Color(0xFF242E42), RoundedCornerShape(2.5.dp))
         ) {
-            // Gri / Beyaz dolgu
+            // Beyaz RPM dolgu barı (Sidekick rpmPercentageValue)
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(ratio)
+                    .fillMaxWidth(rpmRatio)
                     .fillMaxHeight()
                     .background(Color(0xFFE2E8F0))
             )
 
-            // Turuncu / Amber uç imleci (Sidekick görselindeki turuncu çizgi, dururken de başta kalır)
-            val markerPos = ratio.coerceIn(0f, 1f)
+            // 1. Turuncu bağımsız Turbo İbre İmleci (Sidekick turboPercentageValue = turboValue / turboMaxValue)
+            val markerPos = turboRatio.coerceIn(0f, 1f)
             Box(
                 modifier = Modifier
                     .fillMaxWidth(markerPos.coerceAtLeast(0.015f))
@@ -243,17 +258,17 @@ private fun TurboBoostBar(
             ) {
                 Box(
                     modifier = Modifier
-                        .width(6.dp)
+                        .width(4.dp)
                         .fillMaxHeight()
                         .clip(RoundedCornerShape(1.dp))
-                        .background(Color(0xFFFF9100))
+                        .background(Color(0xFFFF8200)) // Sidekick turuncu (1, 0.51, 0)
                 )
             }
         }
 
         Text(
             text = "${String.format(Locale.US, "%.2f", boost)} BAR",
-            color = if (ratio > 0.85f) Color(0xFFFF9100) else Color(0xFFDCE6F2),
+            color = if (turboRatio > 0.85f) Color(0xFFFF8200) else Color(0xFFDCE6F2),
             fontSize = 8.5.sp,
             lineHeight = 10.sp,
             fontWeight = FontWeight.Bold,
@@ -269,6 +284,10 @@ private fun TurboBoostBar(
 private fun ErsKersBar(
     hasKers: Boolean,
     kersCharge: Float,
+    kersInput: Float = 0f,
+    ersIsCharging: Boolean = false,
+    ersCurrentKJ: Float = 0f,
+    ersMaxJ: Float = 4000000f,
     hasDrs: Boolean,
     drsAvailable: Boolean,
     drsActive: Boolean,
@@ -276,6 +295,8 @@ private fun ErsKersBar(
     modifier: Modifier = Modifier
 ) {
     val chargeRatio = (kersCharge / 100f).coerceIn(0f, 1f)
+    // ERS barı normalde mavi olsun. Frene basınca yada motor freni ile rejeneratif devreye girince yeşil olsun.
+    val barColor = if (ersIsCharging) Color(0xFF00E676) else Color(0xFF00E5FF)
 
     Row(
         modifier = modifier
@@ -291,7 +312,7 @@ private fun ErsKersBar(
         if (hasKers) {
             Text(
                 text = "ERS",
-                color = Color(0xFF00E676),
+                color = barColor,
                 fontSize = 8.5.sp,
                 lineHeight = 10.sp,
                 fontWeight = FontWeight.Bold,
@@ -307,43 +328,53 @@ private fun ErsKersBar(
                     .background(Color(0xFF141A26))
                     .border(0.5.dp, Color(0xFF242E42), RoundedCornerShape(2.5.dp))
             ) {
-                // Sol referans beyaz çizgi
-                Box(
-                    modifier = Modifier
-                        .width(2.dp)
-                        .fillMaxHeight()
-                        .background(Color.White)
-                )
-
-                // Canlı yeşil batarya dolgusu
+                // Dinamik batarya dolgusu (Normalde Mavi, rejenerasyonda Yeşil)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth(chargeRatio)
                         .fillMaxHeight()
-                        .background(Color(0xFF00E676))
+                        .background(barColor)
                 )
 
-                // Kırmızı tüketim/tahsis imleci (Sidekick görselindeki kırmızı işaret)
-                val deliveryPosition = (chargeRatio * 0.72f).coerceIn(0.08f, 0.95f)
+                // 2. Beyaz KERS Buton Basış İbresi: Butona basınca sağa geçer (1.0), bırakınca sola (0.0)
+                val whitePinPos = kersInput.coerceIn(0f, 1f)
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(deliveryPosition)
+                        .fillMaxWidth(whitePinPos.coerceAtLeast(0.015f))
                         .fillMaxHeight(),
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Box(
                         modifier = Modifier
-                            .width(6.dp)
+                            .width(3.dp)
                             .fillMaxHeight()
                             .clip(RoundedCornerShape(1.dp))
-                            .background(Color(0xFFFF1744))
+                            .background(Color.White)
+                    )
+                }
+
+                // 3. Kırmızı Tur Tahsisi / Tüketim İbresi: Sidekick (1 - (ersCurrentKJ / (ersMaxJ / 1000)))
+                val maxKJ = if (ersMaxJ > 1000f) (ersMaxJ / 1000f) else 4000f
+                val lapAllowanceRatio = (1f - (ersCurrentKJ / maxKJ)).coerceIn(0f, 1f)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(lapAllowanceRatio.coerceAtLeast(0.015f))
+                        .fillMaxHeight(),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .width(4.dp)
+                            .fillMaxHeight()
+                            .clip(RoundedCornerShape(1.dp))
+                            .background(Color(0xFFFF1744)) // Sidekick kırmızı/turuncu tüketim çizgisi
                     )
                 }
             }
 
             Text(
                 text = "${kersCharge.toInt()}%",
-                color = Color(0xFF00E676),
+                color = barColor,
                 fontSize = 8.5.sp,
                 lineHeight = 10.sp,
                 fontWeight = FontWeight.Bold,

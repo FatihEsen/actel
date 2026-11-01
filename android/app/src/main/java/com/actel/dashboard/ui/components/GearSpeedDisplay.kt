@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -376,6 +377,7 @@ fun GearSpeedDisplay(
                     .border(2.dp, gearNeonColor, RoundedCornerShape(12.dp)),
                 contentAlignment = Alignment.Center
             ) {
+                val gearHorizontalOffset = if (displayGear == "1") (-9).dp else 0.dp
                 Text(
                     text = displayGear,
                     color = gearNeonColor,
@@ -383,7 +385,8 @@ fun GearSpeedDisplay(
                     lineHeight = 82.sp,
                     fontWeight = FontWeight.Normal,
                     fontFamily = DigitalNumbersFontFamily,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.offset(x = gearHorizontalOffset)
                 )
             }
         }
