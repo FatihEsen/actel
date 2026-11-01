@@ -8,6 +8,7 @@ const { WebSocketServer } = require('ws');
 const acReader = require('./lib/acReader');
 const mockTelemetry = require('./lib/mockTelemetry');
 const acController = require('./lib/acController');
+const networkHelper = require('./lib/networkHelper');
 
 const app = express();
 const server = http.createServer(app);
@@ -50,6 +51,43 @@ app.get('/api/status', (req, res) => {
     localIps: getLocalIpAddresses(),
     port: PORT
   });
+});
+
+// Setup & Network Diagnostic Endpoints
+app.get('/api/setup/network', (req, res) => {
+  res.json({
+    localIps: networkHelper.getLocalIps(PORT),
+    apk: networkHelper.getApkStatus(),
+    mobileConnected: networkHelper.isMobileConnected(),
+    port: PORT
+  });
+});
+
+app.get('/api/setup/qr', (req, res) => {
+  const ips = networkHelper.getLocalIps(PORT);
+  const primaryUrl = ips.length > 0 ? ips[0].url : `http://localhost:${PORT}`;
+  const targetUrl = `${primaryUrl}/download/actel.apk`;
+  const svg = networkHelper.generateQrSvg(targetUrl);
+  res.type('image/svg+xml').send(svg);
+});
+
+app.get('/download/actel.apk', (req, res) => {
+  const status = networkHelper.getApkStatus();
+  if (!status.exists) {
+    return res.status(404).json({
+      error: 'APK not found',
+      message: 'Android APK henüz derlenmedi veya public/download/actel.apk konumuna yerleştirilmedi.'
+    });
+  }
+
+  networkHelper.setMobileConnected(true);
+  for (const client of wss.clients) {
+    if (client.readyState === 1) {
+      client.send(JSON.stringify({ type: 'mobile_connected', connected: true }));
+    }
+  }
+
+  res.download(status.path, 'actel.apk');
 });
 
 app.post('/api/mode', (req, res) => {
@@ -100,6 +138,18 @@ app.post('/api/bindings', (req, res) => {
 wss.on('connection', (ws, req) => {
   const clientIp = req.socket.remoteAddress;
   console.log(`[WS] Client connected from ${clientIp} (Total: ${wss.clients.size})`);
+
+  // Detect mobile clients
+  const userAgent = req.headers['user-agent'] || '';
+  const isMobileClient = (req.url && req.url.includes('client=mobile')) || /Android|Mobile/i.test(userAgent);
+  if (isMobileClient) {
+    networkHelper.setMobileConnected(true);
+    for (const client of wss.clients) {
+      if (client.readyState === 1) {
+        client.send(JSON.stringify({ type: 'mobile_connected', connected: true }));
+      }
+    }
+  }
 
   ws.on('message', async (message) => {
     try {
