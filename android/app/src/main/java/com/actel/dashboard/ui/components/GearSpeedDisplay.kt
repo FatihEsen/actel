@@ -28,8 +28,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,9 +58,11 @@ fun GearSpeedDisplay(
     indicators: IndicatorData?,
     absActive: Boolean = false,
     absLevel: Int = 0,
+    absModes: Int = 1,
     hasAbs: Boolean = true,
     tcActive: Boolean = false,
     tcLevel: Int = 0,
+    tcModes: Int = 1,
     hasTc: Boolean = true,
     drsAvailable: Boolean = false,
     drsActive: Boolean = false,
@@ -202,7 +207,7 @@ fun GearSpeedDisplay(
                         fontFamily = FontFamily.Monospace
                     )
                     val absText = when {
-                        !hasAbs -> "N/A"
+                        !hasAbs || absModes <= 0 -> "N/A"
                         absLevel > 0 -> absLevel.toString()
                         else -> "OFF"
                     }
@@ -386,7 +391,16 @@ fun GearSpeedDisplay(
                     fontWeight = FontWeight.Normal,
                     fontFamily = DigitalNumbersFontFamily,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.offset(x = gearHorizontalOffset)
+                    style = TextStyle(
+                        platformStyle = PlatformTextStyle(
+                            includeFontPadding = false
+                        ),
+                        lineHeightStyle = LineHeightStyle(
+                            alignment = LineHeightStyle.Alignment.Center,
+                            trim = LineHeightStyle.Trim.Both
+                        )
+                    ),
+                    modifier = Modifier.offset(x = gearHorizontalOffset, y = (-8).dp)
                 )
             }
         }
@@ -465,7 +479,7 @@ fun GearSpeedDisplay(
                         fontFamily = FontFamily.Monospace
                     )
                     val tcText = when {
-                        !hasTc -> "N/A"
+                        !hasTc || tcModes <= 0 -> "N/A"
                         tcLevel > 0 -> tcLevel.toString()
                         else -> "OFF"
                     }

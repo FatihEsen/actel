@@ -336,7 +336,7 @@ class DashboardController {
       this.indAbs.classList.toggle('active', !!phys.absActive);
     }
     if (this.indAbsVal) {
-      if (staticInfo.hasABS === false) {
+      if (staticInfo.hasABS === false || staticInfo.absModes === 0) {
         this.indAbsVal.textContent = 'N/A';
       } else {
         const absLevel = Math.round(phys.abs || 0);
@@ -351,7 +351,7 @@ class DashboardController {
       this.indTc.classList.toggle('active', !!phys.tcActive);
     }
     if (this.indTcVal) {
-      if (staticInfo.hasTC === false) {
+      if (staticInfo.hasTC === false || staticInfo.tcModes === 0) {
         this.indTcVal.textContent = 'N/A';
       } else {
         const tcLevel = Math.round(phys.tc || 0);

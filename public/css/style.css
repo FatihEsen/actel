@@ -3365,6 +3365,30 @@ body {
   align-items: center;
   justify-content: center;
 }
+.gear-display-box .gear-num {
+  transform: translateY(-4px);
+}
 .gear-num.gear-1 {
-  transform: translateX(-4px);
+  transform: translate(-4px, -4px);
+}
+
+/* Wiper 5-Dot Indicator */
+.wiper-dots {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 4px;
+}
+.wdot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #29b6f6;
+  box-shadow: 0 0 4px #29b6f6;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+.wdot.active-green {
+  background-color: #00e676;
+  box-shadow: 0 0 6px #00e676;
 }

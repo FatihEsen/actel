@@ -100,6 +100,18 @@ class ButtonBoxController {
           this.playClickSound();
           this.triggerHaptic(35);
 
+          if (action === 'wipers') {
+            this.wiperStage = ((this.wiperStage || 0) + 1) % 6;
+            const dots = btn.querySelectorAll('.wdot');
+            dots.forEach((dot, idx) => {
+              if (this.wiperStage > 0 && idx < this.wiperStage) {
+                dot.classList.add('active-green');
+              } else {
+                dot.classList.remove('active-green');
+              }
+            });
+          }
+
           this.sendAction(action, null);
 
 // Auto-switch to dashboard removed per user preference

@@ -220,15 +220,25 @@ fun DashboardScreen(
                 val isTyreSlip = (physics?.speedKmh ?: 0) > 10 && (physics?.maxWheelSlip ?: 0f) > 0.38f
                 val tyreText = if (isTyreSlip) "SLIP" else "GRIP"
 
-                val hasAbsCar = (staticInfo?.hasABS != false) && (displayCarName.lowercase().let {
+                val absStages = physics?.absModes?.takeIf { it > 0 }
+                    ?: staticInfo?.absModes?.takeIf { it > 0 }
+                    ?: telemetry?.indicators?.absModes?.takeIf { it > 0 }
+                    ?: 0
+                val tcStages = physics?.tcModes?.takeIf { it > 0 }
+                    ?: staticInfo?.tcModes?.takeIf { it > 0 }
+                    ?: telemetry?.indicators?.tcModes?.takeIf { it > 0 }
+                    ?: 0
+
+                val hasAbsCar = (staticInfo?.hasABS != false) && (absStages > 0) && (displayCarName.lowercase().let {
                     !(it.contains("919") || it.contains("ts040") || it.contains("r18") ||
                       it.contains("sf70") || it.contains("sf15") || it.contains("f1") ||
                       it.contains("f40") || it.contains("cobra") || it.contains("lotus_25") || it.contains("lotus_49") ||
                       it.contains("gte") || it.contains("rsr") || it.contains("c7r"))
                 })
-                val hasTcCar = (staticInfo?.hasTC != false) && (displayCarName.lowercase().let {
+                val hasTcCar = (staticInfo?.hasTC != false) && (tcStages > 0) && (displayCarName.lowercase().let {
                     !(it.contains("lotus_25") || it.contains("lotus_49") || it.contains("cobra") ||
-                      it.contains("f40") || it.contains("98t") || it.contains("miura") || it.contains("shelby"))
+                      it.contains("f40") || it.contains("98t") || it.contains("miura") || it.contains("shelby") ||
+                      it.contains("sf70") || it.contains("sf15") || it.contains("f1"))
                 })
                 val currentAbsLevel = if (hasAbsCar) {
                     when {
@@ -257,9 +267,11 @@ fun DashboardScreen(
                     indicators = telemetry?.indicators,
                     absActive = isAbsIntervening,
                     absLevel = currentAbsLevel,
+                    absModes = absStages,
                     hasAbs = hasAbsCar,
                     tcActive = isTcIntervening,
                     tcLevel = currentTcLevel,
+                    tcModes = tcStages,
                     hasTc = hasTcCar,
                     drsAvailable = drsAvailable,
                     drsActive = drsActive,

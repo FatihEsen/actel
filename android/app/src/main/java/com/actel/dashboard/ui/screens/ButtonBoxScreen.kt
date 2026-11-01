@@ -10,10 +10,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,13 +44,14 @@ fun ButtonBoxScreen(
     onAction: (action: String, state: String?) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isPitLimiterOn = telemetry?.physics?.pitLimiterOn == true
-    val isHandbrakeOn = telemetry?.indicators?.handbrake == true
+    val isPitLimiterOn = telemetry?.physics?.pitLimiterOn == true || telemetry?.indicators?.pitLimiter == true
     val isDrsOn = telemetry?.physics?.drs == true || telemetry?.indicators?.drsActive == true
     val isHazardOn = telemetry?.indicators?.hazard == true
     val isHeadlightsOn = telemetry?.indicators?.headlights == true
     val isTurnLeftOn = telemetry?.indicators?.turnLeft == true || isHazardOn
     val isTurnRightOn = telemetry?.indicators?.turnRight == true || isHazardOn
+
+    var wiperStage by remember { mutableIntStateOf(0) }
 
     Row(
         modifier = modifier
@@ -95,7 +99,7 @@ fun ButtonBoxScreen(
             // Satır 1: FARLAR / SELEKTÖR
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
                 BoxButton(
-                    title = if (isHeadlightsOn) "💡 FARLAR (ON)" else "💡 FARLAR",
+                    title = "💡 FARLAR",
                     action = "headlights",
                     color = if (isHeadlightsOn) Color(0xFF90CAF9) else Color(0xFF64B5F6),
                     onAction = onAction,
@@ -104,52 +108,66 @@ fun ButtonBoxScreen(
                 )
                 BoxButton("🔆 SELEKTÖR", "flasher", Color(0xFFFFF176), onAction, Modifier.weight(1f))
             }
-            // Satır 2: İÇ AYDINLATMA / SİS FARI (Alt + Numpad 7 / 8)
+            // Satır 2: İÇ AYDINLATMA / SİS FARI
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
                 BoxButton("🛋️ İÇ IŞIK", "extra_a", Color(0xFFBA68C8), onAction, Modifier.weight(1f))
                 BoxButton("🌫️ SİS FARI", "extra_b", Color(0xFFE040FB), onAction, Modifier.weight(1f))
             }
-            // Satır 3: SOL SİNYAL / SAĞ SİNYAL
+            // Satır 3: DÖRTLÜ / KERS
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
                 BoxButton(
-                    title = if (isTurnLeftOn) "◀️ SOL SİNYAL" else "◀️ SOL SİNYAL",
+                    title = "⚠️ DÖRTLÜ",
+                    action = "hazard",
+                    color = NeonRed,
+                    onAction = onAction,
+                    modifier = Modifier.weight(1f),
+                    isActive = isHazardOn
+                )
+                BoxButton(
+                    title = "⚡ KERS",
+                    action = "kers",
+                    color = Color(0xFF00E676),
+                    onAction = onAction,
+                    modifier = Modifier.weight(1f),
+                    isHold = true
+                )
+            }
+            // Satır 4: SOL SİNYAL / KAMERA
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
+                BoxButton(
+                    title = "◀️ SOL SİNYAL",
                     action = "turn_left",
                     color = Color(0xFFFFB300),
                     onAction = onAction,
                     modifier = Modifier.weight(1f),
                     isActive = isTurnLeftOn
                 )
-                BoxButton(
-                    title = if (isTurnRightOn) "SAĞ SİNYAL ▶️" else "SAĞ SİNYAL ▶️",
-                    action = "turn_right",
-                    color = Color(0xFFFFB300),
-                    onAction = onAction,
-                    modifier = Modifier.weight(1f),
-                    isActive = isTurnRightOn
-                )
-            }
-            // Satır 4: KAMERA / ARKA BAKIŞ
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
                 BoxButton("🎥 KAMERA", "camera_change", Color(0xFF42A5F5), onAction, Modifier.weight(1f))
-                BoxButton("🔼 ARKA", "look_back", Color(0xFF90A4AE), onAction, Modifier.weight(1f))
             }
-            // Satır 5: DURAKLAT & BAKIŞ
+            // Satır 5: SOLA BAK / ARKA BAKIŞ
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                BoxButton("⏸️ DURAKLAT", "pause", Color(0xFFE57373), onAction, Modifier.weight(1f))
-                BoxButton("👁️ BAKIŞ", "look_back", Color(0xFF90A4AE), onAction, Modifier.weight(1f))
+                BoxButton("👁️◀ SOLA BAK", "look_left", Color(0xFF00E5FF), onAction, Modifier.weight(1f))
+                BoxButton("🔼 ARKA", "look_back", Color(0xFF90A4AE), onAction, Modifier.weight(1f))
             }
         }
 
-        // ==================== PANEL 3: SİLECEK, SEANS, KERS & START (Sütun 5 & 6) ====================
+        // ==================== PANEL 3: SİLECEK, KORNA, DRS, SAĞ SİNYAL, SAĞA BAK & START (Sütun 5 & 6) ====================
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            // Satır 1: SİLECEK / PIT LIMITER
+            // Satır 1: SİLECEK (5 Nokta Kademeli) / PIT LIMITER
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                BoxButton("🌧️ SİLECEK", "wipers", Color(0xFF81C784), onAction, Modifier.weight(1f))
+                WiperButton(
+                    wiperStage = wiperStage,
+                    onClick = {
+                        wiperStage = (wiperStage + 1) % 6
+                        onAction("wipers", null)
+                    },
+                    modifier = Modifier.weight(1f)
+                )
                 BoxButton(
-                    title = if (isPitLimiterOn) "🛑 PIT (ON)" else "🛑 PIT LIM",
+                    title = "🛑 PIT LIM",
                     action = "pit_limiter",
                     color = if (isPitLimiterOn) NeonGreen else NeonOrange,
                     onAction = onAction,
@@ -162,48 +180,100 @@ fun ButtonBoxScreen(
                 BoxButton("📢 KORNA", "horn", Color(0xFFFFB74D), onAction, Modifier.weight(1f))
                 BoxButton("🔧 PİTE DÖN", "teleport_pits", NeonRed, onAction, Modifier.weight(1f))
             }
-            // Satır 3: DÖRTLÜ / YENİDEN BAŞLAT
+            // Satır 3: DRS / YENİDEN BAŞLAT
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
                 BoxButton(
-                    title = if (isHazardOn) "⚠️ DÖRTLÜ (ON)" else "⚠️ DÖRTLÜ",
-                    action = "hazard",
-                    color = NeonRed,
-                    onAction = onAction,
-                    modifier = Modifier.weight(1f),
-                    isActive = isHazardOn
-                )
-                BoxButton("🔄 YENİDEN", "restart_session", Color(0xFFFF5722), onAction, Modifier.weight(1f))
-            }
-            // Satır 4: KERS (HOLD) & DRS
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                BoxButton(
-                    title = "⚡ KERS",
-                    action = "kers",
-                    color = Color(0xFF00E676),
-                    onAction = onAction,
-                    modifier = Modifier.weight(1f),
-                    isHold = true
-                )
-                BoxButton(
-                    title = if (isDrsOn) "💨 DRS (OPEN)" else "💨 DRS",
+                    title = "💨 DRS",
                     action = "drs",
                     color = if (isDrsOn) NeonCyan else Color(0xFF00E676),
                     onAction = onAction,
                     modifier = Modifier.weight(1f),
                     isActive = isDrsOn
                 )
+                BoxButton("🔄 YENİDEN", "restart_session", Color(0xFFFF5722), onAction, Modifier.weight(1f))
             }
-            // Satır 5: EL FRENİ / START
+            // Satır 4: SAĞ SİNYAL / DURAKLAT
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
                 BoxButton(
-                    title = if (isHandbrakeOn) "🅿️ FREN (ON)" else "🅿️ EL FRENİ",
-                    action = "handbrake",
-                    color = if (isHandbrakeOn) NeonRed else Color(0xFFFF5252),
+                    title = "SAĞ SİNYAL ▶️",
+                    action = "turn_right",
+                    color = Color(0xFFFFB300),
                     onAction = onAction,
                     modifier = Modifier.weight(1f),
-                    isActive = isHandbrakeOn
+                    isActive = isTurnRightOn
                 )
+                BoxButton("⏸️ DURAKLAT", "pause", Color(0xFFE57373), onAction, Modifier.weight(1f))
+            }
+            // Satır 5: SAĞA BAK / START
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
+                BoxButton("SAĞA BAK ▶️👁️", "look_right", Color(0xFF00E5FF), onAction, Modifier.weight(1f))
                 BoxButton("🏁 START", "starter", NeonGreen, onAction, Modifier.weight(1f))
+            }
+        }
+    }
+}
+
+@Composable
+private fun WiperButton(
+    wiperStage: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var isPressed by remember { mutableStateOf(false) }
+    val baseColor = Color(0xFF81C784)
+    val effectiveBg = if (isPressed || wiperStage > 0) baseColor.copy(alpha = 0.25f) else BgCard
+    val effectiveBorder = if (isPressed || wiperStage > 0) baseColor else baseColor.copy(alpha = 0.65f)
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .clip(RoundedCornerShape(8.dp))
+            .background(effectiveBg)
+            .border(1.5.dp, effectiveBorder, RoundedCornerShape(8.dp))
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onPress = {
+                        isPressed = true
+                        try {
+                            tryAwaitRelease()
+                        } finally {
+                            isPressed = false
+                        }
+                    },
+                    onTap = {
+                        onClick()
+                    }
+                )
+            }
+            .padding(horizontal = 4.dp, vertical = 2.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "🌧️ SİLECEK",
+                color = if (isPressed || wiperStage > 0) Color.White else baseColor,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Black,
+                fontFamily = FontFamily.Monospace,
+                textAlign = TextAlign.Center
+            )
+            Row(
+                modifier = Modifier.padding(top = 3.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                for (i in 0 until 5) {
+                    val dotColor = if (wiperStage > 0 && i < wiperStage) NeonGreen else Color(0xFF29B6F6)
+                    Box(
+                        modifier = Modifier
+                            .size(5.dp)
+                            .clip(CircleShape)
+                            .background(dotColor)
+                    )
+                }
             }
         }
     }
