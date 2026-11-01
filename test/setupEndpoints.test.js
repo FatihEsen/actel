@@ -26,7 +26,20 @@ setTimeout(() => {
         qrRes.on('end', () => {
           assert(svg.includes('<svg'), 'QR response should be SVG');
           console.log('✓ /api/setup/qr endpoint verified');
-          process.exit(0);
+
+          // Next check bridge status endpoint
+          http.get('http://127.0.0.1:8080/api/setup/bridge-status', (bRes) => {
+            assert.strictEqual(bRes.statusCode, 200);
+            let bData = '';
+            bRes.on('data', c => bData += c);
+            bRes.on('end', () => {
+              const bJson = JSON.parse(bData);
+              assert('acFound' in bJson, 'bridge-status should have acFound');
+              assert('bridgeInstalled' in bJson, 'bridge-status should have bridgeInstalled');
+              console.log('✓ /api/setup/bridge-status endpoint verified:', bJson);
+              process.exit(0);
+            });
+          });
         });
       });
     });

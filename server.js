@@ -9,6 +9,7 @@ const acReader = require('./lib/acReader');
 const mockTelemetry = require('./lib/mockTelemetry');
 const acController = require('./lib/acController');
 const networkHelper = require('./lib/networkHelper');
+const acPathDetector = require('./lib/acPathDetector');
 
 const app = express();
 const server = http.createServer(app);
@@ -88,6 +89,23 @@ app.get('/download/actel.apk', (req, res) => {
   }
 
   res.download(status.path, 'actel.apk');
+});
+
+// Assetto Corsa Bridge Setup Endpoints
+app.get('/api/setup/bridge-status', (req, res) => {
+  res.json(acPathDetector.getBridgeStatus());
+});
+
+app.post('/api/setup/install-bridge', (req, res) => {
+  const { customPath } = req.body || {};
+  const result = acPathDetector.installBridge(customPath);
+  res.json(result);
+});
+
+app.post('/api/setup/set-ac-path', (req, res) => {
+  const { customPath } = req.body || {};
+  const ok = acPathDetector.setInstallDir(customPath);
+  res.json({ success: ok, status: acPathDetector.getBridgeStatus() });
 });
 
 app.post('/api/mode', (req, res) => {
