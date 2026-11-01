@@ -109,6 +109,7 @@ ACTION_KEYS = {
     'eb_down': ['CTRL', 'SHIFT', 'E'],
     'drs': ['D'],
     'kers': ['K'],
+    'handbrake': ['SPACE'],
     'pit_limiter': ['ALT', 'L'],
     'teleport_pits': ['CTRL', 'P'],
     'vr_recenter': ['CTRL', 'SPACE'],

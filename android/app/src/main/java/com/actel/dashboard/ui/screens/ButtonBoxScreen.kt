@@ -43,7 +43,7 @@ fun ButtonBoxScreen(
 ) {
     val isPitLimiterOn = telemetry?.physics?.pitLimiterOn == true
     val isHandbrakeOn = telemetry?.indicators?.handbrake == true
-    val isDrsOn = telemetry?.physics?.drs == true
+    val isDrsOn = telemetry?.physics?.drs == true || telemetry?.indicators?.drsActive == true
     val isHazardOn = telemetry?.indicators?.hazard == true
     val isHeadlightsOn = telemetry?.indicators?.headlights == true
     val isTurnLeftOn = telemetry?.indicators?.turnLeft == true || isHazardOn
@@ -133,10 +133,10 @@ fun ButtonBoxScreen(
                 BoxButton("🎥 KAMERA", "camera_change", Color(0xFF42A5F5), onAction, Modifier.weight(1f))
                 BoxButton("🔼 ARKA", "look_back", Color(0xFF90A4AE), onAction, Modifier.weight(1f))
             }
-            // Satır 5: SOLA BAK / SAĞA BAK
+            // Satır 5: DURAKLAT & BAKIŞ
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                BoxButton("◀️ SOLA", "look_left", Color(0xFF90A4AE), onAction, Modifier.weight(1f))
-                BoxButton("SAĞA ▶️", "look_right", Color(0xFF90A4AE), onAction, Modifier.weight(1f))
+                BoxButton("⏸️ DURAKLAT", "pause", Color(0xFFE57373), onAction, Modifier.weight(1f))
+                BoxButton("👁️ BAKIŞ", "look_back", Color(0xFF90A4AE), onAction, Modifier.weight(1f))
             }
         }
 
@@ -174,7 +174,7 @@ fun ButtonBoxScreen(
                 )
                 BoxButton("🔄 YENİDEN", "restart_session", Color(0xFFFF5722), onAction, Modifier.weight(1f))
             }
-            // Satır 4: KERS (BOOST SİLİNDİ - HOLD) / DURAKLAT
+            // Satır 4: KERS (HOLD) & DRS
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
                 BoxButton(
                     title = "⚡ KERS",
@@ -184,7 +184,14 @@ fun ButtonBoxScreen(
                     modifier = Modifier.weight(1f),
                     isHold = true
                 )
-                BoxButton("⏸️ DURAKLAT", "pause", Color(0xFFE57373), onAction, Modifier.weight(1f))
+                BoxButton(
+                    title = if (isDrsOn) "💨 DRS (OPEN)" else "💨 DRS",
+                    action = "drs",
+                    color = if (isDrsOn) NeonCyan else Color(0xFF00E676),
+                    onAction = onAction,
+                    modifier = Modifier.weight(1f),
+                    isActive = isDrsOn
+                )
             }
             // Satır 5: EL FRENİ / START
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {

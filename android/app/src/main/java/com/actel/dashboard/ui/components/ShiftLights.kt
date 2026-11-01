@@ -7,6 +7,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,10 +46,11 @@ fun ShiftLights(
     hasDrs: Boolean = false,
     drsAvailable: Boolean = false,
     drsActive: Boolean = false,
+    onDrsClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val showTurbo = hasTurbo || turboBoost > 0.02f
-    val showKersOrDrs = hasKers || (hasDrs && (drsAvailable || drsActive))
+    val showKersOrDrs = hasKers || hasDrs || kersCharge > 0.5f || drsAvailable || drsActive
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -78,6 +80,7 @@ fun ShiftLights(
                 hasDrs = hasDrs,
                 drsAvailable = drsAvailable,
                 drsActive = drsActive,
+                onDrsClick = onDrsClick,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -269,6 +272,7 @@ private fun ErsKersBar(
     hasDrs: Boolean,
     drsAvailable: Boolean,
     drsActive: Boolean,
+    onDrsClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val chargeRatio = (kersCharge / 100f).coerceIn(0f, 1f)
@@ -378,6 +382,7 @@ private fun ErsKersBar(
                     .clip(RoundedCornerShape(3.dp))
                     .background(drsBgColor)
                     .border(1.dp, drsBorderColor, RoundedCornerShape(3.dp))
+                    .clickable { onDrsClick() }
                     .padding(vertical = 1.5.dp),
                 contentAlignment = Alignment.Center
             ) {

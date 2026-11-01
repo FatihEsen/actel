@@ -8,8 +8,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.actel.dashboard.R
 
+// Map all font weights directly to the vector typeface to avoid synthetic stroke distortion
 val DigitalNumbersFontFamily = FontFamily(
-    Font(R.font.digital_numbers, FontWeight.Normal)
+    Font(R.font.digital_numbers, FontWeight.Normal),
+    Font(R.font.digital_numbers, FontWeight.Medium),
+    Font(R.font.digital_numbers, FontWeight.SemiBold),
+    Font(R.font.digital_numbers, FontWeight.Bold),
+    Font(R.font.digital_numbers, FontWeight.ExtraBold),
+    Font(R.font.digital_numbers, FontWeight.Black)
 )
 
 val Typography = Typography(

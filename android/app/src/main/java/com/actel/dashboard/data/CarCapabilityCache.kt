@@ -22,8 +22,16 @@ object CarCapabilityCache {
         val lower = car.lowercase()
 
         // Known motorsport models
-        val isKnownTurbo = lower.contains("turbo") || lower.contains("919") || lower.contains("r18") || lower.contains("488") || lower.contains("gtr") || lower.contains("gt-r") || lower.contains("nismo") || lower.contains("gt2")
-        val isKnownKers = lower.contains("919") || lower.contains("hybrid") || lower.contains("r18")
+        val isKnownTurbo = lower.contains("turbo") || lower.contains("919") || lower.contains("r18") ||
+                lower.contains("488") || lower.contains("gtr") || lower.contains("gt-r") ||
+                lower.contains("nismo") || lower.contains("gt2") || lower.contains("ts040") ||
+                lower.contains("toyota") || lower.contains("sf70") || lower.contains("sf15") ||
+                lower.contains("f1") || lower.contains("lmp1")
+        val isKnownKers = lower.contains("919") || lower.contains("hybrid") || lower.contains("r18") ||
+                lower.contains("ts040") || lower.contains("toyota") || lower.contains("sf70") ||
+                lower.contains("sf15") || lower.contains("f1") || lower.contains("lmp1")
+        val isKnownDrs = lower.contains("f1") || lower.contains("sf70") || lower.contains("sf15") ||
+                lower.contains("p1") || lower.contains("drs") || lower.contains("dtm")
 
         if (staticHasTurbo || isKnownTurbo || turboBoost > 0.02f) {
             turboCars.add(car)
@@ -33,7 +41,7 @@ object CarCapabilityCache {
             kersCars.add(car)
             kersCars.add(lower)
         }
-        if (staticHasDrs || drsAvailable || drsActive) {
+        if (staticHasDrs || isKnownDrs || drsAvailable || drsActive) {
             drsCars.add(car)
             drsCars.add(lower)
         }
@@ -48,19 +56,28 @@ object CarCapabilityCache {
     fun hasTurbo(car: String): Boolean {
         if (car.isBlank() || car == "---") return false
         val lower = car.lowercase()
-        return turboCars.contains(car) || turboCars.contains(lower) || lower.contains("turbo") || lower.contains("919") || lower.contains("r18") || lower.contains("488") || lower.contains("gtr") || lower.contains("gt-r") || lower.contains("nismo")
+        return turboCars.contains(car) || turboCars.contains(lower) ||
+                lower.contains("turbo") || lower.contains("919") || lower.contains("r18") ||
+                lower.contains("488") || lower.contains("gtr") || lower.contains("gt-r") ||
+                lower.contains("nismo") || lower.contains("ts040") || lower.contains("toyota") ||
+                lower.contains("sf70") || lower.contains("sf15") || lower.contains("f1") || lower.contains("lmp1")
     }
 
     fun hasKers(car: String): Boolean {
         if (car.isBlank() || car == "---") return false
         val lower = car.lowercase()
-        return kersCars.contains(car) || kersCars.contains(lower) || lower.contains("919") || lower.contains("hybrid") || lower.contains("r18")
+        return kersCars.contains(car) || kersCars.contains(lower) ||
+                lower.contains("919") || lower.contains("hybrid") || lower.contains("r18") ||
+                lower.contains("ts040") || lower.contains("toyota") || lower.contains("sf70") ||
+                lower.contains("sf15") || lower.contains("f1") || lower.contains("lmp1")
     }
 
     fun hasDrs(car: String): Boolean {
         if (car.isBlank() || car == "---") return false
         val lower = car.lowercase()
-        return drsCars.contains(car) || drsCars.contains(lower)
+        return drsCars.contains(car) || drsCars.contains(lower) ||
+                lower.contains("f1") || lower.contains("sf70") || lower.contains("sf15") ||
+                lower.contains("p1") || lower.contains("drs") || lower.contains("dtm")
     }
 
     fun getMaxTurbo(car: String): Float {

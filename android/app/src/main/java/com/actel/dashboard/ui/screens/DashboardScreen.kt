@@ -111,6 +111,7 @@ fun DashboardScreen(
             hasDrs = hasDrs,
             drsAvailable = drsAvailable,
             drsActive = drsActive,
+            onDrsClick = { onAction("drs") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -215,6 +216,14 @@ fun DashboardScreen(
                 val isTyreSlip = (physics?.speedKmh ?: 0) > 10 && (physics?.maxWheelSlip ?: 0f) > 0.38f
                 val tyreText = if (isTyreSlip) "SLIP" else "GRIP"
 
+                val hasAbsCar = staticInfo?.hasABS ?: (displayCarName.lowercase().let {
+                    !(it.contains("919") || it.contains("ts040") || it.contains("r18") ||
+                      it.contains("sf70") || it.contains("sf15") || it.contains("f1") ||
+                      it.contains("f40") || it.contains("cobra") || it.contains("lotus_25") || it.contains("lotus_49"))
+                })
+                val currentAbsLevel = if (hasAbsCar) (telemetry?.indicators?.absLevel ?: (if ((physics?.abs ?: 0f) > 0) 1 else 0)) else 0
+                val currentTcLevel = telemetry?.indicators?.tcLevel ?: (if ((physics?.tc ?: 0f) > 0) 1 else 0)
+
                 GearSpeedDisplay(
                     gear = gear,
                     gearStr = gearStr,
@@ -222,12 +231,12 @@ fun DashboardScreen(
                     currentRpm = currentRpm,
                     maxRpm = maxRpm,
                     indicators = telemetry?.indicators,
-                    absActive = physics?.absActive == true,
-                    absLevel = Math.round(physics?.abs ?: 0f),
-                    hasAbs = (physics?.absModes ?: 1) > 0 || (physics?.abs ?: 0f) > 0f,
-                    tcActive = physics?.tcActive == true,
-                    tcLevel = Math.round(physics?.tc ?: 0f),
-                    hasTc = (physics?.tcModes ?: 1) > 0 || (physics?.tc ?: 0f) > 0f,
+                    absActive = physics?.absActive == true || (hasAbsCar && (physics?.abs ?: 0f) > 0.5f),
+                    absLevel = currentAbsLevel,
+                    hasAbs = hasAbsCar,
+                    tcActive = physics?.tcActive == true || (physics?.tc ?: 0f) > 0.5f,
+                    tcLevel = currentTcLevel,
+                    hasTc = true,
                     drsAvailable = drsAvailable,
                     drsActive = drsActive,
                     handbrakeActive = telemetry?.indicators?.handbrake == true,

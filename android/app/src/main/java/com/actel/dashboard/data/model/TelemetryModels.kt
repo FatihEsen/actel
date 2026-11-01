@@ -16,7 +16,10 @@ data class IndicatorData(
     val headlights: Boolean = false,
     val flasher: Boolean = false,
     val pitLimiter: Boolean = false,
-    val handbrake: Boolean = false
+    val handbrake: Boolean = false,
+    val tcLevel: Int = 1,
+    val absLevel: Int = 1,
+    val drsActive: Boolean = false
 )
 
 @Serializable
@@ -139,5 +142,6 @@ data class StaticInfoData(
     val hasKERS: Boolean = false,
     val hasTurbo: Boolean = false,
     val maxTurboBoost: Float = 2.5f,
+    val hasABS: Boolean = true,
     val isOnline: Boolean = false
 )

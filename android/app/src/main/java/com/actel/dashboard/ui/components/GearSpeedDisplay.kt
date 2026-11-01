@@ -168,7 +168,7 @@ fun GearSpeedDisplay(
             IndicatorBox(
                 isActive = absActive,
                 activeColor = NeonRed,
-                onClick = {}
+                onClick = { onAction("abs_up") }
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -306,7 +306,7 @@ fun GearSpeedDisplay(
                     color = Color.White,
                     fontSize = speedFontSize,
                     lineHeight = speedFontSize,
-                    fontWeight = FontWeight.Black,
+                    fontWeight = FontWeight.Normal,
                     fontFamily = DigitalNumbersFontFamily,
                     textAlign = TextAlign.Center
                 )
@@ -363,7 +363,7 @@ fun GearSpeedDisplay(
                     color = gearNeonColor,
                     fontSize = 82.sp,
                     lineHeight = 82.sp,
-                    fontWeight = FontWeight.Black,
+                    fontWeight = FontWeight.Normal,
                     fontFamily = DigitalNumbersFontFamily,
                     textAlign = TextAlign.Center
                 )
@@ -428,7 +428,7 @@ fun GearSpeedDisplay(
             IndicatorBox(
                 isActive = tcActive,
                 activeColor = NeonCyan,
-                onClick = {}
+                onClick = { onAction("tc_up") }
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
