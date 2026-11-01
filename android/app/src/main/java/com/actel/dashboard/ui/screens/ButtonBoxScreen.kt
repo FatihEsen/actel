@@ -42,6 +42,7 @@ fun ButtonBoxScreen(
     modifier: Modifier = Modifier
 ) {
     val isPitLimiterOn = telemetry?.physics?.pitLimiterOn == true
+    val isHandbrakeOn = telemetry?.indicators?.handbrake == true
     val isDrsOn = telemetry?.physics?.drs == true
     val isHazardOn = telemetry?.indicators?.hazard == true
     val isHeadlightsOn = telemetry?.indicators?.headlights == true
@@ -185,16 +186,15 @@ fun ButtonBoxScreen(
                 )
                 BoxButton("⏸️ DURAKLAT", "pause", Color(0xFFE57373), onAction, Modifier.weight(1f))
             }
-            // Satır 5: DRS (HOLD) / START
+            // Satır 5: EL FRENİ / START
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
                 BoxButton(
-                    title = if (isDrsOn) "💨 DRS (ON)" else "💨 DRS",
-                    action = "drs",
-                    color = if (isDrsOn) NeonGreen else Color(0xFF00E5FF),
+                    title = if (isHandbrakeOn) "🅿️ FREN (ON)" else "🅿️ EL FRENİ",
+                    action = "handbrake",
+                    color = if (isHandbrakeOn) NeonRed else Color(0xFFFF5252),
                     onAction = onAction,
                     modifier = Modifier.weight(1f),
-                    isHold = true,
-                    isActive = isDrsOn
+                    isActive = isHandbrakeOn
                 )
                 BoxButton("🏁 START", "starter", NeonGreen, onAction, Modifier.weight(1f))
             }

@@ -47,7 +47,7 @@ fun ShiftLights(
     modifier: Modifier = Modifier
 ) {
     val showTurbo = hasTurbo || turboBoost > 0.02f
-    val showKersOrDrs = hasKers || kersCharge > 0.5f || hasDrs
+    val showKersOrDrs = hasKers || kersCharge > 0.5f || hasDrs || drsAvailable || drsActive
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -346,8 +346,8 @@ private fun ErsKersBar(
             Spacer(modifier = Modifier.weight(1f))
         }
 
-        // DRS Göstergesi
-        if (hasDrs) {
+        // DRS Göstergesi (KERS barının en sağında)
+        if (hasDrs || drsAvailable || drsActive) {
             val drsBgColor = when {
                 drsActive -> Color(0xFF00E5FF)
                 drsAvailable -> Color(0xFF00E676).copy(alpha = 0.25f)

@@ -15,7 +15,8 @@ data class IndicatorData(
     val hazard: Boolean = false,
     val headlights: Boolean = false,
     val flasher: Boolean = false,
-    val pitLimiter: Boolean = false
+    val pitLimiter: Boolean = false,
+    val handbrake: Boolean = false
 )
 
 @Serializable

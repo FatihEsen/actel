@@ -118,6 +118,16 @@
           <div class="led led-red"></div>
           <div class="led led-red"></div>
         </div>
+        <!-- KERS / ERS BAR with DRS Info at far right -->
+        <div class="ers-kers-drs-bar" id="ersKersDrsContainer">
+          <span class="ers-label">ERS</span>
+          <div class="ers-track">
+            <div class="ers-fill" id="ersFill"></div>
+            <div class="ers-marker" id="ersMarker"></div>
+          </div>
+          <span class="ers-val" id="ersVal">100%</span>
+          <div class="drs-pill" id="drsPill">DRS</div>
+        </div>
       </div>
 
       <!-- MAIN DASHBOARD GRID -->
@@ -193,13 +203,15 @@
                 <div id="indFlash" class="cockpit-icon-box tag-flash" title="Selektör (Uzun Far / Flaşör)">
                   <svg viewBox="0 0 24 24" class="flash-svg"><path d="M7 5a7 7 0 0 0 0 14h2V5H7zm5 0h8v2h-8V5zm0 4h8v2h-8V9zm0 4h8v2h-8v-2zm0 4h8v2h-8v-2z"/></svg>
                 </div>
-                <!-- 4. Hazard Triangle -->
-                <div id="indHazard" class="cockpit-icon-box hazard-triangle" title="Dörtlü İkaz">
-                  <svg viewBox="0 0 24 24" class="hazard-svg"><path d="M12 2L1 21h22L12 2zm0 3.5L20.2 19H3.8L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>
-                </div>
-                <!-- 5. ABS Status Badge -->
+                <!-- 4. ABS Status Badge (Title + Value, parity with BB) -->
                 <div id="indAbs" class="cockpit-icon-box tag-abs" title="Anti-lock Braking System">
                   <span class="tag-title">ABS</span>
+                  <span id="indAbsVal" class="tag-sub">1</span>
+                </div>
+                <!-- 5. El Freni (Handbrake) -->
+                <div id="indHandbrake" class="cockpit-icon-box tag-handbrake" title="El Freni (Handbrake)">
+                  <span class="tag-title">(P)</span>
+                  <span class="tag-sub">FREN</span>
                 </div>
               </div>
 
@@ -229,17 +241,18 @@
                 <div id="indTurnRight" class="cockpit-icon-box turn-arrow arrow-right" title="Sağ Sinyal">
                   <svg viewBox="0 0 24 24" class="turn-svg"><path d="M10 18l6-6-6-6v12z"/></svg>
                 </div>
-                <!-- 2. DRS Status Badge -->
-                <div id="indDrs" class="cockpit-icon-box tag-drs" title="Drag Reduction System">
-                  <span class="tag-title">DRS</span>
+                <!-- 2. Hazard Triangle -->
+                <div id="indHazard" class="cockpit-icon-box hazard-triangle" title="Dörtlü İkaz">
+                  <svg viewBox="0 0 24 24" class="hazard-svg"><path d="M12 2L1 21h22L12 2zm0 3.5L20.2 19H3.8L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>
                 </div>
                 <!-- 3. Pit Limiter Indicator Badge -->
                 <div id="indPit" class="cockpit-icon-box tag-pit" title="Pit Limiter">
                   <span class="tag-title">PIT</span>
                 </div>
-                <!-- 4. TC Status Badge -->
+                <!-- 4. TC Status Badge (Title + Value, parity with BB) -->
                 <div id="indTc" class="cockpit-icon-box tag-tc" title="Traction Control">
                   <span class="tag-title">TC</span>
+                  <span id="indTcVal" class="tag-sub">1</span>
                 </div>
                 <!-- 5. BB Status Badge (Value underneath Title) -->
                 <div id="indBb" class="cockpit-icon-box tag-bb" title="Fren Dağılımı (Brake Bias)">
@@ -404,7 +417,7 @@
               <button class="bb-btn bb-crimson" data-action="pause"><span class="bb-title">⏸️ DURAKLAT</span></button>
             </div>
             <div class="bb-row-pair">
-              <button class="bb-btn bb-cyan highlight-btn" data-action="drs" data-hold="true"><span class="bb-title">💨 DRS</span></button>
+              <button class="bb-btn bb-crimson highlight-btn" data-action="handbrake"><span class="bb-title">🅿️ EL FRENİ</span></button>
               <button class="bb-btn bb-green highlight-btn" data-action="starter"><span class="bb-title">🏁 START</span></button>
             </div>
           </div>

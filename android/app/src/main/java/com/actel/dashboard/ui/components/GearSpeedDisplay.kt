@@ -56,9 +56,12 @@ fun GearSpeedDisplay(
     maxRpm: Int,
     indicators: IndicatorData?,
     absActive: Boolean = false,
+    absLevel: Int = 0,
     tcActive: Boolean = false,
+    tcLevel: Int = 0,
     drsAvailable: Boolean = false,
     drsActive: Boolean = false,
+    handbrakeActive: Boolean = false,
     pitActive: Boolean = false,
     brakeBias: Float = 0.58f,
     onAction: (String) -> Unit = {},
@@ -121,12 +124,12 @@ fun GearSpeedDisplay(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 1. Sol Sinyal (Aktifken yanıp söner, boştayken canlı sarı)
-            val leftAlpha = if (isLeftTurnActive) flasherAlpha else 0.85f
+            // 1. Sol Sinyal (Aktifken yanıp söner, boştayken soluk)
+            val leftAlpha = if (isLeftTurnActive) flasherAlpha else 0f
             IndicatorBox(
                 isActive = isLeftTurnActive,
                 activeColor = NeonYellow,
-                idleColor = NeonYellow.copy(alpha = 0.85f),
+                idleColor = Color(0xFF242E42).copy(alpha = 0.45f),
                 onClick = { onAction("turn_left") }
             ) {
                 Text(
@@ -134,7 +137,7 @@ fun GearSpeedDisplay(
                     color = if (isLeftTurnActive) {
                         NeonYellow.copy(alpha = if (leftAlpha > 0.5f) 1f else 0.15f)
                     } else {
-                        NeonYellow.copy(alpha = 0.85f)
+                        NeonYellow.copy(alpha = 0.25f)
                     },
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Black
@@ -169,36 +172,60 @@ fun GearSpeedDisplay(
                 )
             }
 
-            // 4. ABS Rozeti (Kullanıcı isteğiyle 4. Sıraya Taşındı)
+            // 4. ABS Rozeti (Değer ve Başlık, BB ile aynı format)
             IndicatorBox(
                 isActive = absActive,
                 activeColor = NeonRed,
-                idleColor = Color(0xFFFF5064).copy(alpha = 0.25f),
+                idleColor = Color(0xFF242E42).copy(alpha = 0.5f),
                 onClick = {}
             ) {
-                Text(
-                    text = "ABS",
-                    color = if (absActive) Color.White else Color(0xFFFF5064).copy(alpha = 0.45f),
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Black,
-                    fontFamily = FontFamily.Monospace
-                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "ABS",
+                        color = if (absActive) Color.White else Color(0xFFFF5064).copy(alpha = 0.85f),
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Black,
+                        fontFamily = FontFamily.Monospace
+                    )
+                    Text(
+                        text = if (absLevel > 0) absLevel.toString() else "OFF",
+                        color = if (absActive) Color.White else TextSecondary,
+                        fontSize = 9.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Monospace
+                    )
+                }
             }
 
-            // 5. DRS Rozeti (Kullanıcı isteğiyle 5. Sıraya Taşındı)
+            // 5. El Freni Rozeti (DRS yerine taşındı)
             IndicatorBox(
-                isActive = drsAvailable || drsActive,
-                activeColor = NeonGreen,
-                idleColor = Color(0xFF00FF88).copy(alpha = 0.25f),
-                onClick = { onAction("drs") }
+                isActive = handbrakeActive,
+                activeColor = NeonRed,
+                idleColor = Color(0xFF242E42).copy(alpha = 0.5f),
+                onClick = { onAction("handbrake") }
             ) {
-                Text(
-                    text = "DRS",
-                    color = if (drsAvailable || drsActive) NeonGreen else TextDim,
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Black,
-                    fontFamily = FontFamily.Monospace
-                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "(P)",
+                        color = if (handbrakeActive) Color.White else Color(0xFFFF5064).copy(alpha = 0.75f),
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Black,
+                        fontFamily = FontFamily.Monospace
+                    )
+                    Text(
+                        text = "FREN",
+                        color = if (handbrakeActive) Color.White else TextSecondary,
+                        fontSize = 8.5.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Monospace
+                    )
+                }
             }
         }
 
@@ -302,12 +329,12 @@ fun GearSpeedDisplay(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 1. Sağ Sinyal (Aktifken yanıp söner, boştayken canlı sarı)
-            val rightAlpha = if (isRightTurnActive) flasherAlpha else 0.85f
+            // 1. Sağ Sinyal (Aktifken yanıp söner, boştayken soluk)
+            val rightAlpha = if (isRightTurnActive) flasherAlpha else 0f
             IndicatorBox(
                 isActive = isRightTurnActive,
                 activeColor = NeonYellow,
-                idleColor = NeonYellow.copy(alpha = 0.85f),
+                idleColor = Color(0xFF242E42).copy(alpha = 0.45f),
                 onClick = { onAction("turn_right") }
             ) {
                 Text(
@@ -315,19 +342,19 @@ fun GearSpeedDisplay(
                     color = if (isRightTurnActive) {
                         NeonYellow.copy(alpha = if (rightAlpha > 0.5f) 1f else 0.15f)
                     } else {
-                        NeonYellow.copy(alpha = 0.85f)
+                        NeonYellow.copy(alpha = 0.25f)
                     },
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Black
                 )
             }
 
-            // 2. Dörtlü İkaz (Sağ Kanat 2. Sıra)
-            val hazardAlpha = if (isHazardActive) flasherAlpha else 0.85f
+            // 2. Dörtlü İkaz (Aktifken yanıp söner, boştayken soluk)
+            val hazardAlpha = if (isHazardActive) flasherAlpha else 0f
             IndicatorBox(
                 isActive = isHazardActive,
                 activeColor = NeonRed,
-                idleColor = NeonRed.copy(alpha = 0.85f),
+                idleColor = Color(0xFF242E42).copy(alpha = 0.45f),
                 onClick = { onAction("hazard") }
             ) {
                 Text(
@@ -335,7 +362,7 @@ fun GearSpeedDisplay(
                     color = if (isHazardActive) {
                         NeonRed.copy(alpha = if (hazardAlpha > 0.5f) 1f else 0.15f)
                     } else {
-                        NeonRed.copy(alpha = 0.85f)
+                        NeonRed.copy(alpha = 0.25f)
                     },
                     fontSize = 15.sp
                 )
@@ -359,20 +386,32 @@ fun GearSpeedDisplay(
                 )
             }
 
-            // 4. TC Rozeti
+            // 4. TC Rozeti (Değer ve Başlık, BB ile aynı format)
             IndicatorBox(
                 isActive = tcActive,
                 activeColor = NeonYellow,
-                idleColor = Color(0xFF00F0FF).copy(alpha = 0.25f),
+                idleColor = Color(0xFF242E42).copy(alpha = 0.5f),
                 onClick = {}
             ) {
-                Text(
-                    text = "TC",
-                    color = if (tcActive) Color(0xFF070B12) else Color(0xFF00F0FF).copy(alpha = 0.45f),
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Black,
-                    fontFamily = FontFamily.Monospace
-                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "TC",
+                        color = if (tcActive) Color(0xFF070B12) else Color(0xFF00F0FF).copy(alpha = 0.85f),
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Black,
+                        fontFamily = FontFamily.Monospace
+                    )
+                    Text(
+                        text = if (tcLevel > 0) tcLevel.toString() else "OFF",
+                        color = if (tcActive) Color(0xFF070B12) else TextSecondary,
+                        fontSize = 9.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Monospace
+                    )
+                }
             }
 
             // 5. Brake Bias Rozeti (BB Başlığı ve Altında Yüzdelik Değer)

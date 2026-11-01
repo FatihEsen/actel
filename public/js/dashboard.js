@@ -40,7 +40,13 @@ class DashboardController {
     // Gear Corner Status Badges (ABS, TC, DRS, BB)
     this.indAbs = document.getElementById('indAbs');
     this.indTc = document.getElementById('indTc');
-    this.indDrs = document.getElementById('indDrs');
+    this.indHandbrake = document.getElementById('indHandbrake');
+    this.indAbsVal = document.getElementById('indAbsVal');
+    this.indTcVal = document.getElementById('indTcVal');
+    this.ersFill = document.getElementById('ersFill');
+    this.ersMarker = document.getElementById('ersMarker');
+    this.ersVal = document.getElementById('ersVal');
+    this.drsPill = document.getElementById('drsPill');
     this.indBbVal = document.getElementById('indBbVal');
 
     // Live Delta & Opponent/Ghost Gap Card
@@ -132,8 +138,11 @@ class DashboardController {
         this.indPit.classList.toggle('active');
       });
     }
-    if (this.indDrs) {
-      this.indDrs.addEventListener('click', () => send('drs'));
+    if (this.indHandbrake) {
+      this.indHandbrake.addEventListener('click', () => {
+        send('handbrake');
+        this.indHandbrake.classList.toggle('active');
+      });
     }
   }
 
@@ -252,24 +261,52 @@ class DashboardController {
       this.indFlash.classList.toggle('active', !!ind.flasher);
     }
 
+    
+    // ERS / KERS & DRS Pill Updates
+    const kersVal = (phys.kersCharge !== undefined && phys.kersCharge !== null) ? Math.round(phys.kersCharge) : 100;
+    if (this.ersFill) this.ersFill.style.width = `${Math.max(0, Math.min(100, kersVal))}%`;
+    if (this.ersVal) this.ersVal.textContent = `${kersVal}%`;
+    if (this.ersMarker) {
+      const deliveryPos = Math.max(8, Math.min(95, kersVal * 0.72));
+      this.ersMarker.style.left = `${deliveryPos}%`;
+    }
+
+    if (this.drsPill) {
+      const isDrsActive = !!(phys.drs || phys.drsEnabled);
+      const isDrsAvailable = !!phys.drsAvailable;
+      this.drsPill.classList.toggle('active', isDrsActive);
+      this.drsPill.classList.toggle('available', !isDrsActive && isDrsAvailable);
+      if (isDrsActive) {
+        this.drsPill.textContent = 'DRS OPEN';
+      } else if (isDrsAvailable) {
+        this.drsPill.textContent = 'DRS READY';
+      } else {
+        this.drsPill.textContent = 'DRS';
+      }
+    }
+
     // 6. Cockpit Status Badges (ABS, TC, DRS, PIT, BB)
     if (this.indAbs) {
-      // Solid steady active flag during braking wheel slip
       this.indAbs.classList.toggle('active', !!phys.absActive);
+    }
+    if (this.indAbsVal) {
+      const absLevel = Math.round(phys.abs || 0);
+      this.indAbsVal.textContent = absLevel > 0 ? absLevel : 'OFF';
     }
     if (this.indPit) {
       const isPitActive = Boolean(phys.pitLimiterOn || graph.isInPitLane || graph.isInPit || ind.pitLimiter);
       this.indPit.classList.toggle('active', isPitActive);
     }
     if (this.indTc) {
-      // Solid steady active flag during throttle wheelspin
       this.indTc.classList.toggle('active', !!phys.tcActive);
     }
-    if (this.indDrs) {
-      const drsAvail = !!phys.drsAvailable;
-      const drsActive = !!(phys.drs || phys.drsEnabled);
-      this.indDrs.classList.toggle('available', drsAvail);
-      this.indDrs.classList.toggle('active', drsActive);
+    if (this.indTcVal) {
+      const tcLevel = Math.round(phys.tc || 0);
+      this.indTcVal.textContent = tcLevel > 0 ? tcLevel : 'OFF';
+    }
+    if (this.indHandbrake) {
+      const isHbActive = !!(ind.handbrake || phys.handbrake);
+      this.indHandbrake.classList.toggle('active', isHbActive);
     }
     if (this.indBbVal) {
       const bbVal = phys.brakeBias !== undefined ? (phys.brakeBias * 100).toFixed(1) : '58.0';
