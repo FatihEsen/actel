@@ -22,3 +22,4 @@ assert(typeof apkStatus === 'object', 'getApkStatus should return an object');
 assert('exists' in apkStatus, 'apkStatus should have exists flag');
 
 console.log('✓ networkHelper tests passed');
+

@@ -20,3 +20,4 @@ assert(Array.isArray(libraries), 'detectSteamLibraryFolders should return an arr
 assert(typeof acPathDetector.installBridge === 'function', 'installBridge should be a function');
 
 console.log('✓ acPathDetector tests passed. Status:', status);
+
