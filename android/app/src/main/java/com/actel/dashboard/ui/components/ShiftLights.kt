@@ -48,7 +48,7 @@ fun ShiftLights(
     modifier: Modifier = Modifier
 ) {
     val showTurbo = hasTurbo || turboBoost > 0.02f
-    val showKersOrDrs = hasKers || kersCharge > 0.5f || hasDrs || drsAvailable || drsActive
+    val showKersOrDrs = hasKers || (hasDrs && (drsAvailable || drsActive))
 
     Column(
         modifier = modifier.fillMaxWidth(),

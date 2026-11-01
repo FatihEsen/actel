@@ -29,7 +29,7 @@ object CarCapabilityCache {
             turboCars.add(car)
             turboCars.add(lower)
         }
-        if (staticHasErs || staticHasKers || isKnownKers || kersCharge > 0.5f) {
+        if ((staticHasErs || staticHasKers || isKnownKers) && (kersCharge > 0.5f || isKnownKers || staticHasErs || staticHasKers)) {
             kersCars.add(car)
             kersCars.add(lower)
         }

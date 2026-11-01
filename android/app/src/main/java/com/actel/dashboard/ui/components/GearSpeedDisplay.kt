@@ -64,6 +64,10 @@ fun GearSpeedDisplay(
     handbrakeActive: Boolean = false,
     pitActive: Boolean = false,
     brakeBias: Float = 0.58f,
+    isFuelLow: Boolean = false,
+    isOverheat: Boolean = false,
+    isDamageWarn: Boolean = false,
+    isTyreSlip: Boolean = false,
     onAction: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -257,7 +261,35 @@ fun GearSpeedDisplay(
                 )
             }
 
-            // 2. RPM DEĞERİ (Canlı & Okunaklı)
+            // 2. 4 SİMETRİK YARIŞ TELLTALE İKAZ ROZETİ (Yakıt, Hararet, Hasar, Lastik)
+            Row(
+                modifier = Modifier.padding(vertical = 2.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TelltaleIcon(
+                    icon = "⛽",
+                    isActive = isFuelLow,
+                    activeColor = Color(0xFFFFB300)
+                )
+                TelltaleIcon(
+                    icon = "🌡️",
+                    isActive = isOverheat,
+                    activeColor = Color(0xFFFF5252)
+                )
+                TelltaleIcon(
+                    icon = "⚠️",
+                    isActive = isDamageWarn,
+                    activeColor = Color(0xFFFF1744)
+                )
+                TelltaleIcon(
+                    icon = "🛞",
+                    isActive = isTyreSlip,
+                    activeColor = Color(0xFF00E5FF)
+                )
+            }
+
+            // 3. RPM DEĞERİ (Canlı & Okunaklı)
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
@@ -460,5 +492,36 @@ private fun IndicatorBox(
         contentAlignment = Alignment.Center
     ) {
         content()
+    }
+}
+
+
+/**
+ * Orta Hız ile RPM arasındaki 4 simetrik kokpit ikaz rozeti
+ */
+@Composable
+private fun TelltaleIcon(
+    icon: String,
+    isActive: Boolean,
+    activeColor: Color,
+    modifier: Modifier = Modifier
+) {
+    val boxBg = if (isActive) activeColor.copy(alpha = 0.25f) else Color(0xFF0B1019)
+    val boxBorder = if (isActive) activeColor else Color(0xFF1E293B)
+
+    Box(
+        modifier = modifier
+            .width(28.dp)
+            .height(24.dp)
+            .clip(RoundedCornerShape(5.dp))
+            .background(boxBg)
+            .border(1.dp, boxBorder, RoundedCornerShape(5.dp)),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = icon,
+            fontSize = 11.5.sp,
+            lineHeight = 12.sp
+        )
     }
 }

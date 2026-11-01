@@ -214,6 +214,10 @@ fun DashboardScreen(
                     handbrakeActive = telemetry?.indicators?.handbrake == true,
                     pitActive = physics?.pitLimiterOn == true || graphic?.isInPitLane == true || telemetry?.indicators?.pitLimiter == true,
                     brakeBias = physics?.brakeBias ?: 0.58f,
+                    isFuelLow = (physics?.fuel ?: 100f) > 0f && ((physics?.fuel ?: 100f) < 8.5f || ((staticInfo?.maxFuel ?: 100) > 0 && (physics?.fuel ?: 100f) / (staticInfo?.maxFuel ?: 100) < 0.12f)),
+                    isOverheat = ((physics?.tyres?.brakeTemp?.maxOrNull() ?: 0f) > 600f) || ((physics?.tyres?.tempPractical?.maxOrNull() ?: 0f) > 105f),
+                    isDamageWarn = physics?.collision == true,
+                    isTyreSlip = (physics?.speedKmh ?: 0) > 10 && (physics?.maxWheelSlip ?: 0f) > 0.38f,
                     onAction = onAction,
                     modifier = Modifier.fillMaxSize()
                 )

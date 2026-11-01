@@ -70,6 +70,8 @@ data class PhysicsData(
     val kersCharge: Float = 0f,
     val finalFF: Float = 0f,
     val surfaceRumble: Float = 0f,
+    val maxWheelSlip: Float = 0f,
+    val wheelSlip: List<Float> = listOf(0f, 0f, 0f, 0f),
     val collision: Boolean = false,
     val numberOfTyresOut: Int = 0
 )
