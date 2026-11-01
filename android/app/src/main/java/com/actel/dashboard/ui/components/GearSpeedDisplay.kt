@@ -5,7 +5,6 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,8 +55,10 @@ fun GearSpeedDisplay(
     indicators: IndicatorData?,
     absActive: Boolean = false,
     absLevel: Int = 0,
+    hasAbs: Boolean = true,
     tcActive: Boolean = false,
     tcLevel: Int = 0,
+    hasTc: Boolean = true,
     drsAvailable: Boolean = false,
     drsActive: Boolean = false,
     handbrakeActive: Boolean = false,
@@ -94,12 +94,6 @@ fun GearSpeedDisplay(
         else -> "N"
     }
 
-    val gearColor = when (displayGear) {
-        "R" -> NeonRed
-        "N" -> NeonYellow
-        else -> NeonCyan
-    }
-
     val isHazardActive = indicators?.hazard == true
     val isLeftTurnActive = indicators?.turnLeft == true || isHazardActive
     val isRightTurnActive = indicators?.turnRight == true || isHazardActive
@@ -119,64 +113,56 @@ fun GearSpeedDisplay(
         // ==================== SOL KANAT (5 Gösterge Kutusu) ====================
         Column(
             modifier = Modifier
-                .width(48.dp)
+                .width(50.dp)
                 .fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.spacedBy(3.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 1. Sol Sinyal (Aktifken yanıp söner, boştayken soluk)
-            val leftAlpha = if (isLeftTurnActive) flasherAlpha else 0f
+            // 1. Sol Sinyal (Yanıp söner, boştayken standart deaktif)
+            val isLeftBlinking = isLeftTurnActive && (flasherAlpha > 0.5f)
             IndicatorBox(
-                isActive = isLeftTurnActive,
+                isActive = isLeftBlinking,
                 activeColor = NeonYellow,
-                idleColor = Color(0xFF242E42).copy(alpha = 0.45f),
                 onClick = { onAction("turn_left") }
             ) {
                 Text(
                     text = "◀",
-                    color = if (isLeftTurnActive) {
-                        NeonYellow.copy(alpha = if (leftAlpha > 0.5f) 1f else 0.15f)
-                    } else {
-                        NeonYellow.copy(alpha = 0.25f)
-                    },
-                    fontSize = 18.sp,
+                    color = if (isLeftBlinking) Color.White else NeonYellow.copy(alpha = 0.50f),
+                    fontSize = 17.sp,
                     fontWeight = FontWeight.Black
                 )
             }
 
-            // 2. Farlar (Kısa Far: Kapalıyken sönük/koyu, Açılınca parlak neon yeşil)
+            // 2. Farlar (Kısa Far: Kapalıyken standart deaktif, Açılınca parlak neon yeşil)
             IndicatorBox(
                 isActive = isLightsActive,
                 activeColor = NeonGreen,
-                idleColor = Color(0xFF4B6354).copy(alpha = 0.35f),
                 onClick = { onAction("headlights") }
             ) {
                 Text(
                     text = "💡",
-                    color = if (isLightsActive) NeonGreen else Color(0xFF5A6E64),
-                    fontSize = 16.sp
+                    color = if (isLightsActive) Color.White else NeonGreen.copy(alpha = 0.50f),
+                    fontSize = 15.sp
                 )
             }
 
-            // 3. Selektör (Uzun Far / Flaşör: Kapalıyken sönük, Açılınca parlak camgöbeği)
+            // 3. Selektör (Uzun Far / Flaşör: Kapalıyken standart deaktif, Açılınca parlak camgöbeği)
             IndicatorBox(
                 isActive = isFlasherActive,
                 activeColor = NeonCyan,
-                idleColor = Color(0xFF436575).copy(alpha = 0.35f),
                 onClick = { onAction("flasher") }
             ) {
                 Text(
                     text = "⚡",
-                    color = if (isFlasherActive) NeonCyan else Color(0xFF4B6274),
-                    fontSize = 16.sp
+                    color = if (isFlasherActive) Color.White else NeonCyan.copy(alpha = 0.35f),
+                    fontSize = 15.sp
                 )
             }
 
-            // 4. ABS Rozeti (Değer ve Başlık, BB ile aynı format)
+            // 4. ABS Rozeti (Değer ve Başlık, BB ile aynı standart format)
             IndicatorBox(
                 isActive = absActive,
                 activeColor = NeonRed,
-                idleColor = Color(0xFF242E42).copy(alpha = 0.5f),
                 onClick = {}
             ) {
                 Column(
@@ -185,26 +171,32 @@ fun GearSpeedDisplay(
                 ) {
                     Text(
                         text = "ABS",
-                        color = if (absActive) Color.White else Color(0xFFFF5064).copy(alpha = 0.85f),
-                        fontSize = 10.sp,
+                        color = if (absActive) Color.White else NeonRed.copy(alpha = 0.75f),
+                        fontSize = 9.sp,
+                        lineHeight = 10.sp,
                         fontWeight = FontWeight.Black,
                         fontFamily = FontFamily.Monospace
                     )
+                    val absText = when {
+                        !hasAbs -> "N/A"
+                        absLevel > 0 -> absLevel.toString()
+                        else -> "OFF"
+                    }
                     Text(
-                        text = if (absLevel > 0) absLevel.toString() else "OFF",
-                        color = if (absActive) Color.White else TextSecondary,
-                        fontSize = 9.sp,
-                        fontWeight = FontWeight.Bold,
+                        text = absText,
+                        color = if (absActive) Color.White else Color(0xFFE2E8F0),
+                        fontSize = 9.5.sp,
+                        lineHeight = 10.sp,
+                        fontWeight = FontWeight.ExtraBold,
                         fontFamily = FontFamily.Monospace
                     )
                 }
             }
 
-            // 5. El Freni Rozeti (DRS yerine taşındı)
+            // 5. El Freni Rozeti (DRS yerine yerleştirildi)
             IndicatorBox(
                 isActive = handbrakeActive,
                 activeColor = NeonRed,
-                idleColor = Color(0xFF242E42).copy(alpha = 0.5f),
                 onClick = { onAction("handbrake") }
             ) {
                 Column(
@@ -213,108 +205,104 @@ fun GearSpeedDisplay(
                 ) {
                     Text(
                         text = "(P)",
-                        color = if (handbrakeActive) Color.White else Color(0xFFFF5064).copy(alpha = 0.75f),
-                        fontSize = 11.sp,
+                        color = if (handbrakeActive) Color.White else NeonRed.copy(alpha = 0.75f),
+                        fontSize = 9.5.sp,
+                        lineHeight = 10.5.sp,
                         fontWeight = FontWeight.Black,
                         fontFamily = FontFamily.Monospace
                     )
                     Text(
                         text = "FREN",
-                        color = if (handbrakeActive) Color.White else TextSecondary,
-                        fontSize = 8.5.sp,
-                        fontWeight = FontWeight.Bold,
+                        color = if (handbrakeActive) Color.White else Color(0xFFE2E8F0),
+                        fontSize = 8.sp,
+                        lineHeight = 9.sp,
+                        fontWeight = FontWeight.ExtraBold,
                         fontFamily = FontFamily.Monospace
                     )
                 }
             }
         }
 
-        // ==================== ORTA OMURGA: HIZ (BÜYÜTÜLDÜ), RPM (BÜYÜTÜLDÜ), DİJİTAL VİTES ====================
+        // ==================== ORTA OMURGA: HIZ, RPM, DİJİTAL VİTES ====================
         Column(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.spacedBy(3.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 1. Hız Display (Büyütüldü: 78.sp)
+            // 1. HIZ GÖSTERGESİ (Büyük, Net ve Taşmayan Tipografi)
             Row(
                 verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 2.dp)
+                modifier = Modifier.padding(top = 2.dp)
             ) {
+                val speedFontSize = if (speedKmh >= 100) 58.sp else 68.sp
                 Text(
-                    text = "$speedKmh",
-                    color = TextPrimary,
-                    fontSize = 78.sp,
+                    text = speedKmh.toString(),
+                    color = Color.White,
+                    fontSize = speedFontSize,
+                    lineHeight = speedFontSize,
                     fontWeight = FontWeight.Black,
-                    fontFamily = FontFamily.Monospace,
-                    lineHeight = 74.sp
-                )
-
-                Spacer(modifier = Modifier.width(6.dp))
-
-                Text(
-                    text = "KM/H",
-                    color = NeonCyan,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Monospace,
-                    modifier = Modifier.padding(bottom = 12.dp)
-                )
-            }
-
-            // 2. RPM Satırı (Büyütüldü: 26.sp)
-            Row(
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = String.format("%,d", currentRpm),
-                    color = TextPrimary,
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Monospace
-                )
-                Spacer(modifier = Modifier.width(5.dp))
-                Text(
-                    text = "RPM",
-                    color = TextSecondary,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    fontFamily = FontFamily.Monospace,
-                    modifier = Modifier.padding(bottom = 3.dp)
-                )
-            }
-
-            // 3. Dijital Vites Kutusu (Kullanıcının Seçtiği DigitalNumbers Fontu)
-            Box(
-                modifier = Modifier
-                    .width(115.dp)
-                    .height(94.dp)
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(Color(0xFF060910))
-                    .border(2.5.dp, gearColor.copy(alpha = 0.9f), RoundedCornerShape(14.dp))
-                    .padding(horizontal = 8.dp, vertical = 2.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                // Sönük dijital '8' arka planı (otantik LCD/LED derinliği hissi verir)
-                Text(
-                    text = "8",
-                    color = gearColor.copy(alpha = 0.08f),
-                    fontSize = 66.sp,
                     fontFamily = DigitalNumbersFontFamily,
                     textAlign = TextAlign.Center
                 )
+                Text(
+                    text = "KM/H",
+                    color = NeonCyan,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    fontFamily = FontFamily.Monospace,
+                    maxLines = 1,
+                    softWrap = false,
+                    modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
+                )
+            }
 
-                // Aktif Vites Karakteri (0-9, N, R)
+            // 2. RPM DEĞERİ (Canlı & Okunaklı)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                val formattedRpm = String.format("%,d", currentRpm).replace(',', '.')
+                Text(
+                    text = formattedRpm,
+                    color = Color.White,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Black,
+                    fontFamily = FontFamily.Monospace
+                )
+                Text(
+                    text = " RPM",
+                    color = TextDim,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Monospace
+                )
+            }
+
+            // 3. 7-SEGMENT DİJİTAL VİTES GÖSTERGESİ
+            val gearNeonColor = when (displayGear) {
+                "R" -> NeonRed
+                "N" -> NeonYellow
+                else -> NeonCyan
+            }
+
+            Box(
+                modifier = Modifier
+                    .width(82.dp)
+                    .height(96.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color(0xFF070B12))
+                    .border(2.dp, gearNeonColor, RoundedCornerShape(12.dp)),
+                contentAlignment = Alignment.Center
+            ) {
                 Text(
                     text = displayGear,
-                    color = gearColor,
-                    fontSize = 66.sp,
+                    color = gearNeonColor,
+                    fontSize = 74.sp,
+                    lineHeight = 74.sp,
+                    fontWeight = FontWeight.Black,
                     fontFamily = DigitalNumbersFontFamily,
                     textAlign = TextAlign.Center
                 )
@@ -324,73 +312,61 @@ fun GearSpeedDisplay(
         // ==================== SAĞ KANAT (5 Gösterge Kutusu) ====================
         Column(
             modifier = Modifier
-                .width(48.dp)
+                .width(50.dp)
                 .fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.spacedBy(3.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 1. Sağ Sinyal (Aktifken yanıp söner, boştayken soluk)
-            val rightAlpha = if (isRightTurnActive) flasherAlpha else 0f
+            // 1. Sağ Sinyal (Yanıp söner, boştayken standart deaktif)
+            val isRightBlinking = isRightTurnActive && (flasherAlpha > 0.5f)
             IndicatorBox(
-                isActive = isRightTurnActive,
+                isActive = isRightBlinking,
                 activeColor = NeonYellow,
-                idleColor = Color(0xFF242E42).copy(alpha = 0.45f),
                 onClick = { onAction("turn_right") }
             ) {
                 Text(
                     text = "▶",
-                    color = if (isRightTurnActive) {
-                        NeonYellow.copy(alpha = if (rightAlpha > 0.5f) 1f else 0.15f)
-                    } else {
-                        NeonYellow.copy(alpha = 0.25f)
-                    },
-                    fontSize = 18.sp,
+                    color = if (isRightBlinking) Color.White else NeonYellow.copy(alpha = 0.50f),
+                    fontSize = 17.sp,
                     fontWeight = FontWeight.Black
                 )
             }
 
-            // 2. Dörtlü İkaz (Aktifken yanıp söner, boştayken soluk)
-            val hazardAlpha = if (isHazardActive) flasherAlpha else 0f
+            // 2. Dörtlü İkaz (Yanıp söner, boştayken standart deaktif)
+            val isHazardBlinking = isHazardActive && (flasherAlpha > 0.5f)
             IndicatorBox(
-                isActive = isHazardActive,
+                isActive = isHazardBlinking,
                 activeColor = NeonRed,
-                idleColor = Color(0xFF242E42).copy(alpha = 0.45f),
                 onClick = { onAction("hazard") }
             ) {
                 Text(
                     text = "⚠️",
-                    color = if (isHazardActive) {
-                        NeonRed.copy(alpha = if (hazardAlpha > 0.5f) 1f else 0.15f)
-                    } else {
-                        NeonRed.copy(alpha = 0.25f)
-                    },
+                    color = if (isHazardBlinking) Color.White else NeonRed.copy(alpha = 0.35f),
                     fontSize = 15.sp
                 )
             }
 
             // 3. Pit Limiter Rozeti (Açıkken canlı sarı/turuncu, devreye girince yanıp söner)
             val isPitFlashingOn = pitActive && (flasherAlpha > 0.5f)
-            val pitVividColor = Color(0xFFFFD600) // Canlı Neon Sarı / Amber
+            val pitVividColor = Color(0xFFFFD600)
             IndicatorBox(
                 isActive = isPitFlashingOn,
                 activeColor = pitVividColor,
-                idleColor = if (pitActive) pitVividColor.copy(alpha = 0.35f) else Color(0xFFFFB300).copy(alpha = 0.30f),
                 onClick = { onAction("pit_limiter") }
             ) {
                 Text(
                     text = "PIT",
-                    color = if (isPitFlashingOn) Color(0xFF050810) else if (pitActive) pitVividColor else Color(0xFFFFB300).copy(alpha = 0.65f),
+                    color = if (isPitFlashingOn) Color(0xFF050810) else if (pitActive) pitVividColor else pitVividColor.copy(alpha = 0.60f),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Black,
                     fontFamily = FontFamily.Monospace
                 )
             }
 
-            // 4. TC Rozeti (Değer ve Başlık, BB ile aynı format)
+            // 4. TC Rozeti (Değer ve Başlık, BB ile aynı standart format)
             IndicatorBox(
                 isActive = tcActive,
-                activeColor = NeonYellow,
-                idleColor = Color(0xFF242E42).copy(alpha = 0.5f),
+                activeColor = NeonCyan,
                 onClick = {}
             ) {
                 Column(
@@ -399,16 +375,23 @@ fun GearSpeedDisplay(
                 ) {
                     Text(
                         text = "TC",
-                        color = if (tcActive) Color(0xFF070B12) else Color(0xFF00F0FF).copy(alpha = 0.85f),
-                        fontSize = 10.sp,
+                        color = if (tcActive) Color.White else NeonCyan.copy(alpha = 0.75f),
+                        fontSize = 9.sp,
+                        lineHeight = 10.sp,
                         fontWeight = FontWeight.Black,
                         fontFamily = FontFamily.Monospace
                     )
+                    val tcText = when {
+                        !hasTc -> "N/A"
+                        tcLevel > 0 -> tcLevel.toString()
+                        else -> "OFF"
+                    }
                     Text(
-                        text = if (tcLevel > 0) tcLevel.toString() else "OFF",
-                        color = if (tcActive) Color(0xFF070B12) else TextSecondary,
-                        fontSize = 9.sp,
-                        fontWeight = FontWeight.Bold,
+                        text = tcText,
+                        color = if (tcActive) Color.White else Color(0xFFE2E8F0),
+                        fontSize = 9.5.sp,
+                        lineHeight = 10.sp,
+                        fontWeight = FontWeight.ExtraBold,
                         fontFamily = FontFamily.Monospace
                     )
                 }
@@ -418,7 +401,6 @@ fun GearSpeedDisplay(
             IndicatorBox(
                 isActive = false,
                 activeColor = Color(0xFFB0BEC5),
-                idleColor = Color(0xFF78909C).copy(alpha = 0.35f),
                 onClick = {}
             ) {
                 Column(
@@ -427,16 +409,18 @@ fun GearSpeedDisplay(
                 ) {
                     Text(
                         text = "BB",
-                        color = Color.White,
-                        fontSize = 10.sp,
+                        color = Color(0xFF94A3B8),
+                        fontSize = 9.sp,
+                        lineHeight = 10.sp,
                         fontWeight = FontWeight.Black,
                         fontFamily = FontFamily.Monospace
                     )
                     Text(
                         text = String.format("%.1f%%", brakeBias * 100f),
-                        color = TextSecondary,
-                        fontSize = 9.sp,
-                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFE2E8F0),
+                        fontSize = 8.5.sp,
+                        lineHeight = 9.5.sp,
+                        fontWeight = FontWeight.ExtraBold,
                         fontFamily = FontFamily.Monospace
                     )
                 }
@@ -445,24 +429,36 @@ fun GearSpeedDisplay(
     }
 }
 
+/**
+ * Tüm 10 gösterge kutusu için standartlaştırılmış tasarım:
+ * - Deaktifken: Standart koyu zarif çerçeve (Color(0xFF1E293B)), homojen arka plan (Color(0xFF0B1019)).
+ * - Aktifken: Tam parlak neon aktif çerçeve (activeColor), neon zemin dolgusu (alpha = 0.24f).
+ */
 @Composable
 private fun IndicatorBox(
     isActive: Boolean,
     activeColor: Color,
-    idleColor: Color,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    val boxBg = if (isActive) activeColor.copy(alpha = 0.28f) else Color(0xFF0F1522)
-    val boxBorder = if (isActive) activeColor else idleColor
+    val idleBorderColor = Color(0xFF1E293B)
+    val idleBgColor = Color(0xFF0B1019)
+
+    val activeBorderColor = activeColor
+    val activeBgColor = activeColor.copy(alpha = 0.24f)
+
+    val boxBg = if (isActive) activeBgColor else idleBgColor
+    val boxBorder = if (isActive) activeBorderColor else idleBorderColor
 
     Box(
-        modifier = Modifier
-            .size(46.dp)
-            .clip(RoundedCornerShape(8.dp))
+        modifier = modifier
+            .fillMaxWidth()
+            .height(35.dp)
+            .clip(RoundedCornerShape(6.dp))
             .background(boxBg)
-            .border(1.2.dp, boxBorder, RoundedCornerShape(8.dp))
-            .clickable { onClick() },
+            .border(1.dp, boxBorder, RoundedCornerShape(6.dp))
+            .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         content()

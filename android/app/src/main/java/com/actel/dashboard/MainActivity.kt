@@ -358,45 +358,45 @@ fun TopAppBar(
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Text(
                     text = "|",
                     color = TextDim,
-                    fontSize = 10.sp,
+                    fontSize = 13.sp,
                     fontFamily = FontFamily.Monospace
                 )
                 Text(
                     text = "$speed KM/H",
                     color = NeonCyan,
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.5.sp,
+                    fontWeight = FontWeight.ExtraBold,
                     fontFamily = FontFamily.Monospace
                 )
                 Text(
                     text = "|",
                     color = TextDim,
-                    fontSize = 10.sp,
+                    fontSize = 13.sp,
                     fontFamily = FontFamily.Monospace
                 )
                 Text(
                     text = "$rpm RPM",
                     color = NeonYellow,
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.5.sp,
+                    fontWeight = FontWeight.ExtraBold,
                     fontFamily = FontFamily.Monospace
                 )
                 Text(
                     text = "|",
                     color = TextDim,
-                    fontSize = 10.sp,
+                    fontSize = 13.sp,
                     fontFamily = FontFamily.Monospace
                 )
                 Text(
                     text = gear,
                     color = if (gear == "R") NeonRed else if (gear == "N") NeonYellow else NeonGreen,
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.5.sp,
+                    fontWeight = FontWeight.ExtraBold,
                     fontFamily = FontFamily.Monospace
                 )
             }

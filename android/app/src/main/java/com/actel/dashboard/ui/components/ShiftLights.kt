@@ -239,8 +239,9 @@ private fun TurboBoostBar(
             ) {
                 Box(
                     modifier = Modifier
-                        .width(2.5.dp)
+                        .width(6.dp)
                         .fillMaxHeight()
+                        .clip(RoundedCornerShape(1.dp))
                         .background(Color(0xFFFF9100))
                 )
             }
@@ -327,8 +328,9 @@ private fun ErsKersBar(
                 ) {
                     Box(
                         modifier = Modifier
-                            .width(2.5.dp)
+                            .width(6.dp)
                             .fillMaxHeight()
+                            .clip(RoundedCornerShape(1.dp))
                             .background(Color(0xFFFF1744))
                     )
                 }
@@ -346,22 +348,22 @@ private fun ErsKersBar(
             Spacer(modifier = Modifier.weight(1f))
         }
 
-        // DRS Göstergesi (KERS barının en sağında)
+        // DRS Göstergesi (Sağ üst KERS barında - yeşil renkli, kullanımdayken renk değiştiren)
         if (hasDrs || drsAvailable || drsActive) {
             val drsBgColor = when {
-                drsActive -> Color(0xFF00E5FF)
-                drsAvailable -> Color(0xFF00E676).copy(alpha = 0.25f)
-                else -> Color(0xFF141A26)
+                drsActive -> Color(0xFF00E5FF) // Kullanımdayken: Canlı Neon Camgöbeği dolgu
+                drsAvailable -> Color(0xFF00E676).copy(alpha = 0.35f) // DRS Bölgesi/Hazır: Canlı Yeşil dolgu
+                else -> Color(0xFF00E676).copy(alpha = 0.12f) // Donanımlı/Normal: Yeşil şeffaf zemin
             }
             val drsTextColor = when {
-                drsActive -> Color(0xFF060910)
-                drsAvailable -> Color(0xFF00E676)
-                else -> Color(0xFF4A5B70)
+                drsActive -> Color(0xFF050B14) // Kullanımdayken: Koyu kontrast yazı
+                drsAvailable -> Color.White // Hazır: Beyaz vurgulu yazı
+                else -> Color(0xFF00E676) // Normal: Yeşil renkli yazı
             }
             val drsBorderColor = when {
                 drsActive -> Color(0xFF00E5FF)
                 drsAvailable -> Color(0xFF00E676)
-                else -> Color(0xFF242E42)
+                else -> Color(0xFF00E676).copy(alpha = 0.55f)
             }
             val drsText = when {
                 drsActive -> "DRS OPEN"
@@ -373,15 +375,15 @@ private fun ErsKersBar(
                 modifier = Modifier
                     .clip(RoundedCornerShape(3.dp))
                     .background(drsBgColor)
-                    .border(0.5.dp, drsBorderColor, RoundedCornerShape(3.dp))
-                    .padding(horizontal = 5.dp, vertical = 1.dp),
+                    .border(1.dp, drsBorderColor, RoundedCornerShape(3.dp))
+                    .padding(horizontal = 6.dp, vertical = 1.5.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = drsText,
                     color = drsTextColor,
-                    fontSize = 7.5.sp,
-                    lineHeight = 9.sp,
+                    fontSize = 8.sp,
+                    lineHeight = 10.sp,
                     fontWeight = FontWeight.Black,
                     fontFamily = FontFamily.Monospace
                 )

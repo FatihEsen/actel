@@ -58,6 +58,8 @@ data class PhysicsData(
     val tcActive: Boolean = false,
     val abs: Float = 0f,
     val absActive: Boolean = false,
+    val absModes: Int = 1,
+    val tcModes: Int = 1,
     val pitLimiterOn: Boolean = false,
     val performanceMeter: Float = 0f,
     val turboBoost: Float = 0f,

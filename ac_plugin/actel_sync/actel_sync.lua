@@ -70,8 +70,18 @@ function script.update(dt)
       ptr[131] = car.turningRightLights and 1 or 0
       ptr[132] = car.turningLightsActivePhase and 1 or 0
       ptr[133] = car.highBeams and 1 or 0
-      ptr[134] = car.lowBeams and 1 or 0
+            ptr[134] = car.lowBeams and 1 or 0
       ptr[135] = car.flashingLightsActive and 1 or 0
+
+      ptr[140] = car.tractionControlMode or 0
+      ptr[141] = car.absMode or 0
+      ptr[142] = car.tractionControlModes or 0
+      ptr[143] = car.absModes or 0
+      ptr[144] = (car.tractionControlInAction or false) and 1 or 0
+      ptr[145] = (car.absInAction or false) and 1 or 0
+      ptr[146] = (car.drsAvailable or false) and 1 or 0
+      ptr[147] = (car.drsPresent or false) and 1 or 0
+      ptr[148] = (car.drsActive or false) and 1 or 0
 
       local hbPtr = ffi.cast("uint32_t*", ptr + 136)
       hbPtr[0] = hbPtr[0] + 1
