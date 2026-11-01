@@ -11,13 +11,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -27,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -64,14 +63,17 @@ fun GearSpeedDisplay(
     handbrakeActive: Boolean = false,
     pitActive: Boolean = false,
     brakeBias: Float = 0.58f,
+    fuelText: String = "0L",
     isFuelLow: Boolean = false,
+    tempText: String = "0°C",
     isOverheat: Boolean = false,
+    damageText: String = "OK",
     isDamageWarn: Boolean = false,
+    tyreText: String = "GRIP",
     isTyreSlip: Boolean = false,
     onAction: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    // Automotive flasher keyframes: 0-299ms ON (1f), 300-600ms OFF (0f)
     val infiniteTransition = rememberInfiniteTransition(label = "indicatorBlink")
     val flasherAlpha by infiniteTransition.animateFloat(
         initialValue = 1f,
@@ -89,7 +91,6 @@ fun GearSpeedDisplay(
         label = "flasherAlpha"
     )
 
-    // Format Gear: 0 -> R, 1 -> N, 2+ -> 1, 2, 3...
     val displayGear = when {
         gear == 0 -> "R"
         gear == 1 -> "N"
@@ -114,7 +115,7 @@ fun GearSpeedDisplay(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // ==================== SOL KANAT (5 Gösterge Kutusu) ====================
+        // ==================== SOL KANAT (7 Gösterge Kutusu) ====================
         Column(
             modifier = Modifier
                 .width(50.dp)
@@ -122,7 +123,7 @@ fun GearSpeedDisplay(
             verticalArrangement = Arrangement.spacedBy(3.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 1. Sol Sinyal (Yanıp söner, boştayken standart deaktif)
+            // 1. Sol Sinyal
             val isLeftBlinking = isLeftTurnActive && (flasherAlpha > 0.5f)
             IndicatorBox(
                 isActive = isLeftBlinking,
@@ -132,12 +133,12 @@ fun GearSpeedDisplay(
                 Text(
                     text = "◀",
                     color = if (isLeftBlinking) Color.White else NeonYellow.copy(alpha = 0.50f),
-                    fontSize = 17.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Black
                 )
             }
 
-            // 2. Farlar (Kısa Far: Kapalıyken standart deaktif, Açılınca parlak neon yeşil)
+            // 2. Farlar
             IndicatorBox(
                 isActive = isLightsActive,
                 activeColor = NeonGreen,
@@ -146,11 +147,11 @@ fun GearSpeedDisplay(
                 Text(
                     text = "💡",
                     color = if (isLightsActive) Color.White else NeonGreen.copy(alpha = 0.50f),
-                    fontSize = 15.sp
+                    fontSize = 14.sp
                 )
             }
 
-            // 3. Selektör (Uzun Far / Flaşör: Kapalıyken standart deaktif, Açılınca parlak camgöbeği)
+            // 3. Selektör
             IndicatorBox(
                 isActive = isFlasherActive,
                 activeColor = NeonCyan,
@@ -159,11 +160,11 @@ fun GearSpeedDisplay(
                 Text(
                     text = "⚡",
                     color = if (isFlasherActive) Color.White else NeonCyan.copy(alpha = 0.35f),
-                    fontSize = 15.sp
+                    fontSize = 14.sp
                 )
             }
 
-            // 4. ABS Rozeti (Değer ve Başlık, BB ile aynı standart format)
+            // 4. ABS Rozeti
             IndicatorBox(
                 isActive = absActive,
                 activeColor = NeonRed,
@@ -197,7 +198,7 @@ fun GearSpeedDisplay(
                 }
             }
 
-            // 5. El Freni Rozeti (DRS yerine yerleştirildi)
+            // 5. El Freni Rozeti
             IndicatorBox(
                 isActive = handbrakeActive,
                 activeColor = NeonRed,
@@ -220,6 +221,64 @@ fun GearSpeedDisplay(
                         color = if (handbrakeActive) Color.White else Color(0xFFE2E8F0),
                         fontSize = 8.sp,
                         lineHeight = 9.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontFamily = FontFamily.Monospace
+                    )
+                }
+            }
+
+            // 6. Yakıt Rozeti (Değer ve Başlık, TC/ABS gibi)
+            IndicatorBox(
+                isActive = isFuelLow,
+                activeColor = Color(0xFFFFB300),
+                onClick = {}
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "⛽ YKT",
+                        color = if (isFuelLow) Color.White else Color(0xFFFFB300).copy(alpha = 0.85f),
+                        fontSize = 8.sp,
+                        lineHeight = 9.sp,
+                        fontWeight = FontWeight.Black,
+                        fontFamily = FontFamily.Monospace
+                    )
+                    Text(
+                        text = fuelText,
+                        color = if (isFuelLow) Color.White else Color(0xFFE2E8F0),
+                        fontSize = 9.sp,
+                        lineHeight = 9.5.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontFamily = FontFamily.Monospace
+                    )
+                }
+            }
+
+            // 7. Hasar Rozeti (Değer ve Başlık)
+            IndicatorBox(
+                isActive = isDamageWarn,
+                activeColor = NeonRed,
+                onClick = {}
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "⚠️ HSR",
+                        color = if (isDamageWarn) Color.White else NeonRed.copy(alpha = 0.75f),
+                        fontSize = 8.sp,
+                        lineHeight = 9.sp,
+                        fontWeight = FontWeight.Black,
+                        fontFamily = FontFamily.Monospace
+                    )
+                    Text(
+                        text = damageText,
+                        color = if (isDamageWarn) Color.White else Color(0xFFE2E8F0),
+                        fontSize = 9.sp,
+                        lineHeight = 9.5.sp,
                         fontWeight = FontWeight.ExtraBold,
                         fontFamily = FontFamily.Monospace
                     )
@@ -261,35 +320,7 @@ fun GearSpeedDisplay(
                 )
             }
 
-            // 2. 4 SİMETRİK YARIŞ TELLTALE İKAZ ROZETİ (Yakıt, Hararet, Hasar, Lastik)
-            Row(
-                modifier = Modifier.padding(vertical = 2.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                TelltaleIcon(
-                    icon = "⛽",
-                    isActive = isFuelLow,
-                    activeColor = Color(0xFFFFB300)
-                )
-                TelltaleIcon(
-                    icon = "🌡️",
-                    isActive = isOverheat,
-                    activeColor = Color(0xFFFF5252)
-                )
-                TelltaleIcon(
-                    icon = "⚠️",
-                    isActive = isDamageWarn,
-                    activeColor = Color(0xFFFF1744)
-                )
-                TelltaleIcon(
-                    icon = "🛞",
-                    isActive = isTyreSlip,
-                    activeColor = Color(0xFF00E5FF)
-                )
-            }
-
-            // 3. RPM DEĞERİ (Canlı & Okunaklı)
+            // 2. RPM DEĞERİ (Canlı & Okunaklı)
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
@@ -305,7 +336,7 @@ fun GearSpeedDisplay(
                 Text(
                     text = " RPM",
                     color = TextDim,
-                    fontSize = 11.sp,
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Monospace
                 )
@@ -321,7 +352,7 @@ fun GearSpeedDisplay(
             Box(
                 modifier = Modifier
                     .width(92.dp)
-                .height(106.dp)
+                    .height(106.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(Color(0xFF070B12))
                     .border(2.dp, gearNeonColor, RoundedCornerShape(12.dp)),
@@ -339,7 +370,7 @@ fun GearSpeedDisplay(
             }
         }
 
-        // ==================== SAĞ KANAT (5 Gösterge Kutusu) ====================
+        // ==================== SAĞ KANAT (7 Gösterge Kutusu) ====================
         Column(
             modifier = Modifier
                 .width(50.dp)
@@ -347,7 +378,7 @@ fun GearSpeedDisplay(
             verticalArrangement = Arrangement.spacedBy(3.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 1. Sağ Sinyal (Yanıp söner, boştayken standart deaktif)
+            // 1. Sağ Sinyal
             val isRightBlinking = isRightTurnActive && (flasherAlpha > 0.5f)
             IndicatorBox(
                 isActive = isRightBlinking,
@@ -357,12 +388,12 @@ fun GearSpeedDisplay(
                 Text(
                     text = "▶",
                     color = if (isRightBlinking) Color.White else NeonYellow.copy(alpha = 0.50f),
-                    fontSize = 17.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Black
                 )
             }
 
-            // 2. Dörtlü İkaz (Yanıp söner, boştayken standart deaktif)
+            // 2. Dörtlü İkaz
             val isHazardBlinking = isHazardActive && (flasherAlpha > 0.5f)
             IndicatorBox(
                 isActive = isHazardBlinking,
@@ -372,11 +403,11 @@ fun GearSpeedDisplay(
                 Text(
                     text = "⚠️",
                     color = if (isHazardBlinking) Color.White else NeonRed.copy(alpha = 0.35f),
-                    fontSize = 15.sp
+                    fontSize = 14.sp
                 )
             }
 
-            // 3. Pit Limiter Rozeti (Açıkken canlı sarı/turuncu, devreye girince yanıp söner)
+            // 3. Pit Limiter Rozeti
             val isPitFlashingOn = pitActive && (flasherAlpha > 0.5f)
             val pitVividColor = Color(0xFFFFD600)
             IndicatorBox(
@@ -393,7 +424,7 @@ fun GearSpeedDisplay(
                 )
             }
 
-            // 4. TC Rozeti (Değer ve Başlık, BB ile aynı standart format)
+            // 4. TC Rozeti
             IndicatorBox(
                 isActive = tcActive,
                 activeColor = NeonCyan,
@@ -427,7 +458,7 @@ fun GearSpeedDisplay(
                 }
             }
 
-            // 5. Brake Bias Rozeti (BB Başlığı ve Altında Yüzdelik Değer)
+            // 5. Brake Bias Rozeti
             IndicatorBox(
                 isActive = false,
                 activeColor = Color(0xFFB0BEC5),
@@ -455,17 +486,75 @@ fun GearSpeedDisplay(
                     )
                 }
             }
+
+            // 6. Sıcaklık Rozeti (Değer ve Başlık, TC/ABS gibi)
+            IndicatorBox(
+                isActive = isOverheat,
+                activeColor = Color(0xFFFF5252),
+                onClick = {}
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "🌡️ TMP",
+                        color = if (isOverheat) Color.White else Color(0xFFFF5252).copy(alpha = 0.85f),
+                        fontSize = 8.sp,
+                        lineHeight = 9.sp,
+                        fontWeight = FontWeight.Black,
+                        fontFamily = FontFamily.Monospace
+                    )
+                    Text(
+                        text = tempText,
+                        color = if (isOverheat) Color.White else Color(0xFFE2E8F0),
+                        fontSize = 9.sp,
+                        lineHeight = 9.5.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontFamily = FontFamily.Monospace
+                    )
+                }
+            }
+
+            // 7. Lastik Tutuş / Kayma Rozeti (Değer ve Başlık)
+            IndicatorBox(
+                isActive = isTyreSlip,
+                activeColor = NeonCyan,
+                onClick = {}
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "🛞 LST",
+                        color = if (isTyreSlip) Color.White else NeonCyan.copy(alpha = 0.75f),
+                        fontSize = 8.sp,
+                        lineHeight = 9.sp,
+                        fontWeight = FontWeight.Black,
+                        fontFamily = FontFamily.Monospace
+                    )
+                    Text(
+                        text = tyreText,
+                        color = if (isTyreSlip) Color.White else Color(0xFFE2E8F0),
+                        fontSize = 8.5.sp,
+                        lineHeight = 9.5.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontFamily = FontFamily.Monospace
+                    )
+                }
+            }
         }
     }
 }
 
 /**
- * Tüm 10 gösterge kutusu için standartlaştırılmış tasarım:
+ * Tüm 14 gösterge kutusu için standartlaştırılmış tasarım:
  * - Deaktifken: Standart koyu zarif çerçeve (Color(0xFF1E293B)), homojen arka plan (Color(0xFF0B1019)).
  * - Aktifken: Tam parlak neon aktif çerçeve (activeColor), neon zemin dolgusu (alpha = 0.24f).
  */
 @Composable
-private fun IndicatorBox(
+private fun ColumnScope.IndicatorBox(
     isActive: Boolean,
     activeColor: Color,
     onClick: () -> Unit,
@@ -484,7 +573,7 @@ private fun IndicatorBox(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(35.dp)
+            .weight(1f)
             .clip(RoundedCornerShape(6.dp))
             .background(boxBg)
             .border(1.dp, boxBorder, RoundedCornerShape(6.dp))
@@ -492,36 +581,5 @@ private fun IndicatorBox(
         contentAlignment = Alignment.Center
     ) {
         content()
-    }
-}
-
-
-/**
- * Orta Hız ile RPM arasındaki 4 simetrik kokpit ikaz rozeti
- */
-@Composable
-private fun TelltaleIcon(
-    icon: String,
-    isActive: Boolean,
-    activeColor: Color,
-    modifier: Modifier = Modifier
-) {
-    val boxBg = if (isActive) activeColor.copy(alpha = 0.25f) else Color(0xFF0B1019)
-    val boxBorder = if (isActive) activeColor else Color(0xFF1E293B)
-
-    Box(
-        modifier = modifier
-            .width(28.dp)
-            .height(24.dp)
-            .clip(RoundedCornerShape(5.dp))
-            .background(boxBg)
-            .border(1.dp, boxBorder, RoundedCornerShape(5.dp)),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = icon,
-            fontSize = 11.5.sp,
-            lineHeight = 12.sp
-        )
     }
 }

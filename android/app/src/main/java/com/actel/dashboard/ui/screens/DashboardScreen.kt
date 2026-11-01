@@ -1,5 +1,7 @@
 package com.actel.dashboard.ui.screens
 
+import java.util.Locale
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -196,6 +198,23 @@ fun DashboardScreen(
             Column(
                 modifier = Modifier.weight(1.35f)
             ) {
+                val fuelLiters = physics?.fuel ?: 0f
+                val maxFuel = staticInfo?.maxFuel ?: 100
+                val isFuelLow = fuelLiters > 0f && (fuelLiters < 8.5f || (maxFuel > 0 && fuelLiters / maxFuel < 0.12f))
+                val fuelText = if (fuelLiters >= 100f) "${fuelLiters.toInt()}L" else String.format(Locale.US, "%.1fL", fuelLiters)
+
+                val maxBrakeTemp = physics?.tyres?.brakeTemp?.maxOrNull() ?: 0f
+                val maxTyreTemp = physics?.tyres?.tempPractical?.maxOrNull() ?: 0f
+                val isOverheat = maxBrakeTemp > 600f || maxTyreTemp > 105f
+                val currentTemp = if (maxTyreTemp > 0f) Math.round(maxTyreTemp) else (physics?.roadTemp ?: 25)
+                val tempText = "${currentTemp}°C"
+
+                val isDamageWarn = physics?.collision == true
+                val damageText = if (isDamageWarn) "HIT!" else "OK"
+
+                val isTyreSlip = (physics?.speedKmh ?: 0) > 10 && (physics?.maxWheelSlip ?: 0f) > 0.38f
+                val tyreText = if (isTyreSlip) "SLIP" else "GRIP"
+
                 GearSpeedDisplay(
                     gear = gear,
                     gearStr = gearStr,
@@ -214,10 +233,14 @@ fun DashboardScreen(
                     handbrakeActive = telemetry?.indicators?.handbrake == true,
                     pitActive = physics?.pitLimiterOn == true || graphic?.isInPitLane == true || telemetry?.indicators?.pitLimiter == true,
                     brakeBias = physics?.brakeBias ?: 0.58f,
-                    isFuelLow = (physics?.fuel ?: 100f) > 0f && ((physics?.fuel ?: 100f) < 8.5f || ((staticInfo?.maxFuel ?: 100) > 0 && (physics?.fuel ?: 100f) / (staticInfo?.maxFuel ?: 100) < 0.12f)),
-                    isOverheat = ((physics?.tyres?.brakeTemp?.maxOrNull() ?: 0f) > 600f) || ((physics?.tyres?.tempPractical?.maxOrNull() ?: 0f) > 105f),
-                    isDamageWarn = physics?.collision == true,
-                    isTyreSlip = (physics?.speedKmh ?: 0) > 10 && (physics?.maxWheelSlip ?: 0f) > 0.38f,
+                    fuelText = fuelText,
+                    isFuelLow = isFuelLow,
+                    tempText = tempText,
+                    isOverheat = isOverheat,
+                    damageText = damageText,
+                    isDamageWarn = isDamageWarn,
+                    tyreText = tyreText,
+                    isTyreSlip = isTyreSlip,
                     onAction = onAction,
                     modifier = Modifier.fillMaxSize()
                 )
