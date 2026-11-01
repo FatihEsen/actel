@@ -27,6 +27,7 @@
   "dependencies": {
     "express": "^5.2.1",
     "koffi": "^3.1.5",
+    "qrcode": "^1.5.4",
     "ws": "^8.21.3"
   }
 }

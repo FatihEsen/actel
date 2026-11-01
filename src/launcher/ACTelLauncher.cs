@@ -58,10 +58,10 @@ namespace ACTel
 
                 foreach (string line in output.Split('\n'))
                 {
-                    if (line.Contains(":8080") && line.Contains("LISTENING"))
+                    if (line.Contains("LISTENING"))
                     {
                         string[] parts = line.Trim().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                        if (parts.Length >= 5)
+                        if (parts.Length >= 5 && parts[1].EndsWith(":8080"))
                         {
                             int pid;
                             if (int.TryParse(parts[parts.Length - 1], out pid) && pid > 0)

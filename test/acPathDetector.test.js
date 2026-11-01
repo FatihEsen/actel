@@ -16,8 +16,10 @@ assert(typeof acPathDetector.detectSteamLibraryFolders === 'function', 'detectSt
 const libraries = acPathDetector.detectSteamLibraryFolders();
 assert(Array.isArray(libraries), 'detectSteamLibraryFolders should return an array');
 
-// 3. installBridge method exists
+// 3. installBridge invalid path check (Issue 5)
 assert(typeof acPathDetector.installBridge === 'function', 'installBridge should be a function');
+const failResult = acPathDetector.installBridge('C:\\NonExistent_Invalid_Path_12345');
+assert.strictEqual(failResult.success, false, 'Invalid targetDir should fail');
+assert(failResult.message.includes('bulunamadı') || failResult.message.includes('geçersiz'), 'Should return helpful error message');
 
-console.log('✓ acPathDetector tests passed. Status:', status);
-
+console.log('✓ acPathDetector unit tests passed. Status:', status);

@@ -60,8 +60,12 @@ class TelemetryWebSocketClient(
 
         disconnect(clearAutoReconnect = false)
 
-        val url = "ws://$host:$port"
-        val request = Request.Builder().url(url).build()
+        val url = "ws://$host:$port/ws?client=mobile"
+        val request = Request.Builder()
+            .url(url)
+            .addHeader("User-Agent", "ACTel-Android/1.0")
+            .build()
+
 
         _connectionState.value = ConnectionState.CONNECTING
 

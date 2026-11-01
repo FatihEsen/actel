@@ -51,6 +51,11 @@ function copyDirSync(src, dest, ignore = []) {
 console.log('   - ACTel.exe kopyalanıyor...');
 fs.copyFileSync(path.join(distDir, 'ACTel.exe'), path.join(bundleDir, 'ACTel.exe'));
 
+console.log('   - bin/node.exe (bağımsız çalışma zamanı) kopyalanıyor...');
+const binDir = path.join(bundleDir, 'bin');
+fs.mkdirSync(binDir, { recursive: true });
+fs.copyFileSync(process.execPath, path.join(binDir, 'node.exe'));
+
 console.log('   - allow_firewall.bat kopyalanıyor...');
 fs.copyFileSync(path.join(rootDir, 'allow_firewall.bat'), path.join(bundleDir, 'allow_firewall.bat'));
 

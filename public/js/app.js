@@ -82,6 +82,14 @@ class App {
 
     window.addEventListener('resize', updateCombinedCockpit);
 
+    window.addEventListener('hashchange', () => {
+      const h = window.location.hash.replace("#", "");
+      if (h) {
+        const m = document.querySelector(`[data-tab="${h}"]`);
+        if (m) m.click();
+      }
+    });
+
     const initialHash = window.location.hash.replace("#", "");
     if (initialHash) {
       const match = document.querySelector(`[data-tab="${initialHash}"]`);
@@ -291,7 +299,11 @@ class App {
             this.apkStatusNote.textContent = `✓ APK hazır (${net.apk.sizeMb} MB)`;
             this.apkStatusNote.style.color = '#10b981';
           } else {
-            this.apkStatusNote.textContent = '⚠️ APK henüz derlenmedi';
+            this.apkStatusNote.textContent = '⚠️ APK henüz derlenmedi (Terminal: npm run build:apk-bundle)';
+            if (this.downloadApkBtn) {
+              this.downloadApkBtn.style.pointerEvents = 'none';
+              this.downloadApkBtn.style.opacity = '0.5';
+            }
             this.apkStatusNote.style.color = '#f59e0b';
           }
         }
