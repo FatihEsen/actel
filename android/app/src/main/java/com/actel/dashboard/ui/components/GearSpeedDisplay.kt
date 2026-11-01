@@ -228,16 +228,16 @@ fun GearSpeedDisplay(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight(),
-            verticalArrangement = Arrangement.spacedBy(3.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 1. HIZ GÖSTERGESİ (Büyük, Net ve Taşmayan Tipografi)
-            Row(
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.Center,
+            // 1. HIZ GÖSTERGESİ (Büyük, Net ve Merkeze Hizalı Tipografi)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(top = 2.dp)
             ) {
-                val speedFontSize = if (speedKmh >= 100) 58.sp else 68.sp
+                val speedFontSize = if (speedKmh >= 100) 62.sp else 72.sp
                 Text(
                     text = speedKmh.toString(),
                     color = Color.White,
@@ -253,9 +253,7 @@ fun GearSpeedDisplay(
                     fontSize = 11.sp,
                     fontWeight = FontWeight.ExtraBold,
                     fontFamily = FontFamily.Monospace,
-                    maxLines = 1,
-                    softWrap = false,
-                    modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
+                    modifier = Modifier.padding(top = 1.dp)
                 )
             }
 
@@ -268,7 +266,7 @@ fun GearSpeedDisplay(
                 Text(
                     text = formattedRpm,
                     color = Color.White,
-                    fontSize = 24.sp,
+                    fontSize = 26.sp,
                     fontWeight = FontWeight.Black,
                     fontFamily = FontFamily.Monospace
                 )
@@ -290,8 +288,8 @@ fun GearSpeedDisplay(
 
             Box(
                 modifier = Modifier
-                    .width(82.dp)
-                    .height(96.dp)
+                    .width(92.dp)
+                .height(106.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(Color(0xFF070B12))
                     .border(2.dp, gearNeonColor, RoundedCornerShape(12.dp)),
@@ -300,8 +298,8 @@ fun GearSpeedDisplay(
                 Text(
                     text = displayGear,
                     color = gearNeonColor,
-                    fontSize = 74.sp,
-                    lineHeight = 74.sp,
+                    fontSize = 82.sp,
+                    lineHeight = 82.sp,
                     fontWeight = FontWeight.Black,
                     fontFamily = DigitalNumbersFontFamily,
                     textAlign = TextAlign.Center

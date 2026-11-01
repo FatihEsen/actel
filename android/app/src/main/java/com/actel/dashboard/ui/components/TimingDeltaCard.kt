@@ -137,10 +137,10 @@ fun TimingDeltaCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Yeşil Yukarı Ok (⇧) - Zaman kazandıkça / iyileştikçe parlar
-                BlockArrowUp(
+                // Yeşil Yukarı Üçgen (▲) - Zaman kazandıkça / iyileştikçe parlar
+                TriangleUp(
                     isActive = deltaTrend == "improving" && !isNone,
-                    modifier = Modifier.size(16.dp, 22.dp)
+                    modifier = Modifier.size(15.dp, 13.dp)
                 )
 
                 // Ghost Zaman Farkı (Ghosttan iyiyse Yeşil, kötüyse Kırmızı)
@@ -153,10 +153,10 @@ fun TimingDeltaCard(
                     letterSpacing = 0.5.sp
                 )
 
-                // Kırmızı Aşağı Ok (⇩) - Zaman kaybettikçe / kötüleştikçe parlar
-                BlockArrowDown(
+                // Kırmızı Aşağı Üçgen (▼) - Zaman kaybettikçe / kötüleştikçe parlar
+                TriangleDown(
                     isActive = deltaTrend == "worsening" && !isNone,
-                    modifier = Modifier.size(16.dp, 22.dp)
+                    modifier = Modifier.size(15.dp, 13.dp)
                 )
             }
         }
@@ -194,10 +194,10 @@ fun TimingDeltaCard(
 }
 
 /**
- * Kullanıcı görselindeki kalın yeşil yukarı blok ok (⇧)
+ * Ghost Delta Yanındaki Yeşil Yukarı Üçgen (▲)
  */
 @Composable
-fun BlockArrowUp(
+fun TriangleUp(
     isActive: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -208,54 +208,26 @@ fun BlockArrowUp(
         val w = size.width
         val h = size.height
 
-        val outerPath = Path().apply {
+        val path = Path().apply {
             moveTo(w * 0.5f, 0f)
-            lineTo(w, h * 0.46f)
-            lineTo(w * 0.70f, h * 0.46f)
-            lineTo(w * 0.70f, h)
-            lineTo(w * 0.30f, h)
-            lineTo(w * 0.30f, h * 0.46f)
-            lineTo(0f, h * 0.46f)
+            lineTo(w, h)
+            lineTo(0f, h)
             close()
         }
 
         if (isActive) {
-            // Hafif parlama arka planı
-            drawPath(outerPath, color = activeColor.copy(alpha = 0.18f))
-            // Kalın parlak dış çerçeve
-            drawPath(
-                outerPath,
-                color = activeColor,
-                style = Stroke(width = 2.4.dp.toPx())
-            )
-            // Görseldeki iç ok çizgisi (şaft ve çatı)
-            val innerArrow = Path().apply {
-                moveTo(w * 0.5f, h * 0.20f)
-                lineTo(w * 0.5f, h * 0.82f)
-                moveTo(w * 0.32f, h * 0.40f)
-                lineTo(w * 0.5f, h * 0.20f)
-                lineTo(w * 0.68f, h * 0.40f)
-            }
-            drawPath(
-                innerArrow,
-                color = activeColor,
-                style = Stroke(width = 2.dp.toPx())
-            )
+            drawPath(path, color = activeColor)
         } else {
-            drawPath(
-                outerPath,
-                color = inactiveColor,
-                style = Stroke(width = 1.4.dp.toPx())
-            )
+            drawPath(path, color = inactiveColor)
         }
     }
 }
 
 /**
- * Kullanıcı görselindeki kalın kırmızı aşağı blok ok (⇩)
+ * Ghost Delta Yanındaki Kırmızı Aşağı Üçgen (▼)
  */
 @Composable
-fun BlockArrowDown(
+fun TriangleDown(
     isActive: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -266,45 +238,17 @@ fun BlockArrowDown(
         val w = size.width
         val h = size.height
 
-        val outerPath = Path().apply {
-            moveTo(w * 0.5f, h)
-            lineTo(w, h * 0.54f)
-            lineTo(w * 0.70f, h * 0.54f)
-            lineTo(w * 0.70f, 0f)
-            lineTo(w * 0.30f, 0f)
-            lineTo(w * 0.30f, h * 0.54f)
-            lineTo(0f, h * 0.54f)
+        val path = Path().apply {
+            moveTo(0f, 0f)
+            lineTo(w, 0f)
+            lineTo(w * 0.5f, h)
             close()
         }
 
         if (isActive) {
-            // Hafif parlama arka planı
-            drawPath(outerPath, color = activeColor.copy(alpha = 0.18f))
-            // Kalın parlak dış çerçeve
-            drawPath(
-                outerPath,
-                color = activeColor,
-                style = Stroke(width = 2.4.dp.toPx())
-            )
-            // Görseldeki iç ok çizgisi (şaft ve çatı)
-            val innerArrow = Path().apply {
-                moveTo(w * 0.5f, h * 0.80f)
-                lineTo(w * 0.5f, h * 0.18f)
-                moveTo(w * 0.32f, h * 0.60f)
-                lineTo(w * 0.5f, h * 0.80f)
-                lineTo(w * 0.68f, h * 0.60f)
-            }
-            drawPath(
-                innerArrow,
-                color = activeColor,
-                style = Stroke(width = 2.dp.toPx())
-            )
+            drawPath(path, color = activeColor)
         } else {
-            drawPath(
-                outerPath,
-                color = inactiveColor,
-                style = Stroke(width = 1.4.dp.toPx())
-            )
+            drawPath(path, color = inactiveColor)
         }
     }
 }

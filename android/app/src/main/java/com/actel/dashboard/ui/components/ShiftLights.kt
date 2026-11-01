@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.actel.dashboard.ui.theme.LedOff
@@ -373,10 +374,11 @@ private fun ErsKersBar(
 
             Box(
                 modifier = Modifier
+                    .width(60.dp)
                     .clip(RoundedCornerShape(3.dp))
                     .background(drsBgColor)
                     .border(1.dp, drsBorderColor, RoundedCornerShape(3.dp))
-                    .padding(horizontal = 6.dp, vertical = 1.5.dp),
+                    .padding(vertical = 1.5.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -385,7 +387,8 @@ private fun ErsKersBar(
                     fontSize = 8.sp,
                     lineHeight = 10.sp,
                     fontWeight = FontWeight.Black,
-                    fontFamily = FontFamily.Monospace
+                    fontFamily = FontFamily.Monospace,
+                    textAlign = TextAlign.Center
                 )
             }
         }
