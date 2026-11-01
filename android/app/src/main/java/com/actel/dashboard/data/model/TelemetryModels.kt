@@ -19,6 +19,10 @@ data class IndicatorData(
     val handbrake: Boolean = false,
     val tcLevel: Int = 1,
     val absLevel: Int = 1,
+    val tcModes: Int = 0,
+    val absModes: Int = 0,
+    val tcInAction: Boolean = false,
+    val absInAction: Boolean = false,
     val drsActive: Boolean = false
 )
 
@@ -143,5 +147,8 @@ data class StaticInfoData(
     val hasTurbo: Boolean = false,
     val maxTurboBoost: Float = 2.5f,
     val hasABS: Boolean = true,
+    val hasTC: Boolean = true,
+    val tcModes: Int = 12,
+    val absModes: Int = 12,
     val isOnline: Boolean = false
 )

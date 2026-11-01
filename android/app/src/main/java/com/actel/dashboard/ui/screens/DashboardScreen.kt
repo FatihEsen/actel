@@ -216,13 +216,33 @@ fun DashboardScreen(
                 val isTyreSlip = (physics?.speedKmh ?: 0) > 10 && (physics?.maxWheelSlip ?: 0f) > 0.38f
                 val tyreText = if (isTyreSlip) "SLIP" else "GRIP"
 
-                val hasAbsCar = staticInfo?.hasABS ?: (displayCarName.lowercase().let {
+                val hasAbsCar = (staticInfo?.hasABS != false) && (displayCarName.lowercase().let {
                     !(it.contains("919") || it.contains("ts040") || it.contains("r18") ||
                       it.contains("sf70") || it.contains("sf15") || it.contains("f1") ||
-                      it.contains("f40") || it.contains("cobra") || it.contains("lotus_25") || it.contains("lotus_49"))
+                      it.contains("f40") || it.contains("cobra") || it.contains("lotus_25") || it.contains("lotus_49") ||
+                      it.contains("gte") || it.contains("rsr") || it.contains("c7r"))
                 })
-                val currentAbsLevel = if (hasAbsCar) (telemetry?.indicators?.absLevel ?: (if ((physics?.abs ?: 0f) > 0) 1 else 0)) else 0
-                val currentTcLevel = telemetry?.indicators?.tcLevel ?: (if ((physics?.tc ?: 0f) > 0) 1 else 0)
+                val hasTcCar = (staticInfo?.hasTC != false) && (displayCarName.lowercase().let {
+                    !(it.contains("lotus_25") || it.contains("lotus_49") || it.contains("cobra") ||
+                      it.contains("f40") || it.contains("98t") || it.contains("miura") || it.contains("shelby"))
+                })
+                val currentAbsLevel = if (hasAbsCar) {
+                    when {
+                        (physics?.abs ?: 0f) > 0f -> physics!!.abs.toInt()
+                        telemetry?.indicators?.absLevel != null -> telemetry.indicators.absLevel
+                        else -> 0
+                    }
+                } else 0
+                val currentTcLevel = if (hasTcCar) {
+                    when {
+                        (physics?.tc ?: 0f) > 0f -> physics!!.tc.toInt()
+                        telemetry?.indicators?.tcLevel != null -> telemetry.indicators.tcLevel
+                        else -> 0
+                    }
+                } else 0
+
+                val isAbsIntervening = (physics?.absActive == true || telemetry?.indicators?.absInAction == true)
+                val isTcIntervening = (physics?.tcActive == true || telemetry?.indicators?.tcInAction == true)
 
                 GearSpeedDisplay(
                     gear = gear,
@@ -231,12 +251,12 @@ fun DashboardScreen(
                     currentRpm = currentRpm,
                     maxRpm = maxRpm,
                     indicators = telemetry?.indicators,
-                    absActive = physics?.absActive == true || (hasAbsCar && (physics?.abs ?: 0f) > 0.5f),
+                    absActive = isAbsIntervening,
                     absLevel = currentAbsLevel,
                     hasAbs = hasAbsCar,
-                    tcActive = physics?.tcActive == true || (physics?.tc ?: 0f) > 0.5f,
+                    tcActive = isTcIntervening,
                     tcLevel = currentTcLevel,
-                    hasTc = true,
+                    hasTc = hasTcCar,
                     drsAvailable = drsAvailable,
                     drsActive = drsActive,
                     handbrakeActive = telemetry?.indicators?.handbrake == true,

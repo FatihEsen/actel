@@ -91,6 +91,23 @@ fun GearSpeedDisplay(
         label = "flasherAlpha"
     )
 
+    val rapidSlipTransition = rememberInfiniteTransition(label = "slipBlink")
+    val slipBlinkAlpha by rapidSlipTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 0f,
+        animationSpec = infiniteRepeatable(
+            animation = keyframes {
+                durationMillis = 200
+                1f at 0
+                1f at 99
+                0f at 100
+                0f at 200
+            },
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "slipBlinkAlpha"
+    )
+
     val displayGear = when {
         gear == 0 -> "R"
         gear == 1 -> "N"
@@ -164,9 +181,10 @@ fun GearSpeedDisplay(
                 )
             }
 
-            // 4. ABS Rozeti
+            // 4. ABS Rozeti (Normalde soluk, devreye girdiğinde flaş yaparak yanıp söner)
+            val isAbsBlinking = absActive && (slipBlinkAlpha > 0.5f)
             IndicatorBox(
-                isActive = absActive,
+                isActive = isAbsBlinking,
                 activeColor = NeonRed,
                 onClick = { onAction("abs_up") }
             ) {
@@ -176,7 +194,7 @@ fun GearSpeedDisplay(
                 ) {
                     Text(
                         text = "ABS",
-                        color = if (absActive) Color.White else NeonRed.copy(alpha = 0.75f),
+                        color = if (isAbsBlinking) Color.White else NeonRed.copy(alpha = 0.50f),
                         fontSize = 9.sp,
                         lineHeight = 10.sp,
                         fontWeight = FontWeight.Black,
@@ -189,7 +207,7 @@ fun GearSpeedDisplay(
                     }
                     Text(
                         text = absText,
-                        color = if (absActive) Color.White else Color(0xFFE2E8F0),
+                        color = if (isAbsBlinking) Color.White else Color(0xFFE2E8F0),
                         fontSize = 9.5.sp,
                         lineHeight = 10.sp,
                         fontWeight = FontWeight.ExtraBold,
@@ -424,9 +442,10 @@ fun GearSpeedDisplay(
                 )
             }
 
-            // 4. TC Rozeti
+            // 4. TC Rozeti (Normalde soluk, devreye girdiğinde flaş yaparak yanıp söner)
+            val isTcBlinking = tcActive && (slipBlinkAlpha > 0.5f)
             IndicatorBox(
-                isActive = tcActive,
+                isActive = isTcBlinking,
                 activeColor = NeonCyan,
                 onClick = { onAction("tc_up") }
             ) {
@@ -436,7 +455,7 @@ fun GearSpeedDisplay(
                 ) {
                     Text(
                         text = "TC",
-                        color = if (tcActive) Color.White else NeonCyan.copy(alpha = 0.75f),
+                        color = if (isTcBlinking) Color.White else NeonCyan.copy(alpha = 0.50f),
                         fontSize = 9.sp,
                         lineHeight = 10.sp,
                         fontWeight = FontWeight.Black,
@@ -449,7 +468,7 @@ fun GearSpeedDisplay(
                     }
                     Text(
                         text = tcText,
-                        color = if (tcActive) Color.White else Color(0xFFE2E8F0),
+                        color = if (isTcBlinking) Color.White else Color(0xFFE2E8F0),
                         fontSize = 9.5.sp,
                         lineHeight = 10.sp,
                         fontWeight = FontWeight.ExtraBold,
