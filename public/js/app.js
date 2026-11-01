@@ -37,6 +37,7 @@ class App {
     this.initWebSocket();
     this.fetchStatus();
     this.fetchBindings();
+    this.initSetupWizard();
   }
 
   // Tab switching (Supports nav tabs and header settings button)
@@ -235,12 +236,139 @@ class App {
       .catch(e => console.warn('Fetch bindings error:', e));
   }
 
-  renderQrCode(text) {
-    const holder = document.getElementById('qrSvgHolder');
-    if (!holder) return;
-    // Generate QR using Google Charts / QuickChart API or SVG
-    holder.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(text)}" width="180" height="180" alt="QR Code" style="display:block; border-radius: 6px;" />`;
+  initSetupWizard() {
+    this.mobileStatusBadge = document.getElementById('mobileStatusBadge');
+    this.setupLanUrl = document.getElementById('setupLanUrl');
+    this.setupQrSvg = document.getElementById('setupQrSvg');
+    this.downloadApkBtn = document.getElementById('downloadApkBtn');
+    this.apkStatusNote = document.getElementById('apkStatusNote');
+    this.bridgeStatusBadge = document.getElementById('bridgeStatusBadge');
+    this.acPathInput = document.getElementById('acPathInput');
+    this.installBridgeBtn = document.getElementById('installBridgeBtn');
+    this.pyBridgePill = document.getElementById('pyBridgePill');
+    this.luaSyncPill = document.getElementById('luaSyncPill');
+    this.pyIniPill = document.getElementById('pyIniPill');
+
+    if (this.installBridgeBtn) {
+      this.installBridgeBtn.addEventListener('click', () => {
+        this.installBridgeBtn.disabled = true;
+        this.installBridgeBtn.textContent = '⏳ Kuruluyor...';
+        const customPath = this.acPathInput ? this.acPathInput.value.trim() : null;
+
+        fetch('/api/setup/install-bridge', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ customPath })
+        })
+          .then(r => r.json())
+          .then(res => {
+            this.installBridgeBtn.disabled = false;
+            this.installBridgeBtn.textContent = '⚡ Tek Tıkla Oyuna Kur';
+            alert(res.message || (res.success ? 'Bridge başarıyla kuruldu!' : 'Kurulum tamamlanamadı.'));
+            this.loadSetupWizard();
+          })
+          .catch(err => {
+            this.installBridgeBtn.disabled = false;
+            this.installBridgeBtn.textContent = '⚡ Tek Tıkla Oyuna Kur';
+            alert('Bağlantı hatası: ' + err.message);
+          });
+      });
+    }
+
+    this.loadSetupWizard();
   }
+
+  loadSetupWizard() {
+    // 1. Fetch Network and APK Status
+    fetch('/api/setup/network')
+      .then(r => r.json())
+      .then(net => {
+        if (this.setupLanUrl && net.localIps && net.localIps.length > 0) {
+          this.setupLanUrl.textContent = net.localIps[0].url;
+        }
+        if (this.apkStatusNote) {
+          if (net.apk && net.apk.exists) {
+            this.apkStatusNote.textContent = `✓ APK hazır (${net.apk.sizeMb} MB)`;
+            this.apkStatusNote.style.color = '#10b981';
+          } else {
+            this.apkStatusNote.textContent = '⚠️ APK henüz derlenmedi';
+            this.apkStatusNote.style.color = '#f59e0b';
+          }
+        }
+        this.setMobileConnectedUI(Boolean(net.mobileConnected));
+      })
+      .catch(e => console.warn('Setup network error:', e));
+
+    // 2. Fetch Offline QR SVG
+    fetch('/api/setup/qr')
+      .then(r => r.text())
+      .then(svgText => {
+        if (this.setupQrSvg) {
+          this.setupQrSvg.innerHTML = svgText;
+        }
+        const modalQr = document.getElementById('qrSvgHolder');
+        if (modalQr) {
+          modalQr.innerHTML = svgText;
+        }
+      })
+      .catch(e => console.warn('Setup QR error:', e));
+
+    // 3. Fetch Bridge Status
+    fetch('/api/setup/bridge-status')
+      .then(r => r.json())
+      .then(b => {
+        if (this.acPathInput && b.installDir) {
+          this.acPathInput.value = b.installDir;
+        }
+        if (this.bridgeStatusBadge) {
+          if (b.bridgeInstalled && b.syncInstalled) {
+            this.bridgeStatusBadge.className = 'badge badge-success';
+            this.bridgeStatusBadge.textContent = 'Tam Yüklü & Hazır';
+          } else if (b.acFound) {
+            this.bridgeStatusBadge.className = 'badge badge-waiting';
+            this.bridgeStatusBadge.textContent = 'Eksik Eklenti';
+          } else {
+            this.bridgeStatusBadge.className = 'badge badge-error';
+            this.bridgeStatusBadge.textContent = 'Oyun Bulunamadı';
+          }
+        }
+        if (this.pyBridgePill) {
+          this.pyBridgePill.className = 'mini-pill ' + (b.bridgeInstalled ? 'installed' : 'missing');
+          this.pyBridgePill.textContent = 'Python Bridge: ' + (b.bridgeInstalled ? 'Yüklü' : 'Eksik');
+        }
+        if (this.luaSyncPill) {
+          this.luaSyncPill.className = 'mini-pill ' + (b.syncInstalled ? 'installed' : 'missing');
+          this.luaSyncPill.textContent = 'CSP Sync: ' + (b.syncInstalled ? 'Yüklü' : 'Eksik');
+        }
+        if (this.pyIniPill) {
+          this.pyIniPill.className = 'mini-pill ' + (b.pythonActive ? 'installed' : 'missing');
+          this.pyIniPill.textContent = 'python.ini: ' + (b.pythonActive ? 'Aktif' : 'Pasif');
+        }
+      })
+      .catch(e => console.warn('Bridge status error:', e));
+  }
+
+  setMobileConnectedUI(connected) {
+    if (!this.mobileStatusBadge) return;
+    if (connected) {
+      this.mobileStatusBadge.className = 'badge badge-success';
+      this.mobileStatusBadge.textContent = '✓ Telefon Bağlandı!';
+    } else {
+      this.mobileStatusBadge.className = 'badge badge-waiting';
+      this.mobileStatusBadge.textContent = 'Telefon Bekleniyor...';
+    }
+  }
+
+  renderQrCode(text) {
+    fetch('/api/setup/qr')
+      .then(r => r.text())
+      .then(svgText => {
+        const holder = document.getElementById('qrSvgHolder');
+        if (holder) holder.innerHTML = svgText;
+      })
+      .catch(e => console.warn('QR render error:', e));
+  }
+    
 
   // WebSocket Connection with high-speed receiver
   initWebSocket() {
@@ -266,6 +394,8 @@ class App {
         const msg = JSON.parse(event.data);
         if (msg.type === 'telemetry') {
           this.handleTelemetry(msg.data);
+        } else if (msg.type === 'mobile_connected') {
+          this.setMobileConnectedUI(msg.connected);
         }
       } catch (err) {
         console.error('Error handling WS packet:', err);

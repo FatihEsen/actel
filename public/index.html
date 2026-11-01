@@ -416,6 +416,85 @@
     <!-- 5. SETTINGS VIEW -->
     <section id="view-settings" class="tab-view">
       <div class="settings-container">
+        <!-- 0. SETUP WIZARD CARD -->
+        <div class="settings-card setup-wizard-card">
+          <div class="card-header">🏎️ CİHAZ & EKLENTİ KURULUM SİHİRBAZI</div>
+          <div class="settings-body">
+            
+            <!-- Mobile Step -->
+            <div class="setup-section">
+              <div class="setup-section-header">
+                <div class="setup-title">📱 1. Android Telefon / Tablet Kurulumu</div>
+                <span id="mobileStatusBadge" class="badge badge-waiting">Telefon Bekleniyor...</span>
+              </div>
+              <p class="settings-info-text">
+                Telefonunuzdan kamerayı açıp aşağıdaki QR kodu okutarak uygulamayı doğrudan telefonunuza indirin ve kurun:
+              </p>
+              <div class="setup-mobile-grid">
+                <div class="setup-qr-box" id="setupQrBox">
+                  <div id="setupQrSvg"></div>
+                </div>
+                <div class="setup-mobile-actions">
+                  <div class="setup-lan-info">
+                    <span class="label">Yerel Ağ URL:</span>
+                    <span id="setupLanUrl" class="mono-ip">-</span>
+                  </div>
+                  <a id="downloadApkBtn" href="/download/actel.apk" class="action-btn-primary" download>
+                    📥 APK İndir (.apk)
+                  </a>
+                  <div id="apkStatusNote" class="apk-note">APK kontrol ediliyor...</div>
+                </div>
+              </div>
+            </div>
+
+            <hr class="setup-divider" />
+
+            <!-- Assetto Corsa Bridge Step -->
+            <div class="setup-section">
+              <div class="setup-section-header">
+                <div class="setup-title">🎮 2. Assetto Corsa Eklenti Köprüsü (Bridge)</div>
+                <span id="bridgeStatusBadge" class="badge">Kontrol Ediliyor...</span>
+              </div>
+              <p class="settings-info-text">
+                Button Box tuşlarının oyuna eksiksiz iletilmesi ve göstergelerin senkronize olması için Assetto Corsa Python & Lua eklentisi gereklidir.
+              </p>
+              <div class="setup-ac-row">
+                <div class="ac-path-box">
+                  <label class="label">Oyun Klasörü:</label>
+                  <input type="text" id="acPathInput" class="styled-input" placeholder="Assetto Corsa klasörü aranıyor..." />
+                </div>
+                <button id="installBridgeBtn" class="action-btn-primary">
+                  ⚡ Tek Tıkla Oyuna Kur
+                </button>
+              </div>
+              <div class="plugin-pills">
+                <span id="pyBridgePill" class="mini-pill">Python Bridge: Aranıyor...</span>
+                <span id="luaSyncPill" class="mini-pill">CSP Sync: Aranıyor...</span>
+                <span id="pyIniPill" class="mini-pill">python.ini: Aranıyor...</span>
+              </div>
+            </div>
+
+            <hr class="setup-divider" />
+
+            <!-- Firewall Diagnostic Step -->
+            <div class="setup-section">
+              <div class="setup-section-header">
+                <div class="setup-title">🛡️ 3. Windows Güvenlik Duvarı & Bağlantı Yardımı</div>
+                <span class="badge badge-info">Port 8080 & 8088</span>
+              </div>
+              <p class="settings-info-text">
+                Telefonunuz aynı Wi-Fi ağında olmasına rağmen bağlanamazsa, Windows Güvenlik Duvarı gelen bağlantıları engelliyor olabilir.
+              </p>
+              <div class="setup-firewall-actions">
+                <a href="/allow_firewall.bat" class="action-btn-secondary" download>
+                  🛡️ Güvenlik Duvarı İzin Betiğini İndir (.bat)
+                </a>
+                <span class="firewall-tip">Betiğe sağ tıklayıp "Yönetici olarak çalıştır" demeniz yeterlidir.</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
         <div class="settings-card">
           <div class="card-header">SİSTEM & BAĞLANTI DURUMU</div>
           <div class="settings-body">
