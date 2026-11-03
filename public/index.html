@@ -3,63 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#0a0c10">
+  <meta name="theme-color" content="#06080d">
   <meta name="description" content="Assetto Corsa Gerçek Zamanlı Telemetri ve Sanal Kontrol Paneli (Button Box)">
-  <title>Assetto Corsa Telemetri & Kontrol Paneli</title>
+  <title>ACTel Pro Cockpit - Motorsport Telemetry & Control</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=6">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=13">
 </head>
 <body class="dark-theme">
 
-  <!-- TOP HEADER -->
+  <!-- ==================== TOP NAVIGATION BAR ==================== -->
   <header class="top-bar">
     <div class="brand-group">
       <div class="brand-badge">
-        <span class="brand-icon">🏎️</span>
+        <div class="brand-icon-wrap">
+          <svg viewBox="0 0 32 32" width="24" height="24" class="brand-svg">
+            <path d="M4 18c2-4 6-6 10-6h6l4 3 4 1-2 3h-4l-3-2h-5c-3 0-5 1.5-6.5 4H4v-3z" fill="url(#brandGrad)" />
+            <circle cx="10" cy="21" r="3" fill="#00E5FF" />
+            <circle cx="23" cy="21" r="3" fill="#00E5FF" />
+            <path d="M2 13h4l2 3H2z" fill="#00E676" />
+            <defs>
+              <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00E5FF" />
+                <stop offset="100%" stop-color="#00E676" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
         <div class="brand-text">
-          <span class="brand-title">ACTELEMETRY</span>
-          <span class="brand-sub">PRO DASH & CONTROLLER</span>
+          <span class="brand-title">ACTEL <span class="brand-title-accent">PRO</span></span>
+          <span class="brand-sub">RACING TELEMETRY & COCKPIT</span>
         </div>
       </div>
+
       <div id="connectionBadge" class="status-badge connecting">
         <span class="status-dot"></span>
         <span class="status-text">BAĞLANILIYOR</span>
       </div>
+
       <div id="headerQuickTelemetry" class="header-telemetry">
-        <span class="ht-sep">|</span>
         <span id="htSpeed" class="ht-val ht-cyan">0 KM/H</span>
-        <span class="ht-sep">|</span>
+        <span class="ht-sep">/</span>
         <span id="htRpm" class="ht-val ht-yellow">0 RPM</span>
-        <span class="ht-sep">|</span>
+        <span class="ht-sep">/</span>
         <span id="htGear" class="ht-val ht-green">N</span>
       </div>
     </div>
 
-    <!-- Header Actions (Karekod, Ses, Ayarlar, Tam Ekran) -->
+    <!-- Header Actions (Kombine Mod, QR, Ses, Ayarlar, Tam Ekran) -->
     <div class="header-actions">
+      <!-- Desktop Combined Cockpit Toggle (Default: Off) -->
+      <button id="toggleCombinedBtn" class="action-btn toggle-combined-btn" style="display: none;" title="Gösterge ve Buton Kutusunu Bölünmüş Ekranda Göster">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="8" rx="2"></rect>
+          <rect x="3" y="13" width="18" height="8" rx="2"></rect>
+        </svg>
+        <span class="btn-subtext">KOMBİNE</span>
+      </button>
+
       <!-- IP / QR Mobile Connect -->
-      <button id="qrModalBtn" class="action-btn icon-only" title="Telefondan Bağlan (QR / IP)">
+      <button id="qrModalBtn" class="action-btn icon-only" title="Telefondan Bağlan (QR / IP)" aria-label="Telefondan Bağlan">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="3" width="7" height="7"></rect>
-          <rect x="14" y="3" width="7" height="7"></rect>
-          <rect x="14" y="14" width="7" height="7"></rect>
-          <rect x="3" y="14" width="7" height="7"></rect>
+          <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+          <rect x="3" y="14" width="7" height="7" rx="1"></rect>
           <path d="M7 17v.01M17 7v.01M7 7v.01"></path>
         </svg>
       </button>
 
       <!-- Audio Click Feedback -->
-      <button id="soundToggleBtn" class="action-btn icon-only active" title="Sesli Tuş Geri Bildirimi">
+      <button id="soundToggleBtn" class="action-btn icon-only active" title="Sesli Tuş Geri Bildirimi" aria-label="Ses Geri Bildirimi">
         <svg id="soundIconOn" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
           <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
           <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
         </svg>
       </button>
 
-      <!-- Ayarlar (Tam Ekran Butonunun Solunda) -->
-      <button id="settingsNavBtn" class="action-btn icon-only" data-tab="settings" title="Ayarlar">
+      <!-- Ayarlar -->
+      <button id="settingsNavBtn" class="action-btn icon-only" data-tab="settings" title="Ayarlar & Eklenti Sihirbazı" aria-label="Ayarlar">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="3"></circle>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
@@ -67,7 +90,7 @@
       </button>
 
       <!-- Fullscreen Button -->
-      <button id="fullscreenBtn" class="action-btn icon-only" title="Tam Ekran Modu">
+      <button id="fullscreenBtn" class="action-btn icon-only" title="Tam Ekran Modu" aria-label="Tam Ekran">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
         </svg>
@@ -75,30 +98,38 @@
     </div>
   </header>
 
-  <!-- NAVIGATION TABS -->
+  <!-- ==================== NAVIGATION TABS ==================== -->
   <nav class="nav-tabs">
     <button class="nav-tab active" data-tab="dashboard">
-      <span class="tab-icon">🏁</span>
-      <span class="tab-label desktop-cockpit-label">KOKPİT (GÖSTERGE & KONTROL)</span>
-      <span class="tab-label mobile-cockpit-label">GÖSTERGE</span>
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="tab-svg">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 4v10h16V8H4zm4 8H6v-6h2v6zm5 0h-2v-4h2v4zm5 0h-2v-2h2v2z"/>
+      </svg>
+      <span class="tab-label">KOMBİNE KOKPİT</span>
     </button>
     <button class="nav-tab" data-tab="telemetry">
-      <span class="tab-icon">📈</span>
-      <span class="tab-label">TELEMETRİ</span>
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" class="tab-svg">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+      </svg>
+      <span class="tab-label">CANLI TELEMETRİ</span>
     </button>
-    <button class="nav-tab mobile-only-tab" data-tab="buttonbox">
-      <span class="tab-icon">🎛️</span>
-      <span class="tab-label">KONTROL</span>
+    <button class="nav-tab" data-tab="settings">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" class="tab-svg">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+      <span class="tab-label">KURULUM & AYARLAR</span>
     </button>
   </nav>
 
-  <!-- MAIN VIEWPORT CONTAINER -->
+  <!-- ==================== MAIN VIEWPORT CONTAINER ==================== -->
   <main class="main-container">
 
     <!-- 1. DASHBOARD VIEW -->
     <section id="view-dashboard" class="tab-view active">
-      <!-- RPM SHIFT LIGHT BAR -->
+      
+      <!-- SHIFT LIGHT & ERS / TURBO BAR CONTAINER (Sidekick Parity) -->
       <div class="shift-light-container">
+        <!-- Turbo Bar (Dynamic: Shows only if car has Turbo) -->
         <div class="turbo-rpm-bar" id="turboRpmBar" style="display: none;">
           <span class="turbo-label">TURBO</span>
           <div class="turbo-track">
@@ -107,8 +138,9 @@
           </div>
           <span class="turbo-val" id="turboVal">0.00 BAR</span>
         </div>
+
+        <!-- 16 Dynamic FIA LEDs -->
         <div class="shift-lights" id="shiftLightsBar">
-          <!-- 16 Dynamic LED Elements -->
           <div class="led led-green"></div>
           <div class="led led-green"></div>
           <div class="led led-green"></div>
@@ -126,44 +158,54 @@
           <div class="led led-red"></div>
           <div class="led led-red"></div>
         </div>
-        <!-- KERS / ERS BAR with DRS Info at far right -->
+
+        <!-- ERS / KERS & DRS BAR (Sidekick Parity: Electric Cyan / Charging Green) -->
         <div class="ers-kers-drs-bar" id="ersKersDrsContainer">
           <span class="ers-label" id="ersLabel">ERS</span>
           <div class="ers-track">
             <div class="ers-fill" id="ersFill"></div>
+            <!-- Pin 1: Orange MGU-K delivery mode pin -->
+            <div class="ers-orange-pin" id="ersOrangePin"></div>
+            <!-- Pin 2: White KERS button active pin (moves to right when ERS pressed) -->
             <div class="ers-white-pin" id="ersWhitePin"></div>
+            <!-- Pin 3: Red Lap Energy Budget pin (decreases as energy is spent) -->
             <div class="ers-red-pin" id="ersRedPin"></div>
-            <div class="ers-marker" id="ersMarker" style="display:none;"></div>
           </div>
           <span class="ers-val" id="ersVal">100%</span>
           <div class="drs-pill" id="drsPill">DRS</div>
         </div>
       </div>
 
-      <!-- MAIN DASHBOARD GRID -->
+      <!-- MAIN DASHBOARD GRID (UNIFIED RACING COCKPIT) -->
       <div class="dash-grid">
-        <!-- LEFT COLUMN: Car & Track + TimingDeltaCard (Identical to Mobile App) -->
+        <!-- LEFT COLUMN: Car & Track + TimingDeltaCard -->
         <div class="dash-col dash-col-left">
           <!-- Car & Track Badge Box -->
           <div class="dash-card car-track-card">
-            <div class="car-track-line"><span class="ct-label">ARAÇ:</span> <span id="dashCarName" class="ct-val">---</span></div>
-            <div class="car-track-line"><span class="ct-label">PİST:</span> <span id="dashTrackName" class="ct-val">---</span></div>
+            <div class="car-track-line">
+              <span class="ct-label">ARAÇ:</span>
+              <span id="dashCarName" class="ct-val">---</span>
+            </div>
+            <div class="car-track-line">
+              <span class="ct-label">PİST:</span>
+              <span id="dashTrackName" class="ct-val">---</span>
+            </div>
           </div>
 
-          <!-- Timing & Ghost Delta Card (1:1 with Android TimingDeltaCard) -->
+          <!-- Timing & Ghost Delta Card -->
           <div class="dash-card dash-timing" id="dashTimingCard">
             <!-- 1. Tur & Sektör Satırı -->
             <div class="timing-top-pills">
               <span id="dashLapPill" class="dash-pill">TUR 0</span>
-              <span id="dashSecPill" class="dash-pill pill-green">SEKTÖR S1</span>
+              <span id="dashSecPill" class="dash-pill pill-green">SEKTÖR S0</span>
             </div>
 
-            <!-- 2. Canlı Tur Süresi (Büyük font, cut durumunda kırmızı) -->
+            <!-- 2. Canlı Tur Süresi -->
             <div class="live-lap-container">
               <span id="dashCurrentLap" class="timing-val mono live-lap-val">0:00.000</span>
             </div>
 
-            <!-- 3. Ghost Delta Satırı (Gereksiz GHOST FARKI etiketi yok, ortalı oklar ve süre) -->
+            <!-- 3. Ghost Delta Satırı (Zaman ve Yön Okları) -->
             <div class="ghost-row-centered">
               <span id="ghostArrowUp" class="block-arrow arrow-up" title="Zaman kazanılıyor">
                 <svg viewBox="0 0 20 16" class="arrow-svg">
@@ -178,7 +220,7 @@
               </span>
             </div>
 
-            <!-- 4. En İyi Tur & Son Tur (Yan Yana iki sütun) -->
+            <!-- 4. En İyi Tur & Son Tur -->
             <div class="timing-bottom-grid">
               <div class="timing-stat-col">
                 <span class="timing-sublabel">EN İYİ TUR</span>
@@ -192,12 +234,12 @@
           </div>
         </div>
 
-        <!-- CENTER COLUMN: Unified Background Cockpit Layout with 5-Widget Symmetrical Wings -->
+        <!-- CENTER COLUMN: Cockpit Instrument Cluster with Symmetrical 7+7 Wings -->
         <div class="dash-col dash-col-center">
           <div class="dash-card dash-center">
             <div class="cockpit-layout-grid">
               
-              <!-- LEFT WING (5 Uniform Indicator Boxes) -->
+              <!-- LEFT WING (7 Uniform Indicator Boxes - Mobile Parity) -->
               <div class="cockpit-wing cockpit-wing-left">
                 <!-- 1. Left Turn Arrow -->
                 <div id="indTurnLeft" class="cockpit-icon-box turn-arrow arrow-left" title="Sol Sinyal">
@@ -211,7 +253,7 @@
                 <div id="indFlash" class="cockpit-icon-box tag-flash" title="Selektör (Uzun Far / Flaşör)">
                   <svg viewBox="0 0 24 24" class="flash-svg"><path d="M7 5a7 7 0 0 0 0 14h2V5H7zm5 0h8v2h-8V5zm0 4h8v2h-8V9zm0 4h8v2h-8v-2zm0 4h8v2h-8v-2z"/></svg>
                 </div>
-                <!-- 4. ABS Status Badge (Title + Value, parity with BB) -->
+                <!-- 4. ABS Status Badge (Soluk/Blink + Değer) -->
                 <div id="indAbs" class="cockpit-icon-box tag-abs" title="Anti-lock Braking System">
                   <span class="tag-title">ABS</span>
                   <span id="indAbsVal" class="tag-sub">1</span>
@@ -221,20 +263,35 @@
                   <span class="tag-title">(P)</span>
                   <span class="tag-sub">FREN</span>
                 </div>
+                <!-- 6. Yakıt Rozeti -->
+                <div id="indFuel" class="cockpit-icon-box tag-fuel" title="Yakıt Seviyesi">
+                  <span class="tag-title">⛽ YKT</span>
+                  <span id="indFuelVal" class="tag-sub">--L</span>
+                </div>
+                <!-- 7. Hasar Rozeti -->
+                <div id="indDamage" class="cockpit-icon-box tag-damage" title="Araç Hasar Durumu">
+                  <span class="tag-title">⚠️ HSR</span>
+                  <span id="indDamageVal" class="tag-sub">OK</span>
+                </div>
               </div>
 
-              <!-- CENTER SPINE (Seamless, Single-Piece Cockpit Spine: Speed, RPM, Gear) -->
+              <!-- CENTER SPINE (Speed, RPM Gauge, Centered Digital Gear) -->
               <div class="cockpit-spine">
-                <!-- 1. Speed Display (Clean Frameless Design) -->
+                <!-- 1. Speedometer HUD -->
                 <div class="speed-display-box">
                   <span id="dashSpeed" class="speed-num">0</span>
                   <span class="speed-unit-pill">KM/H</span>
                 </div>
 
-                <!-- 2. RPM Row -->
-                <div class="rpm-display-row">
-                  <span id="dashRpm" class="rpm-num mono">0</span>
-                  <span class="rpm-unit">RPM</span>
+                <!-- 2. RPM Progress Bar / Sweep -->
+                <div class="rpm-progress-container">
+                  <div class="rpm-display-row">
+                    <span id="dashRpm" class="rpm-num mono">0</span>
+                    <span class="rpm-unit">RPM</span>
+                  </div>
+                  <div class="rpm-bar-track">
+                    <div id="dashRpmFill" class="rpm-bar-fill"></div>
+                  </div>
                 </div>
 
                 <!-- 3. Big Digital Gear Box -->
@@ -243,7 +300,7 @@
                 </div>
               </div>
 
-              <!-- RIGHT WING (5 Uniform Indicator Boxes - Symmetrical to Left Wing) -->
+              <!-- RIGHT WING (7 Uniform Indicator Boxes - Mobile Parity) -->
               <div class="cockpit-wing cockpit-wing-right">
                 <!-- 1. Right Turn Arrow -->
                 <div id="indTurnRight" class="cockpit-icon-box turn-arrow arrow-right" title="Sağ Sinyal">
@@ -257,15 +314,25 @@
                 <div id="indPit" class="cockpit-icon-box tag-pit" title="Pit Limiter">
                   <span class="tag-title">PIT</span>
                 </div>
-                <!-- 4. TC Status Badge (Title + Value, parity with BB) -->
+                <!-- 4. TC Status Badge (Soluk/Blink + Değer) -->
                 <div id="indTc" class="cockpit-icon-box tag-tc" title="Traction Control">
                   <span class="tag-title">TC</span>
                   <span id="indTcVal" class="tag-sub">1</span>
                 </div>
-                <!-- 5. BB Status Badge (Value underneath Title) -->
+                <!-- 5. BB Status Badge (Brake Bias) -->
                 <div id="indBb" class="cockpit-icon-box tag-bb" title="Fren Dağılımı (Brake Bias)">
                   <span class="tag-title">BB</span>
                   <span id="indBbVal" class="tag-sub">58.0%</span>
+                </div>
+                <!-- 6. Sıcaklık Rozeti -->
+                <div id="indTemp" class="cockpit-icon-box tag-temp" title="Pist / Ortam Sıcaklığı">
+                  <span class="tag-title">🌡 TMP</span>
+                  <span id="indTempVal" class="tag-sub">--°C</span>
+                </div>
+                <!-- 7. Lastik Kayma Rozeti -->
+                <div id="indSlip" class="cockpit-icon-box tag-slip" title="Lastik Kayma Durumu">
+                  <span class="tag-title">⚙️ LST</span>
+                  <span id="indSlipVal" class="tag-sub">GRIP</span>
                 </div>
               </div>
 
@@ -275,58 +342,399 @@
 
         <!-- RIGHT COLUMN: Upper Pedals + G-Force, Lower Compact Tyres -->
         <div class="dash-col dash-col-right">
-          <!-- UPPER CARD: Pedals and G-Force Meter side by side -->
-          <div class="dash-card right-upper-card">
-            <div class="pedals-container">
-              <div class="pedal-bar-group">
-                <div class="pedal-bar-track"><div id="pedalClutch" class="pedal-fill fill-clutch"></div></div>
-                <span id="pedalClutchVal" class="pedal-pct">0%</span>
-                <span class="pedal-lbl">CLU</span>
+          <div class="dash-card dash-right-unified">
+            <!-- Left Sub-column: 3 Pedals & Compact G-Force -->
+            <div class="right-subcol-pedals">
+              <div class="pedals-container">
+                <div class="pedal-bar-group">
+                  <div class="pedal-bar-track"><div id="pedalClutch" class="pedal-fill fill-clutch"></div></div>
+                  <span id="pedalClutchVal" class="pedal-pct">0%</span>
+                  <span class="pedal-lbl">CLU</span>
+                </div>
+                <div class="pedal-bar-group">
+                  <div class="pedal-bar-track"><div id="pedalBrake" class="pedal-fill fill-brake"></div></div>
+                  <span id="pedalBrakeVal" class="pedal-pct">0%</span>
+                  <span class="pedal-lbl">BRA</span>
+                </div>
+                <div class="pedal-bar-group">
+                  <div class="pedal-bar-track"><div id="pedalGas" class="pedal-fill fill-gas"></div></div>
+                  <span id="pedalGasVal" class="pedal-pct">0%</span>
+                  <span class="pedal-lbl">THR</span>
+                </div>
               </div>
-              <div class="pedal-bar-group">
-                <div class="pedal-bar-track"><div id="pedalBrake" class="pedal-fill fill-brake"></div></div>
-                <span id="pedalBrakeVal" class="pedal-pct">0%</span>
-                <span class="pedal-lbl">BRA</span>
-              </div>
-              <div class="pedal-bar-group">
-                <div class="pedal-bar-track"><div id="pedalGas" class="pedal-fill fill-gas"></div></div>
-                <span id="pedalGasVal" class="pedal-pct">0%</span>
-                <span class="pedal-lbl">THR</span>
+              <div class="gforce-compact-wrap">
+                <canvas id="gforceCanvas" width="54" height="54"></canvas>
+                <div class="gforce-val" id="gforceVal">LAT: 0.00G</div>
               </div>
             </div>
 
-            <div class="gforce-compact-wrap">
-              <canvas id="gforceCanvas" width="80" height="80"></canvas>
-              <div class="gforce-val" id="gforceVal">LAT: 0.00G</div>
-            </div>
-          </div>
-
-          <!-- LOWER CARD: Compact 4-Tyres Card (LASTİKLER - Başlık kaldırıldı) -->
-          <div class="dash-card compact-tyres-card">
-            <div class="compact-tyres-grid">
-              <div class="compact-tyre-cell" id="ctFL">
-                <div class="ct-top"><span class="ct-tag">FL</span><span class="ct-temp" id="ctTempFL">--°C</span></div>
-                <div class="ct-bottom"><span class="ct-psi" id="ctPsiFL">--.-</span><span class="ct-wear" id="ctWearFL">--%</span></div>
-              </div>
-              <div class="compact-tyre-cell" id="ctFR">
-                <div class="ct-top"><span class="ct-tag">FR</span><span class="ct-temp" id="ctTempFR">--°C</span></div>
-                <div class="ct-bottom"><span class="ct-psi" id="ctPsiFR">--.-</span><span class="ct-wear" id="ctWearFR">--%</span></div>
-              </div>
-              <div class="compact-tyre-cell" id="ctRL">
-                <div class="ct-top"><span class="ct-tag">RL</span><span class="ct-temp" id="ctTempRL">--°C</span></div>
-                <div class="ct-bottom"><span class="ct-psi" id="ctPsiRL">--.-</span><span class="ct-wear" id="ctWearRL">--%</span></div>
-              </div>
-              <div class="compact-tyre-cell" id="ctRR">
-                <div class="ct-top"><span class="ct-tag">RR</span><span class="ct-temp" id="ctTempRR">--°C</span></div>
-                <div class="ct-bottom"><span class="ct-psi" id="ctPsiRR">--.-</span><span class="ct-wear" id="ctWearRR">--%</span></div>
+            <!-- Right Sub-column: Compact 4 Tyres with Sidekick Practical Temps -->
+            <div class="right-subcol-tyres">
+              <div class="compact-tyres-grid">
+                <div class="compact-tyre-cell" id="ctFL">
+                  <div class="ct-top"><span class="ct-tag">FL</span><span class="ct-temp" id="ctTempFL">--°C</span></div>
+                  <div class="ct-bottom"><span class="ct-psi" id="ctPsiFL">--.-</span><span class="ct-wear" id="ctWearFL">--%</span></div>
+                </div>
+                <div class="compact-tyre-cell" id="ctFR">
+                  <div class="ct-top"><span class="ct-tag">FR</span><span class="ct-temp" id="ctTempFR">--°C</span></div>
+                  <div class="ct-bottom"><span class="ct-psi" id="ctPsiFR">--.-</span><span class="ct-wear" id="ctWearFR">--%</span></div>
+                </div>
+                <div class="compact-tyre-cell" id="ctRL">
+                  <div class="ct-top"><span class="ct-tag">RL</span><span class="ct-temp" id="ctTempRL">--°C</span></div>
+                  <div class="ct-bottom"><span class="ct-psi" id="ctPsiRL">--.-</span><span class="ct-wear" id="ctWearRL">--%</span></div>
+                </div>
+                <div class="compact-tyre-cell" id="ctRR">
+                  <div class="ct-top"><span class="ct-tag">RR</span><span class="ct-temp" id="ctTempRR">--°C</span></div>
+                  <div class="ct-bottom"><span class="ct-psi" id="ctPsiRR">--.-</span><span class="ct-wear" id="ctWearRR">--%</span></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- 2. VIRTUAL BUTTON BOX (INTEGRATED ZERO-SCROLL 5x6 CONSOLE) -->
+      <div class="buttonbox-console-wrap">
+        <div class="buttonbox-grid-5x6">
+          
+          <!-- ========== ROW 1 ========== -->
+          <!-- 1.1 PIT LIM (Orange) -->
+          <button class="bb-btn bb-orange" data-action="pit_limiter">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                <polygon points="12 2 20 6.5 20 17.5 12 22 4 17.5 4 6.5 12 2"/>
+              </svg>
+            </div>
+            <span class="bb-title">PIT LIM</span>
+          </button>
+
+          <!-- 1.2 SİLECEK (4 Nokta LED - Cyan) -->
+          <button class="bb-btn bb-cyan" data-action="wipers">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 4v16m-8-8c0-4.4 3.6-8 8-8s8 3.6 8 8"></path>
+              </svg>
+            </div>
+            <span class="bb-title">SİLECEK</span>
+            <div class="wiper-dots">
+              <span class="wdot"></span>
+              <span class="wdot"></span>
+              <span class="wdot"></span>
+              <span class="wdot"></span>
+            </div>
+          </button>
+
+          <!-- 1.3 KERS (Emerald Green, Hold) -->
+          <button class="bb-btn bb-green highlight-btn" data-action="kers" data-hold="true">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+            </div>
+            <span class="bb-title">KERS</span>
+          </button>
+
+          <!-- 1.4 DRS (Cyan) -->
+          <button class="bb-btn bb-cyan" data-action="drs">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 8h14M3 12h18M7 16h10"/>
+              </svg>
+            </div>
+            <span class="bb-title">DRS</span>
+          </button>
+
+          <!-- 1.5 TC + (Cyan) -->
+          <button class="bb-btn bb-cyan" data-action="tc_up">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+              </svg>
+            </div>
+            <span class="bb-title">TC +</span>
+          </button>
+
+          <!-- 1.6 TC - (Cyan) -->
+          <button class="bb-btn bb-cyan" data-action="tc_down">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+              </svg>
+            </div>
+            <span class="bb-title">TC -</span>
+          </button>
+
+          <!-- ========== ROW 2 ========== -->
+          <!-- 2.1 PİTE DÖN (Red) -->
+          <button class="bb-btn bb-red" data-action="teleport_pits">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+              </svg>
+            </div>
+            <span class="bb-title">PİTE DÖN</span>
+          </button>
+
+          <!-- 2.2 FARLAR (Blue, No "(on)" text) -->
+          <button class="bb-btn bb-blue" data-action="headlights">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                <path d="M7 5a7 7 0 0 0 0 14h2V5H7zm5 1h8v2h-8V6zm1 5h8v2h-8v-2zm-1 5h8v2h-8v-2z"/>
+              </svg>
+            </div>
+            <span class="bb-title">FARLAR</span>
+          </button>
+
+          <!-- 2.3 SELEKTÖR (Yellow) -->
+          <button class="bb-btn bb-yellow" data-action="flasher">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                <path d="M7 5a7 7 0 0 0 0 14h2V5H7zm5 0h8v2h-8V5zm0 4h8v2h-8V9zm0 4h8v2h-8v-2zm0 4h8v2h-8v-2z"/>
+              </svg>
+            </div>
+            <span class="bb-title">SELEKTÖR</span>
+          </button>
+
+          <!-- 2.4 KORNA (Yellow / Amber) -->
+          <button class="bb-btn bb-amber" data-action="horn">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              </svg>
+            </div>
+            <span class="bb-title">KORNA</span>
+          </button>
+
+          <!-- 2.5 ABS + (Yellow) -->
+          <button class="bb-btn bb-yellow" data-action="abs_up">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <line x1="12" y1="8" x2="12" y2="14"></line>
+                <line x1="9" y1="11" x2="15" y2="11"></line>
+              </svg>
+            </div>
+            <span class="bb-title">ABS +</span>
+          </button>
+
+          <!-- 2.6 ABS - (Yellow) -->
+          <button class="bb-btn bb-yellow" data-action="abs_down">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <line x1="9" y1="11" x2="15" y2="11"></line>
+              </svg>
+            </div>
+            <span class="bb-title">ABS -</span>
+          </button>
+
+          <!-- ========== ROW 3 ========== -->
+          <!-- 3.1 YENİDEN (Orange) -->
+          <button class="bb-btn bb-orange" data-action="restart_session">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+              </svg>
+            </div>
+            <span class="bb-title">YENİDEN</span>
+          </button>
+
+          <!-- 3.2 SOL SİNYAL (Orange / Amber) -->
+          <button class="bb-btn bb-amber" data-action="turn_left">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                <polygon points="16,6 8,12 16,18"/>
+              </svg>
+            </div>
+            <span class="bb-title">SOL SİNYAL</span>
+          </button>
+
+          <!-- 3.3 DÖRTLÜ (Red) -->
+          <button class="bb-btn bb-red" data-action="hazard">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                <path d="M12 2L1 21h22L12 2zm0 3.5L20.2 19H3.8L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/>
+              </svg>
+            </div>
+            <span class="bb-title">DÖRTLÜ</span>
+          </button>
+
+          <!-- 3.4 SAĞ SİNYAL (Yellow / Amber) -->
+          <button class="bb-btn bb-amber" data-action="turn_right">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                <polygon points="8,6 16,12 8,18"/>
+              </svg>
+            </div>
+            <span class="bb-title">SAĞ SİNYAL</span>
+          </button>
+
+          <!-- 3.5 BIAS + (Green) -->
+          <button class="bb-btn bb-green" data-action="bb_up">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 2 22 22 22 12 2"></polygon>
+                <line x1="12" y1="6" x2="12" y2="12"></line>
+              </svg>
+            </div>
+            <span class="bb-title">BIAS +</span>
+          </button>
+
+          <!-- 3.6 BIAS - (Green) -->
+          <button class="bb-btn bb-green" data-action="bb_down">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </div>
+            <span class="bb-title">BIAS -</span>
+          </button>
+
+          <!-- ========== ROW 4 ========== -->
+          <!-- 4.1 DURAKLAT (Orange) -->
+          <button class="bb-btn bb-orange" data-action="pause">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                <rect x="6" y="4" width="4" height="16" rx="1"/>
+                <rect x="14" y="4" width="4" height="16" rx="1"/>
+              </svg>
+            </div>
+            <span class="bb-title">DURAKLAT</span>
+          </button>
+
+          <!-- 4.2 İÇ IŞIK (Purple / Blue) -->
+          <button class="bb-btn bb-purple" data-action="extra_a">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              </svg>
+            </div>
+            <span class="bb-title">İÇ IŞIK</span>
+          </button>
+
+          <!-- 4.3 KAMERA (Dark Cyan / Blue) -->
+          <button class="bb-btn bb-blue" data-action="camera_change">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+            </div>
+            <span class="bb-title">KAMERA</span>
+          </button>
+
+          <!-- 4.4 SİS FARI (Purple) -->
+          <button class="bb-btn bb-purple" data-action="extra_b">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M3 8h18M7 16h10M4 20h16"/>
+              </svg>
+            </div>
+            <span class="bb-title">SİS FARI</span>
+          </button>
+
+          <!-- 4.5 TURBO + (Red) -->
+          <button class="bb-btn bb-red" data-action="turbo_up">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
+                <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
+              </svg>
+            </div>
+            <span class="bb-title">TURBO +</span>
+          </button>
+
+          <!-- 4.6 TURBO - (Red) -->
+          <button class="bb-btn bb-red" data-action="turbo_down">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </div>
+            <span class="bb-title">TURBO -</span>
+          </button>
+
+          <!-- ========== ROW 5 ========== -->
+          <!-- 5.1 START (Green) -->
+          <button class="bb-btn bb-green highlight-btn" data-action="starter">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                <line x1="12" y1="2" x2="12" y2="12"></line>
+              </svg>
+            </div>
+            <span class="bb-title">START</span>
+          </button>
+
+          <!-- 5.2 SOLA BAK (Cyan, Hold) -->
+          <button class="bb-btn bb-cyan" data-action="look_left" data-hold="true">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="9" cy="12" r="3"></circle>
+              </svg>
+            </div>
+            <span class="bb-title">SOLA BAK</span>
+          </button>
+
+          <!-- 5.3 ARKA (Orange, Hold) -->
+          <button class="bb-btn bb-orange" data-action="look_back" data-hold="true">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="16 12 12 8 8 12"></polyline>
+                <line x1="12" y1="16" x2="12" y2="8"></line>
+              </svg>
+            </div>
+            <span class="bb-title">ARKA</span>
+          </button>
+
+          <!-- 5.4 SAĞA BAK (Cyan, Hold) -->
+          <button class="bb-btn bb-cyan" data-action="look_right" data-hold="true">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="15" cy="12" r="3"></circle>
+              </svg>
+            </div>
+            <span class="bb-title">SAĞA BAK</span>
+          </button>
+
+          <!-- 5.5 EB + (Cyan) -->
+          <button class="bb-btn bb-cyan" data-action="eb_up">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+            </div>
+            <span class="bb-title">EB +</span>
+          </button>
+
+          <!-- 5.6 EB - (Cyan) -->
+          <button class="bb-btn bb-cyan" data-action="eb_down">
+            <div class="bb-icon-svg">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </div>
+            <span class="bb-title">EB -</span>
+          </button>
+
+                </div>
+      </div>
     </section>
 
-    <!-- 2. LIVE TELEMETRY GRAPHS -->
+    <!-- 3. CANLI TELEMETRİ VIEW -->
     <section id="view-telemetry" class="tab-view">
       <div class="telemetry-view-container">
         <div class="telemetry-toolbar">
@@ -346,109 +754,21 @@
       </div>
     </section>
 
-    <!-- 4. VIRTUAL BUTTON BOX (REMOTE CONTROLLER) -->
-    <section id="view-buttonbox" class="tab-view">
-      <div class="buttonbox-grid">
-        
-        <!-- GROUP 1: ENGINE & ELECTRONICS (Columns 1 & 2) -->
-        <div class="bb-panel">
-          <div class="panel-tag">SÜRÜŞ & ELEKTRONİK</div>
-          <div class="bb-buttons-wrap bb-grid-5">
-            <div class="bb-row-pair">
-              <button class="bb-btn bb-cyan" data-action="tc_up"><span class="bb-title">🎛️ TC +</span></button>
-              <button class="bb-btn bb-cyan" data-action="tc_down"><span class="bb-title">🎛️ TC -</span></button>
-            </div>
-            <div class="bb-row-pair">
-              <button class="bb-btn bb-yellow" data-action="abs_up"><span class="bb-title">🛡️ ABS +</span></button>
-              <button class="bb-btn bb-yellow" data-action="abs_down"><span class="bb-title">🛡️ ABS -</span></button>
-            </div>
-            <div class="bb-row-pair">
-              <button class="bb-btn bb-green" data-action="bb_up"><span class="bb-title">⚖️ BIAS +</span></button>
-              <button class="bb-btn bb-green" data-action="bb_down"><span class="bb-title">⚖️ BIAS -</span></button>
-            </div>
-            <div class="bb-row-pair">
-              <button class="bb-btn bb-red" data-action="turbo_up"><span class="bb-title">🚀 TURBO +</span></button>
-              <button class="bb-btn bb-red" data-action="turbo_down"><span class="bb-title">🚀 TURBO -</span></button>
-            </div>
-            <div class="bb-row-pair">
-              <button class="bb-btn bb-teal" data-action="eb_up"><span class="bb-title">⚙️ EB +</span></button>
-              <button class="bb-btn bb-teal" data-action="eb_down"><span class="bb-title">⚙️ EB -</span></button>
-            </div>
-          </div>
-        </div>
-
-        <!-- GROUP 2: LIGHTS, SIGNALS & VIEWS (Columns 3 & 4) -->
-        <div class="bb-panel">
-          <div class="panel-tag">AYDINLATMA, SİNYAL & BAKIŞ</div>
-          <div class="bb-buttons-wrap bb-grid-5">
-            <div class="bb-row-pair">
-              <button class="bb-btn bb-blue" data-action="headlights"><span class="bb-title">💡 FARLAR</span></button>
-              <button class="bb-btn bb-yellow" data-action="flasher"><span class="bb-title">🔆 SELEKTÖR</span></button>
-            </div>
-            <div class="bb-row-pair">
-              <button class="bb-btn bb-purple" data-action="extra_a"><span class="bb-title">🛋️ İÇ IŞIK</span></button>
-              <button class="bb-btn bb-magenta" data-action="extra_b"><span class="bb-title">🌫️ SİS FARI</span></button>
-            </div>
-            <div class="bb-row-pair">
-              <button class="bb-btn bb-red" data-action="hazard"><span class="bb-title">⚠️ DÖRTLÜ</span></button>
-              <button class="bb-btn bb-green highlight-btn" data-action="kers" data-hold="true"><span class="bb-title">⚡ KERS</span></button>
-            </div>
-            <div class="bb-row-pair">
-              <button class="bb-btn bb-amber" data-action="turn_left"><span class="bb-title">◀️ SOL SİNYAL</span></button>
-              <button class="bb-btn bb-blue" data-action="camera_change"><span class="bb-title">🎥 KAMERA</span></button>
-            </div>
-            <div class="bb-row-pair">
-              <button class="bb-btn bb-teal" data-action="look_left"><span class="bb-title">👁️◀ SOLA BAK</span></button>
-              <button class="bb-btn bb-gray" data-action="look_back"><span class="bb-title">🔼 ARKA</span></button>
-            </div>
-          </div>
-        </div>
-
-        <!-- GROUP 3: SESSION, KERS & START (Columns 5 & 6) -->
-        <div class="bb-panel">
-          <div class="panel-tag">SİLECEK, SEANS & YARIŞ</div>
-          <div class="bb-buttons-wrap bb-grid-5">
-            <div class="bb-row-pair">
-              <button class="bb-btn bb-mint" data-action="wipers">
-                <span class="bb-title">🌧️ SİLECEK</span>
-                <div class="wiper-dots"><span class="wdot"></span><span class="wdot"></span><span class="wdot"></span><span class="wdot"></span><span class="wdot"></span></div>
-              </button>
-              <button class="bb-btn bb-orange" data-action="pit_limiter"><span class="bb-title">🛑 PIT LIM</span></button>
-            </div>
-            <div class="bb-row-pair">
-              <button class="bb-btn bb-amber" data-action="horn"><span class="bb-title">📢 KORNA</span></button>
-              <button class="bb-btn bb-red" data-action="teleport_pits"><span class="bb-title">🔧 PİTE DÖN</span></button>
-            </div>
-            <div class="bb-row-pair">
-              <button class="bb-btn bb-cyan" data-action="drs"><span class="bb-title">💨 DRS</span></button>
-              <button class="bb-btn bb-coral" data-action="restart_session"><span class="bb-title">🔄 YENİDEN</span></button>
-            </div>
-            <div class="bb-row-pair">
-              <button class="bb-btn bb-amber" data-action="turn_right"><span class="bb-title">SAĞ SİNYAL ▶️</span></button>
-              <button class="bb-btn bb-crimson" data-action="pause"><span class="bb-title">⏸️ DURAKLAT</span></button>
-            </div>
-            <div class="bb-row-pair">
-              <button class="bb-btn bb-teal" data-action="look_right"><span class="bb-title">SAĞA BAK ▶️👁️</span></button>
-              <button class="bb-btn bb-green highlight-btn" data-action="starter"><span class="bb-title">🏁 START</span></button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- 5. SETTINGS VIEW -->
+    <!-- 4. SETTINGS & DEVICE PAIRING WIZARD VIEW -->
     <section id="view-settings" class="tab-view">
       <div class="settings-container">
         <!-- 0. SETUP WIZARD CARD -->
         <div class="settings-card setup-wizard-card">
-          <div class="card-header">🏎️ CİHAZ & EKLENTİ KURULUM SİHİRBAZI</div>
+          <div class="card-header">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" class="header-svg"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+            CİHAZ & EKLENTİ KURULUM SİHİRBAZI
+          </div>
           <div class="settings-body">
             
             <!-- Mobile Step -->
             <div class="setup-section">
               <div class="setup-section-header">
-                <div class="setup-title">📱 1. Android Telefon / Tablet Kurulumu</div>
+                <div class="setup-title">1. Android Telefon / Tablet Kurulumu</div>
                 <span id="mobileStatusBadge" class="badge badge-waiting">Telefon Bekleniyor...</span>
               </div>
               <p class="settings-info-text">
@@ -456,7 +776,8 @@
               </p>
               <div class="setup-mobile-grid">
                 <div class="setup-qr-box" id="setupQrBox">
-                  <div id="setupQrSvg"></div>
+                  <div id="setupQrSvg"><svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 27 27" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h27v27H0z"/><path stroke="#000000" d="M1 1.5h7m1 0h1m2 0h1m1 0h3m2 0h7M1 2.5h1m5 0h1m1 0h1m3 0h2m1 0h2m1 0h1m5 0h1M1 3.5h1m1 0h3m1 0h1m1 0h6m4 0h1m1 0h3m1 0h1M1 4.5h1m1 0h3m1 0h1m3 0h3m1 0h3m1 0h1m1 0h3m1 0h1M1 5.5h1m1 0h3m1 0h1m1 0h1m2 0h2m1 0h3m1 0h1m1 0h3m1 0h1M1 6.5h1m5 0h1m2 0h2m5 0h1m1 0h1m5 0h1M1 7.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M14 8.5h1m2 0h1M1 9.5h1m2 0h9m1 0h1m1 0h3m2 0h1m1 0h3M8 10.5h3m4 0h1m2 0h7M1 11.5h3m2 0h5m1 0h2m1 0h1m6 0h1m2 0h1M2 12.5h5m1 0h3m1 0h1m4 0h1m2 0h1m1 0h4M1 13.5h2m3 0h2m1 0h3m1 0h3m2 0h1m1 0h2m3 0h1M1 14.5h1m1 0h1m2 0h1m4 0h1m2 0h2m1 0h2m1 0h2m2 0h1M1 15.5h7m1 0h1m2 0h3m4 0h7M1 16.5h1m2 0h1m4 0h1m1 0h2m2 0h2m1 0h2m1 0h1m1 0h1m1 0h1M1 17.5h1m1 0h5m1 0h3m3 0h10M9 18.5h1m1 0h4m2 0h1m3 0h1m1 0h2M1 19.5h7m1 0h2m1 0h1m3 0h2m1 0h1m1 0h3m1 0h1M1 20.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h3m3 0h1m1 0h1m1 0h1M1 21.5h1m1 0h3m1 0h1m1 0h2m2 0h3m1 0h6m1 0h2M1 22.5h1m1 0h3m1 0h1m1 0h2m4 0h1m4 0h1m1 0h1m2 0h1M1 23.5h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h2m2 0h3M1 24.5h1m5 0h1m2 0h2m3 0h1m2 0h5m1 0h2M1 25.5h7m1 0h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1"/></svg>
+</div>
                 </div>
                 <div class="setup-mobile-actions">
                   <div class="setup-lan-info">
@@ -464,7 +785,8 @@
                     <span id="setupLanUrl" class="mono-ip">-</span>
                   </div>
                   <a id="downloadApkBtn" href="/download/actel.apk" class="action-btn-primary" download>
-                    📥 APK İndir (.apk)
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    APK İndir (.apk)
                   </a>
                   <div id="apkStatusNote" class="apk-note">APK kontrol ediliyor...</div>
                 </div>
@@ -476,7 +798,7 @@
             <!-- Assetto Corsa Bridge Step -->
             <div class="setup-section">
               <div class="setup-section-header">
-                <div class="setup-title">🎮 2. Assetto Corsa Eklenti Köprüsü (Bridge)</div>
+                <div class="setup-title">2. Assetto Corsa Eklenti Köprüsü (Bridge)</div>
                 <span id="bridgeStatusBadge" class="badge">Kontrol Ediliyor...</span>
               </div>
               <p class="settings-info-text">
@@ -488,7 +810,8 @@
                   <input type="text" id="acPathInput" class="styled-input" placeholder="Assetto Corsa klasörü aranıyor..." />
                 </div>
                 <button id="installBridgeBtn" class="action-btn-primary">
-                  ⚡ Tek Tıkla Oyuna Kur
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                  Tek Tıkla Oyuna Kur
                 </button>
               </div>
               <div class="plugin-pills">
@@ -503,7 +826,7 @@
             <!-- Firewall Diagnostic Step -->
             <div class="setup-section">
               <div class="setup-section-header">
-                <div class="setup-title">🛡️ 3. Windows Güvenlik Duvarı & Bağlantı Yardımı</div>
+                <div class="setup-title">3. Windows Güvenlik Duvarı & Bağlantı Yardımı</div>
                 <span class="badge badge-info">Port 8080 & 8088</span>
               </div>
               <p class="settings-info-text">
@@ -511,7 +834,8 @@
               </p>
               <div class="setup-firewall-actions">
                 <a href="/allow_firewall.bat" class="action-btn-secondary" download>
-                  🛡️ Güvenlik Duvarı İzin Betiğini İndir (.bat)
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                  Güvenlik Duvarı İzin Betiğini İndir (.bat)
                 </a>
                 <span class="firewall-tip">Betiğe sağ tıklayıp "Yönetici olarak çalıştır" demeniz yeterlidir.</span>
               </div>
@@ -519,6 +843,7 @@
 
           </div>
         </div>
+
         <div class="settings-card">
           <div class="card-header">SİSTEM & BAĞLANTI DURUMU</div>
           <div class="settings-body">
@@ -575,13 +900,14 @@
   <div id="qrModal" class="modal-backdrop hidden">
     <div class="modal-card">
       <div class="modal-header">
-        <h3>📱 TELEFONDAN VEYA TABLETTEN BAĞLAN</h3>
+        <h3>TELEFONDAN VEYA TABLETTEN BAĞLAN</h3>
         <button id="closeQrModal" class="modal-close-btn">&times;</button>
       </div>
       <div class="modal-body">
         <p class="modal-desc">Aynı Wi-Fi ağına bağlı telefon veya tabletinizin kamerasını açarak QR kodu okutun:</p>
         <div class="qr-code-box" id="qrContainer">
-          <div id="qrSvgHolder"></div>
+          <div id="qrSvgHolder"><svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 27 27" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h27v27H0z"/><path stroke="#000000" d="M1 1.5h7m1 0h1m2 0h1m1 0h3m2 0h7M1 2.5h1m5 0h1m1 0h1m3 0h2m1 0h2m1 0h1m5 0h1M1 3.5h1m1 0h3m1 0h1m1 0h6m4 0h1m1 0h3m1 0h1M1 4.5h1m1 0h3m1 0h1m3 0h3m1 0h3m1 0h1m1 0h3m1 0h1M1 5.5h1m1 0h3m1 0h1m1 0h1m2 0h2m1 0h3m1 0h1m1 0h3m1 0h1M1 6.5h1m5 0h1m2 0h2m5 0h1m1 0h1m5 0h1M1 7.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M14 8.5h1m2 0h1M1 9.5h1m2 0h9m1 0h1m1 0h3m2 0h1m1 0h3M8 10.5h3m4 0h1m2 0h7M1 11.5h3m2 0h5m1 0h2m1 0h1m6 0h1m2 0h1M2 12.5h5m1 0h3m1 0h1m4 0h1m2 0h1m1 0h4M1 13.5h2m3 0h2m1 0h3m1 0h3m2 0h1m1 0h2m3 0h1M1 14.5h1m1 0h1m2 0h1m4 0h1m2 0h2m1 0h2m1 0h2m2 0h1M1 15.5h7m1 0h1m2 0h3m4 0h7M1 16.5h1m2 0h1m4 0h1m1 0h2m2 0h2m1 0h2m1 0h1m1 0h1m1 0h1M1 17.5h1m1 0h5m1 0h3m3 0h10M9 18.5h1m1 0h4m2 0h1m3 0h1m1 0h2M1 19.5h7m1 0h2m1 0h1m3 0h2m1 0h1m1 0h3m1 0h1M1 20.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h3m3 0h1m1 0h1m1 0h1M1 21.5h1m1 0h3m1 0h1m1 0h2m2 0h3m1 0h6m1 0h2M1 22.5h1m1 0h3m1 0h1m1 0h2m4 0h1m4 0h1m1 0h1m2 0h1M1 23.5h1m1 0h3m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h2m2 0h3M1 24.5h1m5 0h1m2 0h2m3 0h1m2 0h5m1 0h2M1 25.5h7m1 0h1m4 0h2m1 0h1m1 0h1m1 0h2m2 0h1"/></svg>
+</div>
         </div>
         <div class="ip-urls-list" id="ipUrlsList">
           <!-- Dynamic IP list -->
@@ -591,11 +917,10 @@
   </div>
 
   <!-- SCRIPTS -->
-  <script src="js/dashboard.js"></script>
-  <script src="js/tyres.js"></script>
-  <script src="js/telemetry.js"></script>
-  <script src="js/buttonbox.js"></script>
-  <script src="js/app.js?v=6"></script>
+  <script src="js/dashboard.js?v=13"></script>
+  <script src="js/tyres.js?v=13"></script>
+  <script src="js/telemetry.js?v=13"></script>
+  <script src="js/buttonbox.js?v=13"></script>
+  <script src="js/app.js?v=13"></script>
 </body>
 </html>
-

@@ -40,23 +40,10 @@ class App {
     this.initSetupWizard();
   }
 
-  // Tab switching (Supports nav tabs and header settings button)
+  // Tab switching (Supports KOMBİNE KOKPİT, TELEMETRİ, AYARLAR)
   initTabs() {
     const tabs = document.querySelectorAll('.nav-tab, [data-tab]');
     const views = document.querySelectorAll('.tab-view');
-    const mainContainer = document.querySelector('.main-container');
-
-    const updateCombinedCockpit = () => {
-      const isLargeScreen = window.innerWidth >= 1025;
-      const isCockpit = (this.currentTab === 'dashboard' || this.currentTab === 'buttonbox');
-      if (mainContainer) {
-        if (isLargeScreen && isCockpit) {
-          mainContainer.classList.add('show-combined-cockpit');
-        } else {
-          mainContainer.classList.remove('show-combined-cockpit');
-        }
-      }
-    };
 
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
@@ -69,10 +56,8 @@ class App {
         views.forEach(v => v.classList.remove('active'));
 
         tab.classList.add('active');
-        const activeView = document.getElementById(`view-${target}`);
+        const activeView = document.getElementById('view-' + target);
         if (activeView) activeView.classList.add('active');
-
-        updateCombinedCockpit();
 
         if (target === 'telemetry' && window.telemetryGraphController) {
           window.telemetryGraphController.handleResize();
@@ -80,22 +65,25 @@ class App {
       });
     });
 
-    window.addEventListener('resize', updateCombinedCockpit);
+    const urlTab = new URLSearchParams(window.location.search).get('tab');
+    if (urlTab) this.currentTab = urlTab;
+    const defaultView = document.getElementById('view-' + this.currentTab);
+    if (defaultView) defaultView.classList.add('active');
+
+    
 
     window.addEventListener('hashchange', () => {
-      const h = window.location.hash.replace("#", "");
+      const h = window.location.hash.replace('#', '');
       if (h) {
-        const m = document.querySelector(`[data-tab="${h}"]`);
+        const m = document.querySelector('[data-tab="' + h + '"]');
         if (m) m.click();
       }
     });
 
-    const initialHash = window.location.hash.replace("#", "");
+    const initialHash = window.location.hash.replace('#', '');
     if (initialHash) {
-      const match = document.querySelector(`[data-tab="${initialHash}"]`);
+      const match = document.querySelector('[data-tab="' + initialHash + '"]');
       if (match) match.click();
-    } else {
-      updateCombinedCockpit();
     }
   }
 
@@ -123,6 +111,11 @@ class App {
         this.fetchStatus();
         this.qrModal.classList.remove('hidden');
       });
+    }
+
+    if (new URLSearchParams(window.location.search).get('showQr') === 'true') {
+      this.fetchStatus();
+      if (this.qrModal) this.qrModal.classList.remove('hidden');
     }
 
     if (this.closeQrModal) {
@@ -372,7 +365,8 @@ class App {
   }
 
   renderQrCode(text) {
-    fetch('/api/setup/qr')
+    const endpoint = text ? ('/api/setup/qr?url=' + encodeURIComponent(text)) : '/api/setup/qr';
+    fetch(endpoint)
       .then(r => r.text())
       .then(svgText => {
         const holder = document.getElementById('qrSvgHolder');

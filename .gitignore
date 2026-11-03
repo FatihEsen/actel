@@ -73,4 +73,5 @@ web_cockpit_*.png
 
 # Build Distributions & Packaging
 dist/
+graphify-out/
 setup_wizard_check.png

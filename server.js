@@ -67,7 +67,7 @@ app.get('/api/setup/network', (req, res) => {
 app.get('/api/setup/qr', async (req, res) => {
   const ips = networkHelper.getLocalIps(PORT);
   const primaryUrl = ips.length > 0 ? ips[0].url : `http://localhost:${PORT}`;
-  const targetUrl = `${primaryUrl}/download/actel.apk`;
+  const targetUrl = req.query.url ? decodeURIComponent(req.query.url) : `${primaryUrl}/download/actel.apk`;
   const svg = await networkHelper.generateQrSvg(targetUrl);
   res.type('image/svg+xml').send(svg);
 });

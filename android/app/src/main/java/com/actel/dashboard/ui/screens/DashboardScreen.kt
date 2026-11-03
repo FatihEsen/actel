@@ -244,14 +244,14 @@ fun DashboardScreen(
                     when {
                         (physics?.abs ?: 0f) > 0f -> physics!!.abs.toInt()
                         telemetry?.indicators?.absLevel != null -> telemetry.indicators.absLevel
-                        else -> 0
+                        else -> 1
                     }
                 } else 0
                 val currentTcLevel = if (hasTcCar) {
                     when {
                         (physics?.tc ?: 0f) > 0f -> physics!!.tc.toInt()
                         telemetry?.indicators?.tcLevel != null -> telemetry.indicators.tcLevel
-                        else -> 0
+                        else -> 1
                     }
                 } else 0
 

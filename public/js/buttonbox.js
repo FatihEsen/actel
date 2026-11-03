@@ -101,7 +101,7 @@ class ButtonBoxController {
           this.triggerHaptic(35);
 
           if (action === 'wipers') {
-            this.wiperStage = ((this.wiperStage || 0) + 1) % 6;
+            this.wiperStage = ((this.wiperStage || 0) + 1) % 5;
             const dots = btn.querySelectorAll('.wdot');
             dots.forEach((dot, idx) => {
               if (this.wiperStage > 0 && idx < this.wiperStage) {

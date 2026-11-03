@@ -1,3 +1,9 @@
+@font-face {
+  font-family: 'DigitalNumbers';
+  src: url('../fonts/digital_numbers.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 :root {
   --bg-main: #0a0c10;
   --bg-card: #12161f;
@@ -1194,6 +1200,8 @@ body {
   margin-bottom: 16px;
 }
 
+#qrSvgHolder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+#qrSvgHolder svg { width: 100% !important; height: 100% !important; display: block !important; }
 .qr-code-box {
   background: #ffffff;
   border-radius: var(--radius-md);
@@ -3392,3 +3400,1493 @@ body {
   background-color: #00e676;
   box-shadow: 0 0 6px #00e676;
 }
+
+
+/* ==========================================================================
+   UI/UX PRO MAX - REDESIGNED MOTORSPORT COCKPIT & TACTILE BUTTON BOX SYSTEM
+   ========================================================================== */
+
+:root {
+  --uipro-bg-base: #07090e;
+  --uipro-surface-1: #0d121c;
+  --uipro-surface-2: #141a28;
+  --uipro-surface-elevated: #1a2236;
+  --uipro-border: rgba(255, 255, 255, 0.08);
+  --uipro-border-active: rgba(0, 229, 255, 0.35);
+  --uipro-cyan: #00e5ff;
+  --uipro-green: #00e676;
+  --uipro-yellow: #ffd600;
+  --uipro-orange: #ff9100;
+  --uipro-red: #ff1744;
+  --uipro-blue: #3b82f6;
+  --uipro-purple: #c084fc;
+}
+
+body {
+  background-color: var(--uipro-bg-base);
+  background-image: 
+    radial-gradient(ellipse at 50% -10%, rgba(0, 229, 255, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 110%, rgba(0, 230, 118, 0.04) 0%, transparent 60%);
+  background-attachment: fixed;
+}
+
+/* ==================== 1. MODERN TOP BAR & HEADER ==================== */
+.top-bar {
+  background: rgba(10, 14, 22, 0.88) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+  padding: 8px 18px !important;
+}
+
+.brand-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(0, 229, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.15);
+  flex-shrink: 0;
+}
+
+.brand-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 1.5px !important;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.brand-title-accent {
+  background: linear-gradient(135deg, #00e5ff 0%, #00e676 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 0.95rem;
+}
+
+.brand-sub {
+  font-family: var(--font-mono);
+  font-size: 0.62rem !important;
+  letter-spacing: 1px !important;
+  color: #64748b !important;
+  font-weight: 700;
+}
+
+.status-badge {
+  padding: 4px 10px !important;
+  border-radius: 20px !important;
+  font-size: 0.72rem !important;
+  font-family: var(--font-mono);
+  letter-spacing: 0.8px;
+  transition: all 0.2s ease;
+}
+
+.status-badge.connected {
+  background: rgba(0, 230, 118, 0.12) !important;
+  color: #00e676 !important;
+  border: 1px solid rgba(0, 230, 118, 0.35) !important;
+}
+
+.status-badge.connected .status-dot {
+  background: #00e676;
+  box-shadow: 0 0 10px #00e676;
+  animation: statusPulse 2s infinite ease-in-out;
+}
+
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.header-telemetry {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(14, 19, 29, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 4px 10px;
+}
+
+.ht-sep {
+  color: rgba(255, 255, 255, 0.15) !important;
+  font-weight: 300;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.action-btn {
+  background: rgba(20, 26, 38, 0.7) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 6px !important;
+  color: #cbd5e1 !important;
+  cursor: pointer;
+  padding: 6px 12px;
+  transition: all 0.18s cubic-bezier(0.2, 0, 0, 1) !important;
+}
+
+.action-btn:hover {
+  background: rgba(30, 41, 59, 0.9) !important;
+  border-color: rgba(0, 229, 255, 0.4) !important;
+  color: #00e5ff !important;
+  transform: translateY(-1px);
+}
+
+.action-btn:active {
+  transform: scale(0.96);
+}
+
+.action-btn.icon-only {
+  padding: 6px 10px !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-subtext {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #94a3b8;
+}
+
+/* ==================== 2. SEGMENTED NAVIGATION TABS ==================== */
+.nav-tabs {
+  background: rgba(10, 14, 22, 0.95) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  padding: 0 16px;
+  gap: 4px;
+}
+
+.nav-tab {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 3px solid transparent !important;
+  color: #64748b !important;
+  padding: 11px 18px !important;
+  font-family: var(--font-display) !important;
+  font-size: 0.82rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1) !important;
+}
+
+.nav-tab .tab-svg {
+  opacity: 0.6;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.nav-tab:hover {
+  color: #cbd5e1 !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+
+.nav-tab:hover .tab-svg {
+  opacity: 1;
+}
+
+.nav-tab.active {
+  color: #00e5ff !important;
+  border-bottom-color: #00e5ff !important;
+  background: linear-gradient(180deg, rgba(0, 229, 255, 0.08) 0%, transparent 100%) !important;
+}
+
+.nav-tab.active .tab-svg {
+  opacity: 1;
+  stroke: #00e5ff;
+  color: #00e5ff;
+  filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.5));
+}
+
+/* ==================== 3. VIRTUAL BUTTON BOX (TACTILE 5x6 MOTORSPORT MATRIX) ==================== */
+.bb-panel {
+  background: #0d121c !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+  padding: 12px !important;
+}
+
+.panel-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display) !important;
+  font-size: 0.76rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 1px;
+  color: #94a3b8 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  padding-bottom: 8px !important;
+  margin-bottom: 10px !important;
+}
+
+.panel-tag svg {
+  color: #00e5ff;
+}
+
+.bb-btn {
+  background: linear-gradient(180deg, #181d29 0%, #0e121a 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.09) !important;
+  border-radius: 8px !important;
+  color: #f1f5f9 !important;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  padding: 10px 6px !important;
+  min-height: 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.08s ease, border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease !important;
+}
+
+.bb-icon-svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  color: inherit;
+  transition: transform 0.15s;
+}
+
+.bb-title {
+  font-family: var(--font-display) !important;
+  font-size: 0.80rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.6px;
+  color: inherit;
+  text-align: center;
+  line-height: 1.1;
+}
+
+/* Micro-interaction: Hover & Press */
+.bb-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+}
+
+.bb-btn:hover .bb-icon-svg {
+  transform: scale(1.1);
+}
+
+.bb-btn:active, .bb-btn.pressed {
+  transform: scale(0.96) translateY(1px) !important;
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.8), 0 0 10px currentColor !important;
+}
+
+/* Distinct Semantic Switch Bezel Glows */
+.bb-orange { 
+  border-color: rgba(255, 145, 0, 0.4) !important; 
+  color: #ff9100 !important; 
+}
+.bb-orange:hover { 
+  background: linear-gradient(180deg, #251d1a 0%, #171110 100%) !important;
+  border-color: #ff9100 !important; 
+  box-shadow: 0 0 14px rgba(255, 145, 0, 0.35) !important; 
+}
+
+.bb-mint { 
+  border-color: rgba(0, 230, 118, 0.4) !important; 
+  color: #00e676 !important; 
+}
+.bb-mint:hover { 
+  background: linear-gradient(180deg, #13241b 0%, #0d1712 100%) !important;
+  border-color: #00e676 !important; 
+  box-shadow: 0 0 14px rgba(0, 230, 118, 0.35) !important; 
+}
+
+.bb-blue { 
+  border-color: rgba(59, 130, 246, 0.4) !important; 
+  color: #60a5fa !important; 
+}
+.bb-blue:hover { 
+  background: linear-gradient(180deg, #131c2b 0%, #0e1420 100%) !important;
+  border-color: #60a5fa !important; 
+  box-shadow: 0 0 14px rgba(59, 130, 246, 0.35) !important; 
+}
+
+.bb-yellow { 
+  border-color: rgba(255, 214, 0, 0.4) !important; 
+  color: #ffd600 !important; 
+}
+.bb-yellow:hover { 
+  background: linear-gradient(180deg, #242214 0%, #17150d 100%) !important;
+  border-color: #ffd600 !important; 
+  box-shadow: 0 0 14px rgba(255, 214, 0, 0.35) !important; 
+}
+
+.bb-green { 
+  border-color: rgba(0, 255, 136, 0.4) !important; 
+  color: #00ff88 !important; 
+}
+.bb-green:hover { 
+  background: linear-gradient(180deg, #14241d 0%, #0e1713 100%) !important;
+  border-color: #00ff88 !important; 
+  box-shadow: 0 0 14px rgba(0, 255, 136, 0.35) !important; 
+}
+
+.bb-cyan { 
+  border-color: rgba(0, 229, 255, 0.4) !important; 
+  color: #00e5ff !important; 
+}
+.bb-cyan:hover { 
+  background: linear-gradient(180deg, #122129 0%, #0c151a 100%) !important;
+  border-color: #00e5ff !important; 
+  box-shadow: 0 0 14px rgba(0, 229, 255, 0.35) !important; 
+}
+
+.bb-red { 
+  border-color: rgba(255, 23, 68, 0.45) !important; 
+  color: #ff1744 !important; 
+}
+.bb-red:hover { 
+  background: linear-gradient(180deg, #281418 0%, #190c0f 100%) !important;
+  border-color: #ff1744 !important; 
+  box-shadow: 0 0 14px rgba(255, 23, 68, 0.4) !important; 
+}
+
+.bb-crimson { 
+  border-color: rgba(244, 63, 94, 0.4) !important; 
+  color: #f43f5e !important; 
+}
+.bb-crimson:hover { 
+  background: linear-gradient(180deg, #28141b 0%, #190c11 100%) !important;
+  border-color: #f43f5e !important; 
+  box-shadow: 0 0 14px rgba(244, 63, 94, 0.35) !important; 
+}
+
+.bb-coral { 
+  border-color: rgba(251, 113, 133, 0.4) !important; 
+  color: #fb7185 !important; 
+}
+.bb-coral:hover { 
+  background: linear-gradient(180deg, #29171b 0%, #1a0f12 100%) !important;
+  border-color: #fb7185 !important; 
+  box-shadow: 0 0 14px rgba(251, 113, 133, 0.35) !important; 
+}
+
+.bb-purple { 
+  border-color: rgba(192, 132, 252, 0.4) !important; 
+  color: #c084fc !important; 
+}
+.bb-purple:hover { 
+  background: linear-gradient(180deg, #22172d 0%, #150e1c 100%) !important;
+  border-color: #c084fc !important; 
+  box-shadow: 0 0 14px rgba(192, 132, 252, 0.35) !important; 
+}
+
+.bb-teal { 
+  border-color: rgba(45, 212, 191, 0.4) !important; 
+  color: #2dd4bf !important; 
+}
+.bb-teal:hover { 
+  background: linear-gradient(180deg, #132422 0%, #0d1716 100%) !important;
+  border-color: #2dd4bf !important; 
+  box-shadow: 0 0 14px rgba(45, 212, 191, 0.35) !important; 
+}
+
+.bb-amber { 
+  border-color: rgba(245, 158, 11, 0.4) !important; 
+  color: #f59e0b !important; 
+}
+.bb-amber:hover { 
+  background: linear-gradient(180deg, #261f12 0%, #18140c 100%) !important;
+  border-color: #f59e0b !important; 
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.35) !important; 
+}
+
+.bb-gray { 
+  border-color: rgba(148, 163, 184, 0.35) !important; 
+  color: #94a3b8 !important; 
+}
+.bb-gray:hover { 
+  background: linear-gradient(180deg, #1d212b 0%, #12151c 100%) !important;
+  border-color: #cbd5e1 !important; 
+}
+
+.highlight-btn {
+  box-shadow: 0 0 12px rgba(0, 255, 136, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Wiper 4-Dot Illuminated Array */
+.wiper-dots {
+  display: flex !important;
+  gap: 5px !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin-top: 2px !important;
+}
+
+.wdot {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  background-color: #29b6f6 !important;
+  box-shadow: 0 0 4px #29b6f6 !important;
+  transition: all 0.18s ease !important;
+}
+
+.wdot.active-green {
+  background-color: #00e676 !important;
+  box-shadow: 0 0 8px #00e676, 0 0 14px rgba(0, 230, 118, 0.6) !important;
+  transform: scale(1.15);
+}
+
+/* ==================== 4. DESKTOP COMBINED COCKPIT LAYOUT ==================== */
+@media (min-width: 1025px) {
+  .main-container.show-combined-cockpit {
+    gap: 12px !important;
+    padding: 10px 16px 20px 16px !important;
+    max-width: 1680px !important;
+  }
+
+  .main-container.show-combined-cockpit #view-buttonbox {
+    background: rgba(13, 18, 28, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 12px !important;
+    padding: 12px 14px !important;
+  }
+
+  .main-container.show-combined-cockpit #view-buttonbox .buttonbox-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .main-container.show-combined-cockpit #view-buttonbox .bb-btn {
+    min-height: 48px !important;
+    padding: 8px 6px !important;
+  }
+
+  .main-container.show-combined-cockpit #view-buttonbox .bb-title {
+    font-size: 0.82rem !important;
+  }
+}
+
+/* ==================== 5. SETUP WIZARD & MODAL CARDS ==================== */
+.setup-wizard-card {
+  border: 1px solid rgba(0, 229, 255, 0.3) !important;
+  background: radial-gradient(ellipse at top left, rgba(0, 229, 255, 0.05) 0%, #0d121c 60%) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 229, 255, 0.08) !important;
+}
+
+.setup-wizard-card .card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #00e5ff;
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  letter-spacing: 1px;
+}
+
+.action-btn-primary {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: linear-gradient(135deg, #00e5ff 0%, #0091ff 100%) !important;
+  color: #050b14 !important;
+  font-family: var(--font-display) !important;
+  font-weight: 800 !important;
+  font-size: 0.88rem !important;
+  letter-spacing: 0.5px !important;
+  padding: 9px 18px !important;
+  border-radius: 6px !important;
+  border: none !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 14px rgba(0, 229, 255, 0.3) !important;
+  transition: all 0.18s cubic-bezier(0.2, 0, 0, 1) !important;
+}
+
+.action-btn-primary:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(0, 229, 255, 0.5) !important;
+}
+
+.action-btn-secondary {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #e2e8f0 !important;
+  font-weight: 700 !important;
+  font-size: 0.82rem !important;
+  padding: 8px 14px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.18s !important;
+}
+
+.action-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
+}
+
+.modal-card {
+  background: #0d121c !important;
+  border: 1px solid rgba(0, 229, 255, 0.3) !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 229, 255, 0.12) !important;
+  border-radius: 12px !important;
+}
+
+
+/* ==========================================================================
+   HIGH-IMPACT COCKPIT HUD & UNIFIED SIMRACING EXPERIENCE OVERHAUL
+   ========================================================================== */
+
+/* Fix display numbers: Pure digital racing typography without glyph slashes */
+:root {
+  --font-display: 'Rajdhani', sans-serif !important;
+  --font-num: 'Share Tech Mono', 'Rajdhani', monospace !important;
+}
+
+.speed-num {
+  font-family: 'Share Tech Mono', 'Rajdhani', monospace !important;
+  font-size: 4rem !important;
+  font-weight: 900 !important;
+  color: #00e5ff !important;
+  text-shadow: 0 0 20px rgba(0, 229, 255, 0.6) !important;
+  line-height: 1 !important;
+  letter-spacing: -1px !important;
+}
+
+.speed-unit-pill {
+  font-family: var(--font-mono) !important;
+  font-size: 0.78rem !important;
+  font-weight: 800 !important;
+  color: #64748b !important;
+  letter-spacing: 1.5px !important;
+}
+
+.gear-display-box {
+  width: 102px !important;
+  height: 98px !important;
+  background: radial-gradient(circle at center, #111a2b 0%, #070c14 100%) !important;
+  border: 2px solid #00e5ff !important;
+  box-shadow: 0 0 24px rgba(0, 229, 255, 0.45), inset 0 0 16px rgba(0, 229, 255, 0.2) !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-top: 4px !important;
+  transition: all 0.15s ease !important;
+}
+
+.gear-num {
+  font-family: 'Share Tech Mono', 'Rajdhani', monospace !important;
+  font-size: 5rem !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  color: #00e5ff !important;
+  text-shadow: 0 0 22px rgba(0, 229, 255, 0.75) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* RPM Progress Bar in Center Spine */
+.rpm-progress-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  margin: 2px 0;
+}
+
+.rpm-display-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 5px;
+}
+
+.rpm-num {
+  font-family: 'Share Tech Mono', monospace !important;
+  font-size: 1.25rem !important;
+  font-weight: 900 !important;
+  color: #ffffff !important;
+}
+
+.rpm-unit {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #64748b;
+}
+
+.rpm-bar-track {
+  width: 100%;
+  max-width: 160px;
+  height: 6px;
+  background: #090e18;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.rpm-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #00e676 0%, #ffd600 70%, #ff1744 100%);
+  transition: width 0.05s linear;
+}
+
+/* Redesigned Dashboard Cards: Sleek Carbon Cockpit Finish */
+.dash-card {
+  background: linear-gradient(180deg, #0d121c 0%, #070a10 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  position: relative;
+}
+
+.car-track-card {
+  background: #0d121c !important;
+  border: 1px solid rgba(0, 229, 255, 0.18) !important;
+  padding: 8px 12px !important;
+}
+
+.ct-label {
+  color: #64748b !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.5px;
+}
+
+.ct-val {
+  color: #00e5ff !important;
+  font-family: var(--font-mono) !important;
+  font-weight: 800 !important;
+}
+
+/* Timing & Lap Numbers */
+.live-lap-val {
+  font-family: 'Share Tech Mono', 'Rajdhani', monospace !important;
+  font-size: 3.4rem !important;
+  font-weight: 900 !important;
+  color: #ffffff !important;
+  text-shadow: 0 0 18px rgba(255, 255, 255, 0.35) !important;
+  letter-spacing: -0.5px !important;
+}
+
+.ghost-row-centered {
+  background: rgba(0, 0, 0, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 8px !important;
+  padding: 6px 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  margin: 6px 0 !important;
+}
+
+.ghost-time {
+  font-family: 'Share Tech Mono', monospace !important;
+  font-size: 2.2rem !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.5px !important;
+}
+
+/* 4-Tyre Thermal Grid */
+.compact-tyre-cell {
+  background: #090e17 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 8px !important;
+  padding: 6px 8px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+  transition: all 0.15s ease !important;
+}
+
+.compact-tyre-cell:hover {
+  border-color: rgba(0, 229, 255, 0.3) !important;
+}
+
+.ct-tag {
+  font-family: var(--font-mono) !important;
+  font-weight: 900 !important;
+  color: #00e5ff !important;
+  font-size: 0.78rem !important;
+}
+
+.ct-psi {
+  font-family: 'Share Tech Mono', monospace !important;
+  font-size: 1.15rem !important;
+  font-weight: 900 !important;
+  color: #ffffff !important;
+}
+
+.ct-temp {
+  font-family: 'Share Tech Mono', monospace !important;
+  font-size: 0.88rem !important;
+  font-weight: 800 !important;
+}
+
+/* Combined Cockpit Mode: Unconditional layout support */
+.main-container.show-combined-cockpit {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  padding: 10px 14px 20px 14px !important;
+  max-width: 1680px !important;
+  margin: 0 auto !important;
+  width: 100% !important;
+}
+
+.main-container.show-combined-cockpit #view-dashboard,
+.main-container.show-combined-cockpit #view-buttonbox {
+  display: flex !important;
+  width: 100% !important;
+  flex: none !important;
+}
+
+.main-container.show-combined-cockpit #view-buttonbox {
+  background: #0a0e16 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
+  padding: 12px 14px !important;
+}
+
+.main-container.show-combined-cockpit #view-buttonbox .buttonbox-grid {
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 12px !important;
+}
+
+/* Header Toggle Button for Combined Cockpit */
+.toggle-combined-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 5px 10px !important;
+  font-family: var(--font-display) !important;
+  font-weight: 800 !important;
+  font-size: 0.74rem !important;
+  letter-spacing: 0.5px !important;
+}
+
+.toggle-combined-btn.active {
+  background: rgba(0, 229, 255, 0.15) !important;
+  border-color: #00e5ff !important;
+  color: #00e5ff !important;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.3) !important;
+}
+
+/* ==========================================================================
+   UI/UX PRO MAX - MOTORSPORT COCKPIT & 5x6 CONSOLE MASTER OVERRIDES
+   ========================================================================== */
+
+/* Typography Overrides */
+.speed-num {
+  font-family: 'DigitalNumbers', 'Share Tech Mono', monospace !important;
+  font-size: 4.8rem !important;
+  font-weight: normal !important;
+  color: #ffffff !important;
+  line-height: 1 !important;
+  text-shadow: 0 0 25px rgba(0, 229, 255, 0.5) !important;
+  letter-spacing: -1px !important;
+}
+
+.speed-unit-pill {
+  font-family: 'Share Tech Mono', monospace !important;
+  font-size: 0.78rem !important;
+  font-weight: 800 !important;
+  color: #00e5ff !important;
+  letter-spacing: 1px !important;
+  margin-top: 2px !important;
+}
+
+.rpm-num {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 1.8rem !important;
+  font-weight: 900 !important;
+  color: #ffffff !important;
+}
+
+.rpm-unit {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.75rem !important;
+  color: #64748b !important;
+  font-weight: 700 !important;
+  margin-left: 4px !important;
+}
+
+/* Gear Box: Symmetrical Center Neon Frame with Centered Digit */
+.gear-display-box {
+  width: 96px !important;
+  height: 112px !important;
+  background: #070b12 !important;
+  border: 2.5px solid #00e5ff !important;
+  border-radius: 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  box-shadow: 0 0 22px rgba(0, 229, 255, 0.35), inset 0 0 15px rgba(0, 229, 255, 0.1) !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.gear-num {
+  font-family: 'DigitalNumbers', 'Share Tech Mono', monospace !important;
+  font-size: 5.6rem !important;
+  font-weight: normal !important;
+  line-height: 1 !important;
+  color: #00e5ff !important;
+  text-align: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: translateY(-2px) !important;
+}
+
+.gear-num.gear-1 {
+  transform: translate(-3px, -2px) !important;
+}
+
+/* Left and Right Symmetrical 7+7 Wings */
+.cockpit-layout-grid {
+  display: flex !important;
+  align-items: stretch !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  width: 100% !important;
+}
+
+.cockpit-wing {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  width: 54px !important;
+  gap: 3px !important;
+}
+
+.cockpit-icon-box {
+  height: 38px !important;
+  border-radius: 8px !important;
+  background: rgba(13, 18, 28, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 1px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.cockpit-icon-box:hover {
+  filter: brightness(1.25) !important;
+}
+
+.cockpit-icon-box .tag-title {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-weight: 800 !important;
+  font-size: 0.68rem !important;
+  line-height: 1 !important;
+}
+
+.cockpit-icon-box .tag-sub {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-weight: 700 !important;
+  font-size: 0.64rem !important;
+  line-height: 1 !important;
+  color: #e2e8f0 !important;
+}
+
+/* ABS & TC Indicators: Dim by default, Flash intensely when active */
+.cockpit-icon-box.tag-abs {
+  opacity: 0.60 !important;
+  border-color: rgba(255, 61, 113, 0.3) !important;
+}
+
+.cockpit-icon-box.tag-abs .tag-title {
+  color: #ff3d71 !important;
+}
+
+.cockpit-icon-box.tag-abs.active {
+  opacity: 1 !important;
+  background: #ff3d71 !important;
+  border-color: #ffffff !important;
+  box-shadow: 0 0 18px rgba(255, 61, 113, 1) !important;
+  animation: indicator-flash 0.3s infinite alternate !important;
+}
+
+.cockpit-icon-box.tag-abs.active .tag-title,
+.cockpit-icon-box.tag-abs.active .tag-sub {
+  color: #ffffff !important;
+}
+
+.cockpit-icon-box.tag-tc {
+  opacity: 0.60 !important;
+  border-color: rgba(0, 229, 255, 0.3) !important;
+}
+
+.cockpit-icon-box.tag-tc .tag-title {
+  color: #00e5ff !important;
+}
+
+.cockpit-icon-box.tag-tc.active {
+  opacity: 1 !important;
+  background: #00e5ff !important;
+  border-color: #ffffff !important;
+  box-shadow: 0 0 18px rgba(0, 229, 255, 1) !important;
+  animation: indicator-flash 0.3s infinite alternate !important;
+}
+
+.cockpit-icon-box.tag-tc.active .tag-title,
+.cockpit-icon-box.tag-tc.active .tag-sub {
+  color: #050b14 !important;
+}
+
+@keyframes indicator-flash {
+  0% { opacity: 1; filter: brightness(1.3); }
+  100% { opacity: 0.35; filter: brightness(0.8); }
+}
+
+/* Fuel, Damage, Temp, Slip Tags */
+.cockpit-icon-box.tag-fuel .tag-title { color: #ffab00 !important; }
+.cockpit-icon-box.tag-fuel.active { background: #ffab00 !important; color: #000 !important; animation: indicator-flash 0.5s infinite alternate !important; }
+.cockpit-icon-box.tag-damage .tag-title { color: #ff3d71 !important; }
+.cockpit-icon-box.tag-damage.active { background: #ff3d71 !important; color: #fff !important; animation: indicator-flash 0.4s infinite alternate !important; }
+.cockpit-icon-box.tag-temp .tag-title { color: #00e5ff !important; }
+.cockpit-icon-box.tag-slip .tag-title { color: #00e676 !important; }
+.cockpit-icon-box.tag-slip.active { background: #ffab00 !important; color: #000 !important; animation: indicator-flash 0.3s infinite alternate !important; }
+
+/* Sidekick Parity ERS & Turbo Bars */
+.turbo-rpm-bar {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  height: 14px !important;
+  padding: 0 6px !important;
+  background: rgba(13, 18, 28, 0.7) !important;
+  border-radius: 4px !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.turbo-label {
+  font-family: 'Share Tech Mono', monospace !important;
+  font-size: 0.70rem !important;
+  font-weight: 800 !important;
+  color: #ff9100 !important;
+}
+
+.turbo-track {
+  position: relative !important;
+  height: 6px !important;
+  flex: 1 !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-radius: 3px !important;
+  overflow: visible !important;
+}
+
+.turbo-rpm-fill {
+  height: 100% !important;
+  background: linear-gradient(90deg, #00e676, #ffea00, #ff3d71) !important;
+  border-radius: 3px !important;
+  width: 0%;
+  transition: width 0.08s linear !important;
+}
+
+.turbo-marker {
+  position: absolute !important;
+  top: -3px !important;
+  bottom: -3px !important;
+  width: 3px !important;
+  background: #ff6d00 !important;
+  box-shadow: 0 0 6px #ff6d00 !important;
+  border-radius: 1px !important;
+  transition: left 0.08s linear !important;
+}
+
+.turbo-val {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.70rem !important;
+  font-weight: 800 !important;
+  color: #e2e8f0 !important;
+}
+
+.ers-kers-drs-bar {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  height: 18px !important;
+  padding: 0 6px !important;
+  background: rgba(13, 18, 28, 0.7) !important;
+  border-radius: 4px !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.ers-label {
+  font-family: 'Share Tech Mono', monospace !important;
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  color: #00e5ff !important;
+  transition: color 0.15s ease !important;
+}
+
+.ers-label.charging {
+  color: #00e676 !important;
+}
+
+.ers-track {
+  position: relative !important;
+  height: 8px !important;
+  flex: 1 !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-radius: 4px !important;
+  overflow: visible !important;
+}
+
+.ers-fill {
+  height: 100% !important;
+  background: #00e5ff !important;
+  border-radius: 4px !important;
+  width: 100%;
+  transition: width 0.1s linear, background-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.ers-fill.charging {
+  background: #00e676 !important;
+  box-shadow: 0 0 10px rgba(0, 230, 118, 0.8) !important;
+}
+
+.ers-orange-pin {
+  position: absolute !important;
+  top: -4px !important;
+  bottom: -4px !important;
+  width: 3px !important;
+  background: #ff6d00 !important;
+  box-shadow: 0 0 6px rgba(255, 109, 0, 0.9) !important;
+  border-radius: 2px !important;
+  z-index: 5 !important;
+  transition: left 0.15s ease !important;
+}
+
+.ers-white-pin {
+  position: absolute !important;
+  top: -5px !important;
+  bottom: -5px !important;
+  width: 4px !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.95) !important;
+  border-radius: 2px !important;
+  z-index: 6 !important;
+  transition: left 0.1s ease !important;
+}
+
+.ers-red-pin {
+  position: absolute !important;
+  top: -4px !important;
+  bottom: -4px !important;
+  width: 3px !important;
+  background: #ff1744 !important;
+  box-shadow: 0 0 6px rgba(255, 23, 68, 0.9) !important;
+  border-radius: 2px !important;
+  z-index: 5 !important;
+  transition: left 0.15s ease !important;
+}
+
+.ers-val {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  color: #00e5ff !important;
+  transition: color 0.15s ease !important;
+}
+
+.ers-val.charging {
+  color: #00e676 !important;
+}
+
+/* ==================== UNIFIED COMBINED COCKPIT (ZERO-SCROLL) ==================== */
+#view-dashboard {
+  display: none;
+  flex-direction: column !important;
+  gap: 10px !important;
+  width: 100% !important;
+  max-width: 1440px !important;
+  margin: 0 auto !important;
+}
+
+#view-dashboard.active {
+  display: flex !important;
+}
+
+/* 1. Upper Dashboard Row: Strict ~270px uniform height across all 3 cards */
+.dash-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1.35fr 1.15fr !important;
+  gap: 12px !important;
+  height: 275px !important;
+  max-height: 275px !important;
+  width: 100% !important;
+  flex-shrink: 0 !important;
+}
+
+.dash-col-left {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  height: 100% !important;
+}
+
+.car-track-card {
+  padding: 6px 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  flex-shrink: 0 !important;
+}
+
+.dash-card.dash-timing {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  padding: 10px 14px !important;
+}
+
+.dash-timing .live-lap-val {
+  font-size: 2.7rem !important;
+  line-height: 1 !important;
+}
+
+.ghost-row-centered {
+  margin: 3px 0 !important;
+}
+
+.dash-col-center {
+  height: 100% !important;
+}
+
+.dash-card.dash-center {
+  height: 100% !important;
+  padding: 6px 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.cockpit-layout-grid {
+  height: 100% !important;
+  display: flex !important;
+  align-items: stretch !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+
+.cockpit-wing {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  width: 52px !important;
+  gap: 2px !important;
+}
+
+.cockpit-icon-box {
+  height: 32px !important;
+  border-radius: 6px !important;
+  padding: 1px !important;
+}
+
+.cockpit-icon-box .turn-svg,
+.cockpit-icon-box .headlight-svg,
+.cockpit-icon-box .flash-svg,
+.cockpit-icon-box .hazard-svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.cockpit-spine {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  height: 100% !important;
+  padding: 2px 0 !important;
+  flex: 1 !important;
+}
+
+.speed-display-box {
+  display: flex !important;
+  align-items: baseline !important;
+  justify-content: center !important;
+  gap: 4px !important;
+}
+
+.speed-num {
+  font-size: 2.8rem !important;
+  line-height: 1 !important;
+}
+
+.rpm-progress-container {
+  width: 90% !important;
+}
+
+.gear-display-box {
+  width: 82px !important;
+  height: 84px !important;
+  background: #070b12 !important;
+  border: 2px solid #00e5ff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.4), inset 0 0 12px rgba(0, 229, 255, 0.15) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+}
+
+.gear-display-box .gear-num,
+.gear-display-box #dashGear {
+  font-size: 3.6rem !important;
+  line-height: 1 !important;
+  display: block !important;
+  transform: none !important;
+}
+
+/* Unified Right Telemetry Card (Pedals + G-Force + 4 Tyres) */
+.dash-col-right {
+  height: 100% !important;
+}
+
+.dash-card.dash-right-unified {
+  display: grid !important;
+  grid-template-columns: 125px 1fr !important;
+  gap: 10px !important;
+  height: 100% !important;
+  padding: 8px 10px !important;
+  align-items: stretch !important;
+}
+
+.right-subcol-pedals {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  padding-right: 8px !important;
+  height: 100% !important;
+}
+
+.right-subcol-pedals .pedals-container {
+  display: flex !important;
+  justify-content: space-around !important;
+  gap: 5px !important;
+  height: 155px !important;
+  width: 100% !important;
+}
+
+.pedal-bar-group {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 2px !important;
+}
+
+.pedal-bar-track {
+  height: 110px !important;
+  width: 12px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-radius: 6px !important;
+}
+
+.pedal-pct {
+  font-size: 0.65rem !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  color: #e2e8f0 !important;
+}
+
+.pedal-lbl {
+  font-size: 0.60rem !important;
+  font-weight: 800 !important;
+  color: #94a3b8 !important;
+}
+
+.gforce-compact-wrap {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 2px !important;
+}
+
+.gforce-compact-wrap canvas {
+  width: 50px !important;
+  height: 50px !important;
+}
+
+.gforce-val {
+  font-family: 'Share Tech Mono', monospace !important;
+  font-size: 0.64rem !important;
+  color: #94a3b8 !important;
+  line-height: 1 !important;
+}
+
+.right-subcol-tyres {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.compact-tyres-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  grid-template-rows: 1fr 1fr !important;
+  gap: 8px !important;
+  height: 100% !important;
+}
+
+.compact-tyre-cell {
+  background: rgba(13, 18, 28, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 8px !important;
+  padding: 8px 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+}
+
+.compact-tyre-cell .ct-tag {
+  font-size: 0.70rem !important;
+  font-weight: 800 !important;
+  color: #00e5ff !important;
+}
+
+.compact-tyre-cell .ct-temp {
+  font-size: 0.86rem !important;
+  font-weight: 700 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+.compact-tyre-cell .ct-psi {
+  font-size: 0.72rem !important;
+  color: #94a3b8 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+.compact-tyre-cell .ct-wear {
+  font-size: 0.72rem !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  color: #e2e8f0 !important;
+}
+
+/* 2. Lower Integrated Button Box: Compact 5x6 Grid */
+.buttonbox-console-wrap {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-top: 14px !important;
+  flex-shrink: 0 !important;
+}
+
+.buttonbox-grid-5x6 {
+  display: grid !important;
+  grid-template-columns: repeat(6, 1fr) !important;
+  grid-template-rows: repeat(5, 52px) !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+
+.buttonbox-grid-5x6 .bb-btn {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 52px !important;
+  gap: 3px !important;
+  background: rgba(13, 18, 28, 0.95) !important;
+  border-radius: 8px !important;
+  border: 2px solid !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  padding: 4px 2px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 3px 10px rgba(0, 0, 0, 0.40) !important;
+  transition: transform 0.08s ease, filter 0.12s ease, box-shadow 0.12s ease !important;
+}
+
+.buttonbox-grid-5x6 .bb-btn:hover {
+  filter: brightness(1.22) !important;
+}
+
+.buttonbox-grid-5x6 .bb-btn:active,
+.buttonbox-grid-5x6 .bb-btn.pressed {
+  transform: scale(0.96) !important;
+  filter: brightness(1.35) !important;
+}
+
+.buttonbox-grid-5x6 .bb-icon-svg {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+}
+
+.buttonbox-grid-5x6 .bb-icon-svg svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.buttonbox-grid-5x6 .bb-title {
+  font-family: 'Rajdhani', sans-serif !important;
+  font-size: 0.78rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.3px !important;
+  text-transform: uppercase !important;
+  line-height: 1 !important;
+}
+
+/* Semantic Button Tones */
+.bb-orange { border-color: #ff6d00 !important; color: #ff6d00 !important; box-shadow: 0 0 10px rgba(255, 109, 0, 0.25) !important; }
+.bb-cyan { border-color: #00e5ff !important; color: #00e5ff !important; box-shadow: 0 0 10px rgba(0, 229, 255, 0.25) !important; }
+.bb-green { border-color: #00e676 !important; color: #00e676 !important; box-shadow: 0 0 10px rgba(0, 230, 118, 0.25) !important; }
+.bb-red { border-color: #ff3d71 !important; color: #ff3d71 !important; box-shadow: 0 0 10px rgba(255, 61, 113, 0.25) !important; }
+.bb-blue { border-color: #2979ff !important; color: #2979ff !important; box-shadow: 0 0 10px rgba(41, 121, 255, 0.25) !important; }
+.bb-yellow { border-color: #ffea00 !important; color: #ffea00 !important; box-shadow: 0 0 10px rgba(255, 234, 0, 0.25) !important; }
+.bb-amber { border-color: #ffab00 !important; color: #ffab00 !important; box-shadow: 0 0 10px rgba(255, 171, 0, 0.25) !important; }
+.bb-purple { border-color: #d500f9 !important; color: #d500f9 !important; box-shadow: 0 0 10px rgba(213, 0, 249, 0.25) !important; }
+
+/* Wiper 4 Dots */
+.wiper-dots {
+  display: flex !important;
+  gap: 4px !important;
+  margin-top: 1px !important;
+}
+
+.wdot {
+  width: 5px !important;
+  height: 5px !important;
+  border-radius: 50% !important;
+  background: #00e5ff !important;
+  box-shadow: 0 0 4px #00e5ff !important;
+  transition: all 0.18s ease !important;
+}
+
+.wdot.active-green {
+  background: #00e676 !important;
+  box-shadow: 0 0 6px #00e676, 0 0 10px rgba(0, 230, 118, 0.7) !important;
+}
+
+#toggleCombinedBtn, .toggle-combined-btn { display: none !important; }

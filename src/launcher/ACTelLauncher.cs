@@ -1,8 +1,8 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
-using System.Net.NetworkInformation;
 using System.Windows.Forms;
 
 namespace ACTel
@@ -12,7 +12,6 @@ namespace ACTel
         private static Process nodeProcess;
         private static NotifyIcon trayIcon;
         private static string appDir;
-        private static string edgePath = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe";
 
         [STAThread]
         static void Main()
@@ -28,11 +27,11 @@ namespace ACTel
             // 2. Start background Node.js server
             StartNodeServer();
 
-            // 3. Create System Tray Icon
+            // 3. Create System Tray Icon with Custom Motorsport Emblem
             SetupSystemTray();
 
-            // 4. Launch Edge App Mode
-            LaunchEdgeApp("http://localhost:8080");
+            // 4. Launch Modern Edge/Chrome App Mode Window
+            LaunchDesktopApp("http://localhost:8080");
 
             // 5. Clean exit hooks
             Application.ApplicationExit += OnExit;
@@ -45,7 +44,6 @@ namespace ACTel
         {
             try
             {
-                // Simple netstat query to find PID on port 8080
                 Process netstat = new Process();
                 netstat.StartInfo.FileName = "netstat.exe";
                 netstat.StartInfo.Arguments = "-ano";
@@ -114,51 +112,134 @@ namespace ACTel
             }
         }
 
+        private static Icon CreateMotorsportIcon()
+        {
+            try
+            {
+                using (Bitmap bmp = new Bitmap(32, 32))
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    g.SmoothingMode = SmoothingMode.AntiAlias;
+                    g.Clear(Color.Transparent);
+
+                    // Deep slate background circle
+                    using (Brush bgBrush = new SolidBrush(Color.FromArgb(10, 14, 22)))
+                    {
+                        g.FillEllipse(bgBrush, 1, 1, 30, 30);
+                    }
+
+                    // Electric Cyan outer border
+                    using (Pen cyanPen = new Pen(Color.FromArgb(0, 229, 255), 2f))
+                    {
+                        g.DrawEllipse(cyanPen, 2, 2, 28, 28);
+                    }
+
+                    // Neon Green shift rev arch
+                    using (Pen greenPen = new Pen(Color.FromArgb(0, 230, 118), 2.5f))
+                    {
+                        g.DrawArc(greenPen, 5, 5, 22, 22, 200, 140);
+                    }
+
+                    // High-contrast racing red center hub
+                    using (Brush redBrush = new SolidBrush(Color.FromArgb(255, 23, 68)))
+                    {
+                        g.FillEllipse(redBrush, 12, 12, 8, 8);
+                    }
+
+                    IntPtr hIcon = bmp.GetHicon();
+                    return Icon.FromHandle(hIcon);
+                }
+            }
+            catch
+            {
+                return SystemIcons.Application;
+            }
+        }
+
         private static void SetupSystemTray()
         {
             trayIcon = new NotifyIcon();
-            trayIcon.Text = "ACTel - Assetto Corsa Telemetry & Dashboard";
-
-            // Default system application icon
-            trayIcon.Icon = SystemIcons.Application;
+            trayIcon.Text = "ACTel Pro - Assetto Corsa Cockpit";
+            trayIcon.Icon = CreateMotorsportIcon();
             trayIcon.Visible = true;
 
             ContextMenuStrip menu = new ContextMenuStrip();
+            menu.Renderer = new ToolStripProfessionalRenderer();
+
+            ToolStripMenuItem itemOpen = new ToolStripMenuItem("🏎️ Kokpit Dashboard'ı Aç", null, (s, e) => LaunchDesktopApp("http://localhost:8080"));
+            itemOpen.Font = new Font(menu.Font, FontStyle.Bold);
+
+            ToolStripMenuItem itemButtons = new ToolStripMenuItem("🎛️ Buton Kutusu (Button Box)", null, (s, e) => LaunchDesktopApp("http://localhost:8080/#buttonbox"));
+            ToolStripMenuItem itemTelemetry = new ToolStripMenuItem("📈 Canlı Telemetri Grafikleri", null, (s, e) => LaunchDesktopApp("http://localhost:8080/#telemetry"));
+            ToolStripMenuItem itemSetup = new ToolStripMenuItem("⚙️ Kurulum & Cihaz Eşleştirme", null, (s, e) => LaunchDesktopApp("http://localhost:8080/#settings"));
             
-            ToolStripMenuItem itemOpen = new ToolStripMenuItem("🏎️ Dashboard'ı Aç", null, (s, e) => LaunchEdgeApp("http://localhost:8080"));
-            ToolStripMenuItem itemSetup = new ToolStripMenuItem("⚙️ Kurulum & Cihazlar", null, (s, e) => LaunchEdgeApp("http://localhost:8080/#settings"));
             ToolStripSeparator sep = new ToolStripSeparator();
+            
             ToolStripMenuItem itemExit = new ToolStripMenuItem("❌ Çıkış", null, (s, e) => {
                 trayIcon.Visible = false;
                 Application.Exit();
             });
 
             menu.Items.Add(itemOpen);
+            menu.Items.Add(itemButtons);
+            menu.Items.Add(itemTelemetry);
             menu.Items.Add(itemSetup);
             menu.Items.Add(sep);
             menu.Items.Add(itemExit);
 
             trayIcon.ContextMenuStrip = menu;
-            trayIcon.DoubleClick += (s, e) => LaunchEdgeApp("http://localhost:8080");
+            trayIcon.DoubleClick += (s, e) => LaunchDesktopApp("http://localhost:8080");
         }
 
-        private static void LaunchEdgeApp(string url)
+        private static string FindBrowserPath()
+        {
+            string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            string programFilesX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+
+            string[] candidates = new string[]
+            {
+                Path.Combine(programFilesX86, @"Microsoft\Edge\Application\msedge.exe"),
+                Path.Combine(programFiles, @"Microsoft\Edge\Application\msedge.exe"),
+                Path.Combine(localAppData, @"Microsoft\Edge\Application\msedge.exe"),
+                Path.Combine(programFiles, @"Google\Chrome\Application\chrome.exe"),
+                Path.Combine(programFilesX86, @"Google\Chrome\Application\chrome.exe"),
+                Path.Combine(localAppData, @"Google\Chrome\Application\chrome.exe")
+            };
+
+            foreach (string candidate in candidates)
+            {
+                if (!string.IsNullOrEmpty(candidate) && File.Exists(candidate))
+                {
+                    return candidate;
+                }
+            }
+
+            return null;
+        }
+
+        private static void LaunchDesktopApp(string url)
         {
             try
             {
-                if (File.Exists(edgePath))
+                string browser = FindBrowserPath();
+                if (browser != null)
                 {
-                    Process.Start(edgePath, "--app=\"" + url + "\" --window-size=1280,820");
+                    // Clean frameless app window, optimal 1366x840 sim proportions
+                    Process.Start(browser, "--app=\"" + url + "\" --window-size=1366,840");
                 }
                 else
                 {
-                    // Fallback to default browser
                     Process.Start(url);
                 }
             }
             catch
             {
-                Process.Start(url);
+                try
+                {
+                    Process.Start(url);
+                }
+                catch { }
             }
         }
 
@@ -181,4 +262,3 @@ namespace ACTel
         }
     }
 }
-

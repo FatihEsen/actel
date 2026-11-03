@@ -41,6 +41,15 @@ class DashboardController {
     this.indAbs = document.getElementById('indAbs');
     this.indTc = document.getElementById('indTc');
     this.indHandbrake = document.getElementById('indHandbrake');
+    this.indFuel = document.getElementById('indFuel');
+    this.indFuelVal = document.getElementById('indFuelVal');
+    this.indDamage = document.getElementById('indDamage');
+    this.indDamageVal = document.getElementById('indDamageVal');
+    this.indTemp = document.getElementById('indTemp');
+    this.indTempVal = document.getElementById('indTempVal');
+    this.indSlip = document.getElementById('indSlip');
+    this.indSlipVal = document.getElementById('indSlipVal');
+    this.ersOrangePin = document.getElementById('ersOrangePin');
     this.indAbsVal = document.getElementById('indAbsVal');
     this.indTcVal = document.getElementById('indTcVal');
     this.turboRpmBar = document.getElementById('turboRpmBar');
@@ -299,6 +308,13 @@ class DashboardController {
       this.ersVal.classList.toggle('charging', isCharging);
     }
 
+    // Pin 1: Orange MGU-K delivery mode pin (Sidekick Parity)
+    if (this.ersOrangePin) {
+      const ersLevel = phys.ersPowerLevel !== undefined ? phys.ersPowerLevel : (phys.ersRecoveryLevel || 1);
+      const orangePct = Math.max(5, Math.min(95, (ersLevel / 9) * 100));
+      this.ersOrangePin.style.left = `${orangePct}%`;
+    }
+
     // Pin 2: White KERS Button Pin (0% when idle, 98% when pressed)
     if (this.ersWhitePin) {
       const pinPos = (phys.kersInput && phys.kersInput > 0.05) ? 98 : 0;
@@ -332,31 +348,69 @@ class DashboardController {
     }
 
     // 6. Cockpit Status Badges (ABS, TC, DRS, PIT, BB)
+    // 6. Cockpit Status Badges (ABS, TC, DRS, PIT, BB, Fuel, Damage, Temp, Slip - Mobile Parity)
+    const staticInfo = telemetry.staticInfo || {};
+
+    // ABS
+    const hasAbs = staticInfo.hasABS !== false && (staticInfo.absModes === undefined || staticInfo.absModes > 0);
+    const absLevel = Math.round(phys.abs || 0);
+    const absModes = phys.absModes || staticInfo.absModes || (hasAbs ? 1 : 0);
+    if (this.indAbsVal) {
+      if (!hasAbs || absModes <= 0) {
+        this.indAbsVal.textContent = 'N/A';
+      } else if (absLevel > 0) {
+        this.indAbsVal.textContent = String(absLevel);
+      } else {
+        this.indAbsVal.textContent = 'OFF';
+      }
+    }
     if (this.indAbs) {
       this.indAbs.classList.toggle('active', !!phys.absActive);
     }
-    if (this.indAbsVal) {
-      if (staticInfo.hasABS === false || staticInfo.absModes === 0) {
-        this.indAbsVal.textContent = 'N/A';
+
+    // TC
+    const hasTc = staticInfo.hasTC !== false && (staticInfo.tcModes === undefined || staticInfo.tcModes > 0);
+    const tcLevel = Math.round(phys.tc || 0);
+    const tcModes = phys.tcModes || staticInfo.tcModes || (hasTc ? 1 : 0);
+    if (this.indTcVal) {
+      if (!hasTc || tcModes <= 0) {
+        this.indTcVal.textContent = 'N/A';
+      } else if (tcLevel > 0) {
+        this.indTcVal.textContent = String(tcLevel);
       } else {
-        const absLevel = Math.round(phys.abs || 0);
-        this.indAbsVal.textContent = absLevel > 0 ? absLevel : 'OFF';
+        this.indTcVal.textContent = 'OFF';
       }
-    }
-    if (this.indPit) {
-      const isPitActive = Boolean(phys.pitLimiterOn || graph.isInPitLane || graph.isInPit || ind.pitLimiter);
-      this.indPit.classList.toggle('active', isPitActive);
     }
     if (this.indTc) {
       this.indTc.classList.toggle('active', !!phys.tcActive);
     }
-    if (this.indTcVal) {
-      if (staticInfo.hasTC === false || staticInfo.tcModes === 0) {
-        this.indTcVal.textContent = 'N/A';
-      } else {
-        const tcLevel = Math.round(phys.tc || 0);
-        this.indTcVal.textContent = tcLevel > 0 ? tcLevel : 'OFF';
-      }
+
+    // Fuel (⛽ YKT)
+    if (this.indFuelVal && phys.fuel !== undefined) {
+      const fVal = Math.round(phys.fuel);
+      this.indFuelVal.textContent = `${fVal}L`;
+      if (this.indFuel) this.indFuel.classList.toggle('active', fVal < 10);
+    }
+
+    // Damage (⚠️ HSR)
+    if (this.indDamageVal) {
+      const dmg = phys.carDamage || [];
+      const isDamaged = dmg.some(d => d > 5);
+      this.indDamageVal.textContent = isDamaged ? 'DMG' : 'OK';
+      if (this.indDamage) this.indDamage.classList.toggle('active', isDamaged);
+    }
+
+    // Temp (🌡 TMP)
+    if (this.indTempVal) {
+      const t = Math.round(phys.roadTemp || phys.airTemp || 25);
+      this.indTempVal.textContent = `${t}°C`;
+    }
+
+    // Slip (⚙️ LST)
+    if (this.indSlipVal) {
+      const isSlip = (phys.maxWheelSlip || 0) > 0.4;
+      this.indSlipVal.textContent = isSlip ? 'SLIP' : 'GRIP';
+      if (this.indSlip) this.indSlip.classList.toggle('active', isSlip);
     }
     if (this.indHandbrake) {
       const isHbActive = !!(ind.handbrake || phys.handbrake);

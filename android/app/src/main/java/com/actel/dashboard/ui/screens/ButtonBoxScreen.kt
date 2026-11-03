@@ -59,7 +59,127 @@ fun ButtonBoxScreen(
             .padding(6.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        // ==================== PANEL 1: SÜRÜŞ & ELEKTRONİK (Sütun 1 & 2) ====================
+        // ==================== PANEL 1: SEANS, AYDINLATMA & BAKIŞ (Sütun 1 & 2) ====================
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            // Satır 1: PIT LIMITER / SİLECEK (4 Nokta)
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
+                BoxButton(
+                    title = "🛑 PIT LIM",
+                    action = "pit_limiter",
+                    color = if (isPitLimiterOn) NeonGreen else NeonOrange,
+                    onAction = onAction,
+                    modifier = Modifier.weight(1f),
+                    isActive = isPitLimiterOn
+                )
+                WiperButton(
+                    wiperStage = wiperStage,
+                    onClick = {
+                        wiperStage = (wiperStage + 1) % 5
+                        onAction("wipers", null)
+                    },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            // Satır 2: PİTE DÖN / FARLAR
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
+                BoxButton("🔧 PİTE DÖN", "teleport_pits", NeonRed, onAction, Modifier.weight(1f))
+                BoxButton(
+                    title = "💡 FARLAR",
+                    action = "headlights",
+                    color = if (isHeadlightsOn) Color(0xFF90CAF9) else Color(0xFF64B5F6),
+                    onAction = onAction,
+                    modifier = Modifier.weight(1f),
+                    isActive = isHeadlightsOn
+                )
+            }
+            // Satır 3: YENİDEN BAŞLAT / SOL SİNYAL
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
+                BoxButton("🔄 YENİDEN", "restart_session", Color(0xFFFF5722), onAction, Modifier.weight(1f))
+                BoxButton(
+                    title = "◀️ SOL SİNYAL",
+                    action = "turn_left",
+                    color = Color(0xFFFFB300),
+                    onAction = onAction,
+                    modifier = Modifier.weight(1f),
+                    isActive = isTurnLeftOn
+                )
+            }
+            // Satır 4: DURAKLAT / İÇ AYDINLATMA
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
+                BoxButton("⏸️ DURAKLAT", "pause", Color(0xFFE57373), onAction, Modifier.weight(1f))
+                BoxButton("🛋️ İÇ IŞIK", "extra_a", Color(0xFFBA68C8), onAction, Modifier.weight(1f))
+            }
+            // Satır 5: START / SOLA BAK
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
+                BoxButton("🏁 START", "starter", NeonGreen, onAction, Modifier.weight(1f))
+                BoxButton("👁️◀ SOLA BAK", "look_left", Color(0xFF00E5FF), onAction, Modifier.weight(1f))
+            }
+        }
+
+        // ==================== PANEL 2: HIZ, SİNYAL & GÖRÜŞ (Sütun 3 & 4) ====================
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            // Satır 1: KERS / DRS
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
+                BoxButton(
+                    title = "⚡ KERS",
+                    action = "kers",
+                    color = Color(0xFF00E676),
+                    onAction = onAction,
+                    modifier = Modifier.weight(1f),
+                    isHold = true
+                )
+                BoxButton(
+                    title = "💨 DRS",
+                    action = "drs",
+                    color = if (isDrsOn) NeonCyan else Color(0xFF00E676),
+                    onAction = onAction,
+                    modifier = Modifier.weight(1f),
+                    isActive = isDrsOn
+                )
+            }
+            // Satır 2: SELEKTÖR / KORNA
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
+                BoxButton("🔆 SELEKTÖR", "flasher", Color(0xFFFFF176), onAction, Modifier.weight(1f))
+                BoxButton("📢 KORNA", "horn", Color(0xFFFFB74D), onAction, Modifier.weight(1f))
+            }
+            // Satır 3: DÖRTLÜ / SAĞ SİNYAL
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
+                BoxButton(
+                    title = "⚠️ DÖRTLÜ",
+                    action = "hazard",
+                    color = NeonRed,
+                    onAction = onAction,
+                    modifier = Modifier.weight(1f),
+                    isActive = isHazardOn
+                )
+                BoxButton(
+                    title = "SAĞ SİNYAL ▶️",
+                    action = "turn_right",
+                    color = Color(0xFFFFB300),
+                    onAction = onAction,
+                    modifier = Modifier.weight(1f),
+                    isActive = isTurnRightOn
+                )
+            }
+            // Satır 4: KAMERA / SİS FARI
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
+                BoxButton("🎥 KAMERA", "camera_change", Color(0xFF42A5F5), onAction, Modifier.weight(1f))
+                BoxButton("🌫️ SİS FARI", "extra_b", Color(0xFFE040FB), onAction, Modifier.weight(1f))
+            }
+            // Satır 5: ARKA BAKIŞ / SAĞA BAK
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
+                BoxButton("🔼 ARKA", "look_back", Color(0xFF90A4AE), onAction, Modifier.weight(1f))
+                BoxButton("SAĞA BAK ▶️👁️", "look_right", Color(0xFF00E5FF), onAction, Modifier.weight(1f))
+            }
+        }
+
+        // ==================== PANEL 3: SÜRÜŞ & ELEKTRONİK (Sütun 5 & 6) ====================
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(6.dp)
@@ -88,126 +208,6 @@ fun ButtonBoxScreen(
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
                 BoxButton("⚙️ EB +", "eb_up", Color(0xFF00E5FF), onAction, Modifier.weight(1f))
                 BoxButton("⚙️ EB -", "eb_down", Color(0xFF00B0FF), onAction, Modifier.weight(1f))
-            }
-        }
-
-        // ==================== PANEL 2: AYDINLATMA, SİNYAL & BAKIŞ (Sütun 3 & 4) ====================
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            // Satır 1: FARLAR / SELEKTÖR
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                BoxButton(
-                    title = "💡 FARLAR",
-                    action = "headlights",
-                    color = if (isHeadlightsOn) Color(0xFF90CAF9) else Color(0xFF64B5F6),
-                    onAction = onAction,
-                    modifier = Modifier.weight(1f),
-                    isActive = isHeadlightsOn
-                )
-                BoxButton("🔆 SELEKTÖR", "flasher", Color(0xFFFFF176), onAction, Modifier.weight(1f))
-            }
-            // Satır 2: İÇ AYDINLATMA / SİS FARI
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                BoxButton("🛋️ İÇ IŞIK", "extra_a", Color(0xFFBA68C8), onAction, Modifier.weight(1f))
-                BoxButton("🌫️ SİS FARI", "extra_b", Color(0xFFE040FB), onAction, Modifier.weight(1f))
-            }
-            // Satır 3: DÖRTLÜ / KERS
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                BoxButton(
-                    title = "⚠️ DÖRTLÜ",
-                    action = "hazard",
-                    color = NeonRed,
-                    onAction = onAction,
-                    modifier = Modifier.weight(1f),
-                    isActive = isHazardOn
-                )
-                BoxButton(
-                    title = "⚡ KERS",
-                    action = "kers",
-                    color = Color(0xFF00E676),
-                    onAction = onAction,
-                    modifier = Modifier.weight(1f),
-                    isHold = true
-                )
-            }
-            // Satır 4: SOL SİNYAL / KAMERA
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                BoxButton(
-                    title = "◀️ SOL SİNYAL",
-                    action = "turn_left",
-                    color = Color(0xFFFFB300),
-                    onAction = onAction,
-                    modifier = Modifier.weight(1f),
-                    isActive = isTurnLeftOn
-                )
-                BoxButton("🎥 KAMERA", "camera_change", Color(0xFF42A5F5), onAction, Modifier.weight(1f))
-            }
-            // Satır 5: SOLA BAK / ARKA BAKIŞ
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                BoxButton("👁️◀ SOLA BAK", "look_left", Color(0xFF00E5FF), onAction, Modifier.weight(1f))
-                BoxButton("🔼 ARKA", "look_back", Color(0xFF90A4AE), onAction, Modifier.weight(1f))
-            }
-        }
-
-        // ==================== PANEL 3: SİLECEK, KORNA, DRS, SAĞ SİNYAL, SAĞA BAK & START (Sütun 5 & 6) ====================
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            // Satır 1: SİLECEK (5 Nokta Kademeli) / PIT LIMITER
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                WiperButton(
-                    wiperStage = wiperStage,
-                    onClick = {
-                        wiperStage = (wiperStage + 1) % 6
-                        onAction("wipers", null)
-                    },
-                    modifier = Modifier.weight(1f)
-                )
-                BoxButton(
-                    title = "🛑 PIT LIM",
-                    action = "pit_limiter",
-                    color = if (isPitLimiterOn) NeonGreen else NeonOrange,
-                    onAction = onAction,
-                    modifier = Modifier.weight(1f),
-                    isActive = isPitLimiterOn
-                )
-            }
-            // Satır 2: KORNA / PİTE DÖN
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                BoxButton("📢 KORNA", "horn", Color(0xFFFFB74D), onAction, Modifier.weight(1f))
-                BoxButton("🔧 PİTE DÖN", "teleport_pits", NeonRed, onAction, Modifier.weight(1f))
-            }
-            // Satır 3: DRS / YENİDEN BAŞLAT
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                BoxButton(
-                    title = "💨 DRS",
-                    action = "drs",
-                    color = if (isDrsOn) NeonCyan else Color(0xFF00E676),
-                    onAction = onAction,
-                    modifier = Modifier.weight(1f),
-                    isActive = isDrsOn
-                )
-                BoxButton("🔄 YENİDEN", "restart_session", Color(0xFFFF5722), onAction, Modifier.weight(1f))
-            }
-            // Satır 4: SAĞ SİNYAL / DURAKLAT
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                BoxButton(
-                    title = "SAĞ SİNYAL ▶️",
-                    action = "turn_right",
-                    color = Color(0xFFFFB300),
-                    onAction = onAction,
-                    modifier = Modifier.weight(1f),
-                    isActive = isTurnRightOn
-                )
-                BoxButton("⏸️ DURAKLAT", "pause", Color(0xFFE57373), onAction, Modifier.weight(1f))
-            }
-            // Satır 5: SAĞA BAK / START
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                BoxButton("SAĞA BAK ▶️👁️", "look_right", Color(0xFF00E5FF), onAction, Modifier.weight(1f))
-                BoxButton("🏁 START", "starter", NeonGreen, onAction, Modifier.weight(1f))
             }
         }
     }
@@ -265,7 +265,7 @@ private fun WiperButton(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                for (i in 0 until 5) {
+                for (i in 0 until 4) {
                     val dotColor = if (wiperStage > 0 && i < wiperStage) NeonGreen else Color(0xFF29B6F6)
                     Box(
                         modifier = Modifier
