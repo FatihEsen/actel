@@ -77,6 +77,14 @@ class DashboardController {
     this.ghostArrowUp = document.getElementById('ghostArrowUp');
     this.ghostArrowDown = document.getElementById('ghostArrowDown');
 
+    // Button Box interactive button references
+    this.bbBtnTurnLeft = document.querySelector('.bb-btn[data-action="turn_left"]');
+    this.bbBtnTurnRight = document.querySelector('.bb-btn[data-action="turn_right"]');
+    this.bbBtnHazard = document.querySelector('.bb-btn[data-action="hazard"]');
+    this.bbBtnHeadlights = document.querySelector('.bb-btn[data-action="headlights"]');
+    this.bbBtnPitLimiter = document.querySelector('.bb-btn[data-action="pit_limiter"]');
+    this.bbBtnDrs = document.querySelector('.bb-btn[data-action="drs"]');
+
     // Wire clicks to turn signals, hazard, pit limiter, lights, and flasher
     this.setupIndicatorClicks();
 
@@ -158,6 +166,20 @@ class DashboardController {
       this.indHandbrake.addEventListener('click', () => {
         send('handbrake');
         this.indHandbrake.classList.toggle('active');
+      });
+    }
+      if (this.indAbs) {
+      this.indAbs.style.cursor = 'pointer';
+      this.indAbs.title = 'ABS Kademe Değiştir (+1)';
+      this.indAbs.addEventListener('click', () => {
+        send('abs_up');
+      });
+    }
+    if (this.indTc) {
+      this.indTc.style.cursor = 'pointer';
+      this.indTc.title = 'TC Kademe Değiştir (+1)';
+      this.indTc.addEventListener('click', () => {
+        send('tc_up');
       });
     }
   }

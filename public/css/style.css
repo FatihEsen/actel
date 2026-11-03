@@ -4890,3 +4890,60 @@ body {
 }
 
 #toggleCombinedBtn, .toggle-combined-btn { display: none !important; }
+
+/* ==========================================================================
+   INTERACTIVE TELLTALES & BUTTON BOX BLINK ANIMATIONS
+   ========================================================================== */
+.cockpit-icon-box.tag-abs,
+.cockpit-icon-box.tag-tc {
+  cursor: pointer !important;
+  user-select: none;
+  transition: transform 0.12s ease, filter 0.15s ease;
+}
+.cockpit-icon-box.tag-abs:hover,
+.cockpit-icon-box.tag-tc:hover {
+  transform: translateY(-1.5px);
+  filter: brightness(1.25);
+}
+.cockpit-icon-box.tag-abs:active,
+.cockpit-icon-box.tag-tc:active {
+  transform: scale(0.95);
+}
+
+@keyframes bbSignalBlink {
+  0%, 49% {
+    background: rgba(255, 179, 0, 0.35) !important;
+    border-color: #ffb300 !important;
+    box-shadow: 0 0 16px rgba(255, 179, 0, 0.6) !important;
+    color: #ffb300 !important;
+  }
+  50%, 100% {
+    background: #0e1219 !important;
+    border-color: rgba(255, 179, 0, 0.25) !important;
+    box-shadow: none !important;
+    color: #94a3b8 !important;
+  }
+}
+
+@keyframes bbHazardBlink {
+  0%, 49% {
+    background: rgba(255, 23, 68, 0.45) !important;
+    border-color: #ff1744 !important;
+    box-shadow: 0 0 20px rgba(255, 23, 68, 0.8) !important;
+    color: #ffffff !important;
+  }
+  50%, 100% {
+    background: #0e1219 !important;
+    border-color: rgba(255, 23, 68, 0.25) !important;
+    box-shadow: none !important;
+    color: #94a3b8 !important;
+  }
+}
+
+.bb-btn.active-blink {
+  animation: bbSignalBlink 0.65s steps(1, end) infinite !important;
+}
+
+.bb-btn.active-hazard-blink {
+  animation: bbHazardBlink 0.65s steps(1, end) infinite !important;
+}

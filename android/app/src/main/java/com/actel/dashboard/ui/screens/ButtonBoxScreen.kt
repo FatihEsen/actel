@@ -1,5 +1,12 @@
 package com.actel.dashboard.ui.screens
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -50,6 +57,22 @@ fun ButtonBoxScreen(
     val isHeadlightsOn = telemetry?.indicators?.headlights == true
     val isTurnLeftOn = telemetry?.indicators?.turnLeft == true || isHazardOn
     val isTurnRightOn = telemetry?.indicators?.turnRight == true || isHazardOn
+
+    val infiniteTransition = rememberInfiniteTransition(label = "indicatorBlink")
+    val isBlinkPhase by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 650, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "blinkPhase"
+    )
+    val isBlinkOn = isBlinkPhase < 0.5f
+
+    val isTurnLeftBlinking = isTurnLeftOn && isBlinkOn
+    val isTurnRightBlinking = isTurnRightOn && isBlinkOn
+    val isHazardBlinking = isHazardOn && isBlinkOn
 
     var wiperStage by remember { mutableIntStateOf(0) }
 
@@ -104,7 +127,7 @@ fun ButtonBoxScreen(
                     color = Color(0xFFFFB300),
                     onAction = onAction,
                     modifier = Modifier.weight(1f),
-                    isActive = isTurnLeftOn
+                    isActive = isTurnLeftBlinking
                 )
             }
             // Satır 4: DURAKLAT / İÇ AYDINLATMA
@@ -115,7 +138,7 @@ fun ButtonBoxScreen(
             // Satır 5: START / SOLA BAK
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
                 BoxButton("🏁 START", "starter", NeonGreen, onAction, Modifier.weight(1f))
-                BoxButton("👁️◀ SOLA BAK", "look_left", Color(0xFF00E5FF), onAction, Modifier.weight(1f))
+                BoxButton("◀ SOLA BAK", "look_left", Color(0xFF00E5FF), onAction, Modifier.weight(1f), isHold = true)
             }
         }
 
@@ -156,15 +179,15 @@ fun ButtonBoxScreen(
                     color = NeonRed,
                     onAction = onAction,
                     modifier = Modifier.weight(1f),
-                    isActive = isHazardOn
+                    isActive = isHazardBlinking
                 )
                 BoxButton(
-                    title = "SAĞ SİNYAL ▶️",
+                    title = "SAĞ SİNYAL ▶",
                     action = "turn_right",
                     color = Color(0xFFFFB300),
                     onAction = onAction,
                     modifier = Modifier.weight(1f),
-                    isActive = isTurnRightOn
+                    isActive = isTurnRightBlinking
                 )
             }
             // Satır 4: KAMERA / SİS FARI
@@ -174,8 +197,8 @@ fun ButtonBoxScreen(
             }
             // Satır 5: ARKA BAKIŞ / SAĞA BAK
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                BoxButton("🔼 ARKA", "look_back", Color(0xFF90A4AE), onAction, Modifier.weight(1f))
-                BoxButton("SAĞA BAK ▶️👁️", "look_right", Color(0xFF00E5FF), onAction, Modifier.weight(1f))
+                BoxButton("🔼 ARKA", "look_back", Color(0xFF90A4AE), onAction, Modifier.weight(1f), isHold = true)
+                BoxButton("SAĞA BAK ▶", "look_right", Color(0xFF00E5FF), onAction, Modifier.weight(1f), isHold = true)
             }
         }
 
